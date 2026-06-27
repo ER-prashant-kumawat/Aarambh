@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aarambhh.com – The All-in-One Tech & Legal Launchpad for Modern Startups</title>
+  <meta name="description" content="Aarambhh.com is India's premier legal-tech platform for startup registration, GST, trademark, and compliance. Launch your startup in days, not months." />
+  <meta name="keywords" content="startup registration India, private limited company registration, GST registration, trademark registration, LLP registration, Startup India recognition, Bangalore legal tech" />
+  <meta property="og:title" content="Aarambhh.com – All-in-One Tech & Legal Launchpad" />
+  <meta property="og:description" content="Register your startup, get GST, trademark and compliance done fast. 5000+ startups assisted." />
+  <meta property="og:type" content="website" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              navy:   '#0f172a',
+              emerald:'#10b981',
+              mint:   '#34d399',
+              slate:  '#1e293b',
+              light:  '#f8fafc',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          animation: {
+            'fade-in':   'fadeIn 0.5s ease-out',
+            'slide-down':'slideDown 0.3s ease-out',
+            'pulse-slow':'pulse 3s cubic-bezier(0.4,0,0.6,1) infinite',
+          },
+          keyframes: {
+            fadeIn:    { '0%':{ opacity:'0', transform:'translateY(20px)' }, '100%':{ opacity:'1', transform:'translateY(0)' } },
+            slideDown: { '0%':{ opacity:'0', transform:'translateY(-10px)' }, '100%':{ opacity:'1', transform:'translateY(0)' } },
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- React & Babel CDN -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .glass { background: rgba(255,255,255,0.07); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.12); }
+    .glass-dark { background: rgba(15,23,42,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(16,185,129,0.15); }
+    .gradient-hero { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f2744 100%); }
+    .gradient-emerald { background: linear-gradient(135deg, #10b981, #059669); }
+    .gradient-card { background: linear-gradient(145deg, #1e293b, #0f172a); }
+    .bento-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .bento-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(16,185,129,0.15); }
+    .price-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .price-card:hover { transform: translateY(-6px); }
+    .nav-link { position: relative; }
+    .nav-link::after { content:''; position:absolute; bottom:-2px; left:0; width:0; height:2px; background:#10b981; transition: width 0.3s; }
+    .nav-link:hover::after { width:100%; }
+    .dropdown-menu { animation: slideDown 0.2s ease-out; }
+    .hamburger-line { transition: all 0.3s ease; }
+    ::-webkit-scrollbar { width:6px; }
+    ::-webkit-scrollbar-track { background:#0f172a; }
+    ::-webkit-scrollbar-thumb { background:#10b981; border-radius:3px; }
+    .tag-badge { background: linear-gradient(135deg, #10b981, #059669); }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+/* ─────────────────────────────────────────────
+   GLOBAL CONSTANTS — swap your live form URL here
+   ───────────────────────────────────────────── */
+const GOOGLE_FORM_URL = "YOUR_GOOGLE_FORM_LINK_HERE";
+
+/* ─── Lucide Icons (inline SVG implementations) ─── */
+const Icon = ({ d, size = 20, className = "", strokeWidth = 1.75 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round"
+    strokeLinejoin="round" className={className}>
+    <path d={d} />
+  </svg>
+);
+
+const icons = {
+  menu:          "M4 6h16M4 12h16M4 18h16",
+  x:             "M18 6 6 18M6 6l12 12",
+  chevronDown:   "m6 9 6 6 6-6",
+  chevronRight:  "m9 18 6-6-6-6",
+  home:          "m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
+  shield:        "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
+  star:          "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z",
+  zap:           "M13 2 3 14h9l-1 8 10-12h-9l1-8z",
+  award:         "M12 15a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM8.21 13.89 7 23l5-3 5 3-1.21-9.12",
+  check:         "M20 6 9 17l-5-5",
+  checkCircle:   "M22 11.08V12a10 10 0 1 1-5.93-9.14M22 4 12 14.01l-3-3",
+  alertCircle:   "M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zM12 8v4M12 16h.01",
+  search:        "M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z",
+  phone:         "M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.2 2 2 0 0 1 3.06 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16z",
+  mail:          "M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6",
+  mapPin:        "M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z M12 7a3 3 0 1 0 0 6 3 3 0 0 0 0-6z",
+  building:      "M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 22V12h6v10",
+  users:         "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z",
+  trending:      "M23 6l-9.5 9.5-5-5L1 18M17 6h6v6",
+  lock:          "M19 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2zM7 11V7a5 5 0 0 1 10 0v4",
+  fileText:      "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8",
+  briefcase:     "M21 16V8a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM3 10h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2",
+  clock:         "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 6v6l4 2",
+  dollarSign:    "M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6",
+  arrowRight:    "M5 12h14M12 5l7 7-7 7",
+  globe:         "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z",
+  target:        "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12zM12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4z",
+  sparkles:      "M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3zM3 3l.75 2.25L6 6l-2.25.75L3 9l-.75-2.25L0 6l2.25-.75L3 3zM20 17l.75 2.25L23 20l-2.25.75L20 23l-.75-2.25L17 20l2.25-.75L20 17z",
+  layers:        "M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5",
+  cpu:           "M18 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zM9 9h6v6H9z M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 15h3M1 9h3M1 15h3",
+  rocket:        "M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09zM12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2zM9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5",
+  infinity:      "M12 12c-2-2.5-4-4-6-4a4 4 0 0 0 0 8c2 0 4-1.5 6-4zM12 12c2 2.5 4 4 6 4a4 4 0 0 0 0-8c-2 0-4 1.5-6 4z",
+};
+
+const LIcon = ({ name, size = 20, className = "", strokeWidth = 1.75 }) => (
+  <Icon d={icons[name]} size={size} className={className} strokeWidth={strokeWidth} />
+);
+
+/* ─── SERVICE DATA ─── */
+const SERVICES = [
+  {
+    id: "pvt-ltd",
+    label: "Private Limited Company",
+    icon: "building",
+    tagline: "India's most popular startup structure",
+    description: "A Private Limited Company (Pvt. Ltd.) is the most preferred and prestigious business structure for startups and growing businesses in India. It offers limited liability protection to shareholders, separate legal entity status, perpetual succession, and the ability to raise venture capital or angel funding. Governed by the Ministry of Corporate Affairs (MCA) under the Companies Act, 2013, it is ideal for founders who plan to scale, hire talent via ESOPs, and attract institutional investors.",
+    timeline: "5–7 Working Days",
+    fee: "₹6,999 All-Inclusive",
+    benefits: ["Limited Liability Protection for all shareholders", "Separate Legal Entity with perpetual succession", "Easier fundraising from VCs, angels & institutions", "ESOP issuance for talent acquisition", "Higher credibility with vendors & partners", "Corporate bank account eligibility"],
+    docs: ["PAN Card of all Directors & Shareholders", "Aadhaar Card / Passport / Voter ID of Directors", "Recent Passport-size Photographs", "Latest Utility Bill (Electricity/Water) – Business Address Proof", "NOC from Property Owner if rented premises", "Digital Signature Certificate (DSC) – we arrange", "Director Identification Number (DIN) – we arrange", "Memorandum of Association (MoA) – we draft", "Articles of Association (AoA) – we draft"],
+    process: ["Step 1: Document collection & DSC application", "Step 2: DIN procurement for directors", "Step 3: Name reservation via RUN (Reserve Unique Name)", "Step 4: SPICe+ form filing with MCA", "Step 5: Certificate of Incorporation issuance", "Step 6: PAN & TAN allotment for the company", "Step 7: Current bank account setup guidance"],
+  },
+  {
+    id: "gst",
+    label: "GST Registration",
+    icon: "fileText",
+    tagline: "Mandatory for businesses above ₹20L turnover",
+    description: "Goods and Services Tax (GST) Registration is a mandatory compliance requirement for businesses with an annual aggregate turnover exceeding ₹20 lakhs (₹10 lakhs for North-Eastern & special category states) or for those engaged in interstate supply of goods/services. A GSTIN (GST Identification Number) enables you to collect GST from clients, claim input tax credit (ITC) on purchases, and engage legally in e-commerce. Aarambhh.com ensures your GST registration is processed error-free through the GSTN portal with full professional guidance.",
+    timeline: "3–5 Working Days",
+    fee: "₹1,499 All-Inclusive",
+    benefits: ["Legal authorization to collect GST from customers", "Input Tax Credit (ITC) on all business purchases", "Interstate trade & e-commerce eligibility", "Increased credibility with corporate clients & vendors", "Access to government tenders requiring GSTIN", "Composition Scheme eligibility for small businesses"],
+    docs: ["PAN Card of Business Owner / Company", "Aadhaar Card of Authorized Signatory", "Photographs of Authorized Signatory", "Proof of Business Registration (CoI / Partnership Deed)", "Bank Account Statement or Cancelled Cheque", "Utility Bill / Rent Agreement as Address Proof", "Letter of Authorization / Board Resolution"],
+    process: ["Step 1: Business profile assessment & category identification", "Step 2: Document verification and compilation", "Step 3: GSTN portal application filing", "Step 4: ARN (Application Reference Number) generation", "Step 5: Government officer verification (if required)", "Step 6: GSTIN Certificate issuance & portal access setup"],
+  },
+  {
+    id: "trademark",
+    label: "Trademark Registration",
+    icon: "award",
+    tagline: "Protect your brand identity legally",
+    description: "Trademark Registration provides exclusive legal rights to use your brand name, logo, slogan, or product name in commerce. Governed by the Trade Marks Act, 1999 and administered by the Office of the Controller General of Patents, Designs & Trade Marks (CGPDTM), a registered trademark gives you the right to use the ® symbol, take legal action against infringers, and license or franchise your brand. For any startup serious about brand equity, trademark registration is a non-negotiable first step.",
+    timeline: "2–3 Working Days for Filing (Examination: 12–18 months)",
+    fee: "₹4,999 (Government Fee + Professional Charges)",
+    benefits: ["Exclusive legal right to your brand name & logo", "Right to use ® symbol after registration", "Legal protection against brand copying & counterfeiting", "Brand asset that appreciates in value over time", "Licensing & franchising revenue opportunities", "Priority during domain name & social media disputes"],
+    docs: ["Logo / Brand Mark in high-resolution PNG format", "PAN Card of Applicant (Individual or Company)", "Aadhaar Card / Certificate of Incorporation", "Signed Power of Attorney (Form TM-48) – we draft", "Business address proof", "List of goods/services for class identification", "Date of First Use in Commerce (if already in use)"],
+    process: ["Step 1: Comprehensive trademark search & availability check", "Step 2: Class identification under Nice Classification", "Step 3: Application drafting & Power of Attorney signing", "Step 4: Online filing on IP India portal", "Step 5: Examination Report response (if objection raised)", "Step 6: Publication in Trademark Journal", "Step 7: Certificate of Registration issuance"],
+  },
+  {
+    id: "llp",
+    label: "LLP Registration",
+    icon: "briefcase",
+    tagline: "Perfect for professional services & partnerships",
+    description: "A Limited Liability Partnership (LLP) is a hybrid business structure that combines the flexibility of a traditional partnership with the limited liability protection of a company. Governed by the Limited Liability Partnership Act, 2008, an LLP has a separate legal identity, no minimum capital requirement, and simplified compliance compared to a Private Limited Company. It is ideal for professional service firms (CA firms, law firms, consulting boutiques, architect practices) and small businesses that want partnership flexibility without unlimited personal liability.",
+    timeline: "7–10 Working Days",
+    fee: "₹5,499 All-Inclusive",
+    benefits: ["Limited liability for all designated partners", "Separate legal entity with perpetual existence", "No minimum capital requirement", "Lower compliance burden vs. Pvt. Ltd.", "Flexible profit-sharing arrangements", "No restrictions on number of partners"],
+    docs: ["PAN Card of all Designated Partners", "Aadhaar Card / Passport of all partners", "Recent Passport-size Photographs", "Utility Bill (address proof for all partners)", "Registered Office Address Proof (NOC + Utility Bill)", "Proposed LLP Name (3 options)", "LLP Agreement – we draft comprehensively"],
+    process: ["Step 1: Name reservation via RUN-LLP application", "Step 2: DSC (Digital Signature Certificate) procurement", "Step 3: DPIN (Designated Partner Identification Number) application", "Step 4: FiLLiP Form filing on MCA portal", "Step 5: Certificate of Incorporation issuance", "Step 6: LLP Agreement drafting & execution", "Step 7: Form 3 filing (LLP Agreement with MCA)"],
+  },
+  {
+    id: "startup-india",
+    label: "Startup India Recognition",
+    icon: "rocket",
+    tagline: "Unlock government tax holidays & funding",
+    description: "Startup India Recognition is a government certification program launched by DPIIT (Department for Promotion of Industry and Internal Trade) under the Ministry of Commerce that grants officially recognized startups access to a suite of exclusive benefits including 3-year income tax exemption under Section 80-IAC, capital gains tax exemption, fast-track patent processing (80% discount on fees), access to ₹10,000 Crore Fund of Funds, government tender eligibility without turnover criteria, and self-certification under 9 labour & environmental laws.",
+    timeline: "10–15 Working Days",
+    fee: "₹3,999 (Professional Facilitation)",
+    benefits: ["3-year Income Tax Holiday (Sec. 80-IAC)", "Capital Gains Tax Exemption (Sec. 54EE)", "80% rebate on patent filing fees", "Access to DPIIT Fund of Funds (₹10,000 Cr)", "Government e-marketplace procurement eligibility", "Self-certification under 9 labour laws", "Fast-track Insolvency resolution (90 days)"],
+    docs: ["Certificate of Incorporation / Registration", "PAN Card of the Entity", "Aadhaar of Authorized Representative", "Brief write-up on Innovation & Scalability (we help draft)", "Website / Product Demo link (if available)", "Pitch Deck or Business Plan (we review)", "Financial Statements (if operational > 1 year)"],
+    process: ["Step 1: Eligibility assessment (entity age, innovation check)", "Step 2: Startup India portal profile creation", "Step 3: Self-certification under 9 labour laws", "Step 4: DPIIT recognition application submission", "Step 5: Government review & entity verification", "Step 6: DIPP Certificate of Recognition issuance", "Step 7: Tax exemption application support (Sec. 80-IAC)"],
+  },
+];
+
+const COMPLIANCE_ITEMS = [
+  { icon: "fileText", title: "MCA Annual Filings", desc: "AOC-4, MGT-7, and DIR-3 KYC filings to stay penalty-free with the Ministry of Corporate Affairs.", color: "emerald" },
+  { icon: "dollarSign", title: "GST Returns & Invoicing", desc: "GSTR-1, GSTR-3B, GSTR-9 filing and GST-compliant invoice template setup for your business.", color: "blue" },
+  { icon: "users", title: "TDS & Payroll Setup", desc: "TAN registration, monthly TDS deduction, Form 16 issuance, and full payroll compliance architecture.", color: "purple" },
+  { icon: "shield", title: "Shareholders Agreement", desc: "Legally binding SHA covering equity vesting, anti-dilution, drag-along, tag-along, and ROFR clauses.", color: "orange" },
+  { icon: "lock", title: "NDA & Confidentiality", desc: "Watertight mutual and one-way NDA templates customized for vendor, employee, and investor use cases.", color: "pink" },
+  { icon: "globe", title: "Website Legal Package", desc: "Privacy Policy, Terms of Service, Cookie Policy, Refund Policy, and GDPR/IT Act compliance for your web platform.", color: "teal" },
+];
+
+const colorMap = {
+  emerald: "bg-emerald-100 text-emerald-700 border-emerald-200",
+  blue:    "bg-blue-100 text-blue-700 border-blue-200",
+  purple:  "bg-purple-100 text-purple-700 border-purple-200",
+  orange:  "bg-orange-100 text-orange-700 border-orange-200",
+  pink:    "bg-pink-100 text-pink-700 border-pink-200",
+  teal:    "bg-teal-100 text-teal-700 border-teal-200",
+};
+
+const PACKAGES = [
+  {
+    name: "Starter Setup",
+    price: "₹4,999",
+    subtitle: "For solo founders & early ideas",
+    badge: null,
+    color: "border-slate-200",
+    btnColor: "bg-slate-800 hover:bg-slate-700",
+    features: [
+      "Private Limited Company Registration",
+      "MCA Filing Assistance",
+      "PAN & TAN Allotment Guidance",
+      "Current Bank Account Setup Support",
+      "Digital Signature Certificate (1 Director)",
+      "Basic MoA & AoA Drafting",
+      "Post-Incorporation Compliance Checklist",
+      "Email Support – 30 Days",
+    ],
+    notIncluded: ["GST Registration", "Trademark Filing", "Startup India Recognition", "Priority Support"],
+  },
+  {
+    name: "Hyper Growth Scale",
+    price: "₹11,999",
+    subtitle: "For serious startups ready to scale",
+    badge: "Most Popular",
+    color: "border-emerald-400 ring-2 ring-emerald-400 ring-offset-2",
+    btnColor: "gradient-emerald text-white hover:opacity-90",
+    features: [
+      "Everything in Starter Setup",
+      "GST Registration (GSTIN)",
+      "Trademark Filing (1 Class)",
+      "Startup India DPIIT Recognition",
+      "Shareholders Agreement (SHA) Drafting",
+      "NDA Template (Mutual + One-way)",
+      "Website Legal Pack (Privacy + T&C)",
+      "MCA Annual Filing (Year 1)",
+      "Dedicated Relationship Manager",
+      "WhatsApp + Phone Support – 90 Days",
+    ],
+    notIncluded: ["LLP Registration", "Full Payroll & TDS Setup"],
+  },
+  {
+    name: "Full Stack Elite",
+    price: "₹24,999",
+    subtitle: "For funded startups & growth companies",
+    badge: "Best Value",
+    color: "border-slate-700",
+    btnColor: "bg-brand-navy hover:bg-slate-800 text-white",
+    features: [
+      "Everything in Hyper Growth Scale",
+      "LLP Registration (if needed)",
+      "Complete Payroll & TDS Architecture",
+      "Trademark Filing (3 Classes)",
+      "FSSAI / IE Code / Other Sector Licenses",
+      "Founders' Agreement & ESOP Policy",
+      "Full GST Return Filing (12 months)",
+      "Corporate NDA + Vendor Agreements",
+      "Pitch Deck Review & Investor Readiness",
+      "Quarterly Compliance Health Check",
+      "Dedicated Senior CA + Legal Advisor",
+      "Priority WhatsApp + Phone – 12 Months",
+    ],
+    notIncluded: [],
+  },
+];
+
+/* ═══════════════════════════════════════════
+   COMPONENT: Navbar
+   ═══════════════════════════════════════════ */
+function Navbar({ page, setPage }) {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const dropRef = useRef(null);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (dropRef.current && !dropRef.current.contains(e.target)) setDropdownOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const navItems = [
+    { id: "home", label: "Home" },
+    { id: "about", label: "About Us" },
+    { id: "compliance", label: "Compliance Hub" },
+    { id: "packages", label: "Premium Packages" },
+    { id: "contact", label: "Contact Us" },
+  ];
+
+  const navTo = (id) => { setPage(id); setMobileOpen(false); setDropdownOpen(false); window.scrollTo(0,0); };
+
+  return (
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "glass-dark shadow-2xl" : "bg-brand-navy/95"}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 lg:h-18">
+
+          {/* Logo */}
+          <button onClick={() => navTo("home")} className="flex items-center gap-2 group">
+            <div className="w-9 h-9 rounded-xl gradient-emerald flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+              <LIcon name="rocket" size={18} className="text-white" />
+            </div>
+            <span className="text-xl font-black text-white tracking-tight">
+              Aarambhh<span className="text-emerald-400">.</span>
+            </span>
+          </button>
+
+          {/* Desktop Nav */}
+          <div className="hidden lg:flex items-center gap-6">
+            {navItems.map(item => (
+              <button key={item.id} onClick={() => navTo(item.id)}
+                className={`nav-link text-sm font-medium transition-colors ${page === item.id ? "text-emerald-400" : "text-slate-300 hover:text-white"}`}>
+                {item.label}
+              </button>
+            ))}
+
+            {/* Services Dropdown */}
+            <div className="relative" ref={dropRef}>
+              <button onClick={() => setDropdownOpen(!dropdownOpen)}
+                className={`nav-link flex items-center gap-1 text-sm font-medium transition-colors ${["pvt-ltd","gst","trademark","llp","startup-india"].includes(page) ? "text-emerald-400" : "text-slate-300 hover:text-white"}`}>
+                Our Services
+                <LIcon name="chevronDown" size={14} className={`transition-transform ${dropdownOpen ? "rotate-180" : ""}`} />
+              </button>
+
+              {dropdownOpen && (
+                <div className="dropdown-menu absolute top-full right-0 mt-3 w-72 rounded-2xl overflow-hidden shadow-2xl border border-slate-700/50"
+                  style={{ background:"rgba(15,23,42,0.97)", backdropFilter:"blur(20px)" }}>
+                  <div className="p-2">
+                    {SERVICES.map(s => (
+                      <button key={s.id} onClick={() => navTo(s.id)}
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-emerald-500/10 transition-colors text-left group">
+                        <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center group-hover:bg-emerald-500/20 transition-colors flex-shrink-0">
+                          <LIcon name={s.icon} size={15} className="text-emerald-400" />
+                        </div>
+                        <div>
+                          <div className="text-sm font-semibold text-white">{s.label}</div>
+                          <div className="text-xs text-slate-400">{s.tagline}</div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <button onClick={() => window.open(GOOGLE_FORM_URL, "_blank")}
+              className="ml-2 px-5 py-2.5 rounded-xl gradient-emerald text-white text-sm font-bold shadow-lg hover:opacity-90 hover:scale-105 transition-all duration-200">
+              Get Free Quote
+            </button>
+          </div>
+
+          {/* Mobile Hamburger */}
+          <button className="lg:hidden text-white p-2" onClick={() => setMobileOpen(!mobileOpen)}>
+            <div className={`hamburger-line w-6 h-0.5 bg-white mb-1.5 ${mobileOpen ? "rotate-45 translate-y-2" : ""}`}></div>
+            <div className={`hamburger-line w-6 h-0.5 bg-white mb-1.5 ${mobileOpen ? "opacity-0" : ""}`}></div>
+            <div className={`hamburger-line w-6 h-0.5 bg-white ${mobileOpen ? "-rotate-45 -translate-y-2" : ""}`}></div>
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      {mobileOpen && (
+        <div className="lg:hidden border-t border-slate-700/50" style={{ background:"rgba(15,23,42,0.98)" }}>
+          <div className="px-4 py-4 space-y-1">
+            {navItems.map(item => (
+              <button key={item.id} onClick={() => navTo(item.id)}
+                className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors ${page === item.id ? "bg-emerald-500/10 text-emerald-400" : "text-slate-300 hover:bg-slate-800"}`}>
+                {item.label}
+              </button>
+            ))}
+            <div>
+              <button onClick={() => setMobileServicesOpen(!mobileServicesOpen)}
+                className="w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800 flex items-center justify-between">
+                Our Services
+                <LIcon name="chevronDown" size={14} className={`transition-transform ${mobileServicesOpen ? "rotate-180" : ""}`} />
+              </button>
+              {mobileServicesOpen && (
+                <div className="ml-4 mt-1 space-y-1">
+                  {SERVICES.map(s => (
+                    <button key={s.id} onClick={() => navTo(s.id)}
+                      className="w-full text-left px-4 py-2.5 rounded-xl text-sm text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/5 transition-colors flex items-center gap-2">
+                      <LIcon name={s.icon} size={14} className="text-emerald-400 flex-shrink-0" />
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="pt-2">
+              <button onClick={() => window.open(GOOGLE_FORM_URL, "_blank")}
+                className="w-full py-3 rounded-xl gradient-emerald text-white font-bold text-sm">
+                Get Free Quote Now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </nav>
+  );
+}
+
+/* ═══════════════════════════════════════════
+   COMPONENT: MCA Name Checker Widget
+   ═══════════════════════════════════════════ */
+function MCANameChecker() {
+  const [name, setName] = useState("");
+  const [status, setStatus] = useState(null); // null | "checking" | "available" | "taken"
+
+  const TAKEN_NAMES = ["tata", "infosys", "reliance", "wipro", "flipkart", "swiggy", "zomato", "razorpay", "paytm", "ola"];
+
+  const checkName = () => {
+    if (!name.trim()) return;
+    setStatus("checking");
+    setTimeout(() => {
+      const lower = name.toLowerCase().trim();
+      const isTaken = TAKEN_NAMES.some(n => lower.includes(n));
+      setStatus(isTaken ? "taken" : "available");
+    }, 1800);
+  };
+
+  return (
+    <div className="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 mt-5">
+      <div className="flex items-center gap-2 mb-4">
+        <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
+          <LIcon name="search" size={16} className="text-blue-600" />
+        </div>
+        <div>
+          <h3 className="font-bold text-slate-800 text-sm">MCA Name Availability Check</h3>
+          <p className="text-xs text-slate-500">Instantly verify your company name</p>
+        </div>
+      </div>
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={name}
+          onChange={e => { setName(e.target.value); setStatus(null); }}
+          onKeyDown={e => e.key === "Enter" && checkName()}
+          placeholder="Enter proposed company name…"
+          className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent"
+        />
+        <button onClick={checkName} disabled={status === "checking"}
+          className="px-5 py-2.5 rounded-xl bg-brand-navy text-white text-sm font-semibold hover:bg-slate-700 transition-colors disabled:opacity-60 whitespace-nowrap">
+          {status === "checking" ? "Checking…" : "Check Now"}
+        </button>
+      </div>
+
+      {status === "checking" && (
+        <div className="mt-4 flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-50 border border-blue-100">
+          <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin flex-shrink-0"></div>
+          <p className="text-sm text-blue-700 font-medium">Searching MCA database for <strong>"{name}"</strong>…</p>
+        </div>
+      )}
+
+      {status === "available" && (
+        <div className="mt-4 rounded-xl bg-emerald-50 border border-emerald-200 p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-xl">🎉</span>
+            <p className="font-bold text-emerald-700">Name Available for Registration!</p>
+          </div>
+          <p className="text-sm text-emerald-600 mb-3"><strong>"{name} Private Limited"</strong> appears available on the MCA database. Reserve it today before someone else does!</p>
+          <button onClick={() => window.open(GOOGLE_FORM_URL, "_blank")}
+            className="w-full py-2.5 rounded-lg gradient-emerald text-white text-sm font-bold hover:opacity-90 transition-opacity">
+            🚀 Register This Name Now – Starting ₹6,999
+          </button>
+        </div>
+      )}
+
+      {status === "taken" && (
+        <div className="mt-4 rounded-xl bg-red-50 border border-red-200 p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-xl">❌</span>
+            <p className="font-bold text-red-700">Name Already Taken</p>
+          </div>
+          <p className="text-sm text-red-600 mb-3"><strong>"{name}"</strong> conflicts with an existing registered entity on MCA. Try adding a unique keyword or suffix.</p>
+          <button onClick={() => window.open(GOOGLE_FORM_URL, "_blank")}
+            className="w-full py-2.5 rounded-lg bg-brand-navy text-white text-sm font-bold hover:bg-slate-700 transition-colors">
+            💡 Get Expert Name Suggestions – Free Consultation
+          </button>
+        </div>
+      )}
+      <p className="text-xs text-slate-400 mt-3 text-center">*Simulated preview. Final availability confirmed via official MCA portal.</p>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════
+   PAGE: Home
+   ═══════════════════════════════════════════ */
+function HomePage({ setPage }) {
+  const stats = [
+    { icon: "users", label: "Startups Assisted", value: "5,000+" },
+    { icon: "star", label: "Customer Rating", value: "4.9 / 5" },
+    { icon: "clock", label: "Avg. Processing", value: "3 Days" },
+  ];
+
+  const features = [
+    {
+      icon: "lock",
+      title: "Bank-Grade Security",
+      desc: "All your documents and personal data are encrypted with AES-256 and stored on ISO-certified servers. Your privacy is our top priority.",
+      color: "bg-blue-50 text-blue-600",
+    },
+    {
+      icon: "dollarSign",
+      title: "Transparent Flat Fees",
+      desc: "No hidden surprises. Our fees are published upfront — one flat rate covering all government charges, professional service, and post-registration support.",
+      color: "bg-emerald-50 text-emerald-600",
+    },
+    {
+      icon: "users",
+      title: "Human Legal Supervision",
+      desc: "Every application is reviewed and signed off by a qualified Company Secretary or Chartered Accountant. You get expert oversight, not just automation.",
+      color: "bg-purple-50 text-purple-600",
+    },
+  ];
+
+  return (
+    <div>
+      {/* ── HERO SECTION ── */}
+      <section className="gradient-hero pt-28 pb-16 lg:pt-36 lg:pb-24 relative overflow-hidden">
+        {/* Background glow orbs */}
+        <div className="absolute top-20 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute bottom-10 right-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+
+            {/* Left: Hero Copy */}
+            <div className="animate-fade-in">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-6">
+                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse-slow"></div>
+                <span className="text-emerald-400 text-xs font-semibold tracking-wide uppercase">India's #1 Legal-Tech Startup Platform</span>
+              </div>
+
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
+                The All-in-One<br />
+                <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg, #10b981, #34d399)" }}>
+                  Tech & Legal
+                </span><br />
+                Launchpad
+              </h1>
+
+              <p className="text-slate-300 text-lg leading-relaxed mb-8 max-w-lg">
+                From company registration to GST, trademark to compliance — Aarambhh.com is your single, trusted partner to launch and legally protect your Indian startup. Fast. Transparent. Expert-supervised.
+              </p>
+
+              {/* Stats Strip */}
+              <div className="flex flex-wrap gap-6 mb-8">
+                {stats.map((s, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/15 flex items-center justify-center">
+                      <LIcon name={s.icon} size={14} className="text-emerald-400" />
+                    </div>
+                    <div>
+                      <div className="text-white font-black text-lg leading-none">{s.value}</div>
+                      <div className="text-slate-400 text-xs">{s.label}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                <button onClick={() => { setPage("pvt-ltd"); window.scrollTo(0,0); }}
+                  className="px-6 py-3 rounded-xl bg-white text-brand-navy font-bold text-sm hover:bg-slate-100 transition-colors shadow-lg hover:scale-105 transition-all">
+                  Explore Services
+                </button>
+                <button onClick={() => setPage("contact")}
+                  className="px-6 py-3 rounded-xl border border-slate-600 text-white font-semibold text-sm hover:bg-white/5 transition-colors">
+                  Talk to an Expert
+                </button>
+              </div>
+            </div>
+
+            {/* Right: Quote Card + MCA Checker */}
+            <div className="animate-fade-in" style={{ animationDelay:"0.15s" }}>
+
+              {/* GET QUOTE CARD */}
+              <div className="rounded-3xl p-6 shadow-2xl border border-emerald-500/20 relative overflow-hidden"
+                style={{ background: "linear-gradient(145deg, rgba(16,185,129,0.12), rgba(15,23,42,0.9))", backdropFilter:"blur(20px)" }}>
+                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-400/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="w-12 h-12 rounded-2xl gradient-emerald flex items-center justify-center shadow-lg">
+                    <LIcon name="zap" size={22} className="text-white" strokeWidth={2} />
+                  </div>
+                  <div>
+                    <h2 className="text-white font-black text-lg">Get Quote Instantly</h2>
+                    <p className="text-emerald-400 text-xs font-semibold">In Under 60 Seconds ⚡</p>
+                  </div>
+                </div>
+
+                <p className="text-slate-300 text-sm mb-5 leading-relaxed">
+                  Tell us what you need — company registration, GST, trademark, or a full compliance stack. We'll send you a custom quote within the hour with zero obligation.
+                </p>
+
+                <div className="grid grid-cols-2 gap-2 mb-5">
+                  {["Company Registration", "GST Registration", "Trademark Filing", "Startup India"].map((item, i) => (
+                    <div key={i} className="flex items-center gap-1.5 text-xs text-emerald-300">
+                      <LIcon name="check" size={13} className="text-emerald-400 flex-shrink-0" strokeWidth={2.5} />
+                      {item}
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => window.open(GOOGLE_FORM_URL, "_blank")}
+                  className="w-full py-4 rounded-2xl gradient-emerald text-white font-black text-base shadow-xl hover:opacity-90 hover:scale-[1.02] transition-all duration-200 flex items-center justify-center gap-2">
+                  <LIcon name="zap" size={18} className="text-white" strokeWidth={2.5} />
+                  Get Your Free Quote Now
+                </button>
+
+                <p className="text-center text-slate-500 text-xs mt-3">No credit card • No commitment • 100% free consultation</p>
+              </div>
+
+              {/* MCA NAME CHECKER */}
+              <MCANameChecker />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── TRUSTED BY SECTION ── */}
+      <section className="bg-brand-navy py-10 border-y border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-slate-500 text-xs font-semibold uppercase tracking-widest mb-6">Trusted by founders from</p>
+          <div className="flex flex-wrap justify-center items-center gap-8 lg:gap-16 opacity-40">
+            {["IIT Delhi", "IIM Bangalore", "Y Combinator Alumni", "Google Launchpad", "NASSCOM Startup"].map((name, i) => (
+              <span key={i} className="text-slate-300 font-bold text-sm tracking-wide">{name}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── SERVICES GRID ── */}
+      <section className="py-20 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <span className="inline-block px-3 py-1 rounded-full text-xs font-bold text-emerald-700 bg-emerald-100 mb-4">Our Core Services</span>
+            <h2 className="text-3xl lg:text-4xl font-black text-brand-navy mb-4">Everything Your Startup Needs</h2>
+            <p className="text-slate-500 max-w-2xl mx-auto">From day-zero incorporation to year-round compliance — handled by qualified professionals so you can focus on building.</p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {SERVICES.map(s => (
+              <button key={s.id} onClick={() => { setPage(s.id); window.scrollTo(0,0); }}
+                className="bento-card text-left bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:border-emerald-200">
+                <div className="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center mb-4">
+                  <LIcon name={s.icon} size={20} className="text-emerald-600" />
+                </div>
+                <h3 className="font-bold text-brand-navy text-base mb-1">{s.label}</h3>
+                <p className="text-slate-500 text-sm mb-4 line-clamp-2">{s.tagline}</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-emerald-600 font-black text-sm">{s.fee}</span>
+                  <div className="flex items-center gap-1 text-emerald-600 text-xs font-semibold">
+                    View Details <LIcon name="arrowRight" size={13} />
+                  </div>
+                </div>
+              </button>
+            ))}
+            {/* CTA Card */}
+            <div className="gradient-card rounded-2xl p-6 flex flex-col justify-between">
+              <div>
+                <div className="w-11 h-11 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4">
+                  <LIcon name="sparkles" size={20} className="text-emerald-400" />
+                </div>
+                <h3 className="font-bold text-white text-base mb-2">Not Sure Where to Start?</h3>
+                <p className="text-slate-400 text-sm mb-6">Our legal consultants will map the perfect compliance roadmap for your unique business model. Free of charge.</p>
+              </div>
+              <button onClick={() => window.open(GOOGLE_FORM_URL, "_blank")}
+                className="w-full py-3 rounded-xl gradient-emerald text-white font-bold text-sm hover:opacity-90 transition-opacity">
+                Book Free Consultation
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── FEATURES GRID ── */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <span className="inline-block px-3 py-1 rounded-full text-xs font-bold text-emerald-700 bg-emerald-100 mb-4">Why Aarambhh</span>
+            <h2 className="text-3xl lg:text-4xl font-black text-brand-navy mb-4">Built Different. Built for Founders.</h2>
+            <p className="text-slate-500 max-w-xl mx-auto">We combine legal expertise, cutting-edge technology, and genuine human care to deliver a registration experience that's fast, reliable, and truly founder-first.</p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.map((f, i) => (
+              <div key={i} className="bento-card bg-white rounded-2xl p-7 border border-slate-100 shadow-sm text-center">
+                <div className={`w-14 h-14 rounded-2xl ${f.color} flex items-center justify-center mx-auto mb-5`}>
+                  <LIcon name={f.icon} size={24} />
+                </div>
+                <h3 className="font-bold text-brand-navy text-lg mb-3">{f.title}</h3>
+                <p className="text-slate-500 text-sm leading-relaxed">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── PROCESS STRIP ── */}
+      <section className="py-20 gradient-hero">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl lg:text-4xl font-black text-white mb-4">Register in 3 Simple Steps</h2>
+            <p className="text-slate-400 max-w-xl mx-auto">Our streamlined process means you go from idea to incorporated in as little as 72 hours.</p>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-8 relative">
+            {[
+              { step:"01", icon:"fileText", title:"Submit Documents", desc:"Upload your PAN, Aadhaar, and address proof through our secure portal. Takes less than 5 minutes." },
+              { step:"02", icon:"cpu", title:"Expert Processing", desc:"Our qualified CS and CA team verifies, prepares, and files your application with government authorities." },
+              { step:"03", icon:"checkCircle", title:"Get Certified", desc:"Receive your official Certificate of Incorporation, GSTIN, or Trademark filing acknowledgment directly." },
+            ].map((item, i) => (
+              <div key={i} className="text-center relative">
+                <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto mb-5">
+                  <LIcon name={item.icon} size={28} className="text-emerald-400" />
+                </div>
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 w-7 h-7 rounded-full gradient-emerald flex items-center justify-center">
+                  <span className="text-white text-xs font-black">{i+1}</span>
+                </div>
+                <h3 className="font-bold text-white text-lg mb-3">{item.title}</h3>
+                <p className="text-slate-400 text-sm leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* JOIN CTA SECTION */}
+      <JoinSection />
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════
+   PAGE: Service Detail
+   ═══════════════════════════════════════════ */
+function ServicePage({ service, setPage }) {
+  return (
+    <div className="pt-16">
+      {/* Hero */}
+      <section className="gradient-hero py-20 lg:py-28 relative overflow-hidden">
+        <div className="absolute top-20 right-1/4 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl">
+            <button onClick={() => { setPage("home"); window.scrollTo(0,0); }}
+              className="flex items-center gap-1.5 text-slate-400 hover:text-emerald-400 text-sm mb-6 transition-colors">
+              <LIcon name="chevronRight" size={14} className="rotate-180" />
+              Back to Home
+            </button>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-5">
+              <span className="text-emerald-400 text-xs font-semibold">Professional Service</span>
+            </div>
+            <h1 className="text-4xl lg:text-5xl font-black text-white mb-4">{service.label}</h1>
+            <p className="text-slate-300 text-lg mb-8">{service.tagline}</p>
+            <div className="flex flex-wrap gap-4">
+              <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10">
+                <LIcon name="clock" size={15} className="text-emerald-400" />
+                <span className="text-white text-sm font-semibold">{service.timeline}</span>
+              </div>
+              <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                <LIcon name="dollarSign" size={15} className="text-emerald-400" />
+                <span className="text-emerald-300 text-sm font-bold">{service.fee}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-3 gap-8">
+
+            {/* Main content */}
+            <div className="lg:col-span-2 space-y-8">
+              <div className="bg-white rounded-2xl p-7 border border-slate-100 shadow-sm">
+                <h2 className="text-xl font-black text-brand-navy mb-4">Overview</h2>
+                <p className="text-slate-600 leading-relaxed">{service.description}</p>
+              </div>
+
+              <div className="bg-white rounded-2xl p-7 border border-slate-100 shadow-sm">
+                <h2 className="text-xl font-black text-brand-navy mb-5">Step-by-Step Process</h2>
+                <div className="space-y-3">
+                  {service.process.map((step, i) => (
+                    <div key={i} className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full gradient-emerald flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-white text-xs font-black">{i+1}</span>
+                      </div>
+                      <p className="text-slate-600 text-sm leading-relaxed">{step}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-white rounded-2xl p-7 border border-slate-100 shadow-sm">
+                <h2 className="text-xl font-black text-brand-navy mb-5">Required Documents</h2>
+                <div className="grid sm:grid-cols-2 gap-2.5">
+                  {service.docs.map((doc, i) => (
+                    <div key={i} className="flex items-start gap-2.5">
+                      <LIcon name="checkCircle" size={15} className="text-emerald-500 flex-shrink-0 mt-0.5" />
+                      <span className="text-slate-600 text-sm">{doc}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Sidebar */}
+            <div className="space-y-5">
+              <div className="gradient-card rounded-2xl p-6">
+                <h3 className="text-white font-black text-lg mb-4">Key Benefits</h3>
+                <div className="space-y-3">
+                  {service.benefits.map((b, i) => (
+                    <div key={i} className="flex items-start gap-2.5">
+                      <LIcon name="check" size={14} className="text-emerald-400 flex-shrink-0 mt-0.5" strokeWidth={2.5} />
+                      <span className="text-slate-300 text-sm">{b}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+                <div className="text-center mb-5">
+                  <p className="text-slate-500 text-sm">Starting at</p>
+                  <p className="text-3xl font-black text-brand-navy">{service.fee}</p>
+                  <p className="text-emerald-600 text-xs font-semibold mt-1">All-inclusive, no hidden fees</p>
+                </div>
+                <button onClick={() => window.open(GOOGLE_FORM_URL, "_blank")}
+                  className="w-full py-3.5 rounded-xl gradient-emerald text-white font-black text-sm hover:opacity-90 transition-opacity mb-3 shadow-lg">
+                  Get Started Now →
+                </button>
+                <button onClick={() => { setPage("contact"); window.scrollTo(0,0); }}
+                  className="w-full py-3 rounded-xl border border-slate-200 text-slate-700 font-semibold text-sm hover:bg-slate-50 transition-colors">
+                  Schedule a Free Call
+                </button>
+                <p className="text-center text-slate-400 text-xs mt-3">✅ Expert-supervised • ✅ MCA Registered</p>
+              </div>
+
+              <div className="bg-emerald-50 rounded-2xl p-5 border border-emerald-100">
+                <div className="flex items-center gap-2 mb-2">
+                  <LIcon name="shield" size={16} className="text-emerald-600" />
+                  <span className="font-bold text-emerald-800 text-sm">100% Satisfaction Guarantee</span>
+                </div>
+                <p className="text-emerald-700 text-xs leading-relaxed">If we're unable to complete your registration for any reason attributable to us, we provide a full refund — no questions asked.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <JoinSection />
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════
+   PAGE: About Us
+   ═══════════════════════════════════════════ */
+function AboutPage() {
+  const values = [
+    { icon:"shield", label:"Integrity First", desc:"We operate with full transparency. No inflated fees, no misleading timelines, no fine print." },
+    { icon:"zap", label:"Speed as a Feature", desc:"We treat time as your most valuable resource. Our systems are engineered for the fastest possible legal delivery." },
+    { icon:"users", label:"Founder-Centric", desc:"Every process, every product, every policy is designed from the founder's perspective — not the bureaucrat's." },
+    { icon:"target", label:"Outcome-Driven", desc:"We measure success by your success. Our KPI is your Certificate of Incorporation, not our revenue." },
+  ];
+
+  return (
+    <div className="pt-16">
+      {/* Hero */}
+      <section className="gradient-hero py-20 lg:py-28 relative overflow-hidden">
+        <div className="absolute top-10 right-1/3 w-64 h-64 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-5">
+            <span className="text-emerald-400 text-xs font-semibold">Our Story</span>
+          </div>
+          <h1 className="text-4xl lg:text-5xl font-black text-white mb-6 max-w-3xl mx-auto">
+            We Started Aarambhh<br />Because We Felt the Pain Too.
+          </h1>
+          <p className="text-slate-300 text-lg max-w-2xl mx-auto">India's entrepreneurial energy has never been greater. But its legal infrastructure still moves at the pace of the 1990s.</p>
+        </div>
+      </section>
+
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-16 items-center mb-20">
+            <div>
+              <h2 className="text-3xl font-black text-brand-navy mb-6">The Origin Story</h2>
+              <div className="space-y-5 text-slate-600 leading-relaxed">
+                <p>Aarambhh — meaning <em>"the beginning"</em> in Hindi — was founded in Bangalore by a team of legal professionals, chartered accountants, and technology builders who were, quite frankly, exhausted by watching brilliant Indian founders struggle with bureaucracy at the very moment they needed momentum.</p>
+                <p>Our founders had spent years inside India's legal and financial system. They'd seen first-hand how a talented founder with a world-changing idea could lose weeks — sometimes months — to back-and-forth paperwork, poorly drafted applications, and opaque government portals. They'd seen dreams deferred not because the ideas weren't good enough, but because the legal process was too slow, too complex, and too expensive.</p>
+                <p>So in 2021, they decided to build the platform they wished had existed when they were starting out. A single, trustworthy destination where an Indian entrepreneur could walk in with an idea on Monday and walk out with a legally registered company by Thursday.</p>
+                <p>That platform is Aarambhh.com. And today, we're proud to serve over 5,000 startups across 23 states — from solo SaaS founders in Pune to scaling D2C brands in Delhi, from first-time consultants in Chennai to Series-A ready companies in Mumbai.</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { label:"Founded", value:"2021" },
+                { label:"Cities Served", value:"23+" },
+                { label:"Startups Assisted", value:"5,000+" },
+                { label:"Expert Professionals", value:"40+" },
+                { label:"Avg. Processing Days", value:"3 Days" },
+                { label:"Customer Rating", value:"4.9 / 5" },
+              ].map((item, i) => (
+                <div key={i} className="bento-card bg-slate-50 rounded-2xl p-5 border border-slate-100 text-center">
+                  <div className="text-3xl font-black text-brand-navy mb-1">{item.value}</div>
+                  <div className="text-slate-500 text-xs font-semibold">{item.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Mission */}
+          <div className="gradient-card rounded-3xl p-10 lg:p-14 mb-16 text-center">
+            <LIcon name="target" size={40} className="text-emerald-400 mx-auto mb-6" />
+            <h2 className="text-3xl font-black text-white mb-5">Our Mission</h2>
+            <p className="text-slate-300 text-lg max-w-3xl mx-auto leading-relaxed">
+              To eliminate legal friction and bureaucratic delays for every Indian entrepreneur, making world-class company formation and compliance accessible to everyone — from the first-time founder in Tier-2 India to the seasoned serial entrepreneur raising institutional capital.
+            </p>
+          </div>
+
+          {/* Core Values */}
+          <div>
+            <h2 className="text-3xl font-black text-brand-navy text-center mb-10">Our Core Values</h2>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {values.map((v, i) => (
+                <div key={i} className="bento-card bg-white rounded-2xl p-6 border border-slate-100 shadow-sm text-center">
+                  <div className="w-12 h-12 rounded-xl gradient-emerald flex items-center justify-center mx-auto mb-4">
+                    <LIcon name={v.icon} size={20} className="text-white" />
+                  </div>
+                  <h3 className="font-bold text-brand-navy mb-2">{v.label}</h3>
+                  <p className="text-slate-500 text-sm leading-relaxed">{v.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+      <JoinSection />
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════
+   PAGE: Compliance Hub
+   ═══════════════════════════════════════════ */
+function CompliancePage() {
+  const [configured, setConfigured] = useState({});
+
+  return (
+    <div className="pt-16">
+      <section className="gradient-hero py-20 lg:py-24 relative overflow-hidden">
+        <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-5">
+            <span className="text-emerald-400 text-xs font-semibold">Corporate Compliance</span>
+          </div>
+          <h1 className="text-4xl lg:text-5xl font-black text-white mb-5">The Compliance Hub</h1>
+          <p className="text-slate-300 text-lg max-w-2xl mx-auto">Stay audit-ready, penalty-free, and investor-grade. Manage all your corporate governance and legal compliance from one intelligent dashboard.</p>
+        </div>
+      </section>
+
+      <section className="py-16 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+          {/* Alert banner */}
+          <div className="mb-10 flex items-start gap-4 bg-amber-50 border border-amber-200 rounded-2xl p-5">
+            <LIcon name="alertCircle" size={22} className="text-amber-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-bold text-amber-800 text-sm">Non-Compliance Penalties in India Can Be Severe</p>
+              <p className="text-amber-700 text-sm mt-1">MCA default filings carry penalties of ₹200/day. GST non-compliance triggers 18% interest. Late TDS filing leads to prosecution risk. Let our experts keep you clean and current.</p>
+            </div>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {COMPLIANCE_ITEMS.map((item, i) => (
+              <div key={i} className={`bento-card bg-white rounded-2xl p-6 border border-slate-100 shadow-sm transition-all ${configured[i] ? "ring-2 ring-emerald-400 ring-offset-2" : ""}`}>
+                <div className={`inline-flex items-center justify-center w-11 h-11 rounded-xl mb-4 border ${colorMap[item.color]}`}>
+                  <LIcon name={item.icon} size={20} />
+                </div>
+                <h3 className="font-bold text-brand-navy text-base mb-2">{item.title}</h3>
+                <p className="text-slate-500 text-sm mb-5 leading-relaxed">{item.desc}</p>
+                <div className="flex items-center justify-between">
+                  {configured[i] ? (
+                    <span className="flex items-center gap-1.5 text-emerald-600 font-semibold text-sm">
+                      <LIcon name="checkCircle" size={15} className="text-emerald-500" />
+                      Configured
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => setConfigured(prev => ({ ...prev, [i]: true }))}
+                      className="px-4 py-2 rounded-lg gradient-emerald text-white text-xs font-bold hover:opacity-90 transition-opacity">
+                      Configure →
+                    </button>
+                  )}
+                  <button onClick={() => window.open(GOOGLE_FORM_URL, "_blank")}
+                    className="text-xs text-slate-400 hover:text-emerald-600 transition-colors font-medium">
+                    Get Quote
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Annual compliance calendar */}
+          <div className="mt-14">
+            <h2 className="text-2xl font-black text-brand-navy mb-7 text-center">Annual Compliance Calendar</h2>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {[
+                { month:"Q1 (Jan–Mar)", tasks:["TDS Quarterly Return (Q3)", "Advance Tax (15 Mar)", "GSTR-1 Monthly"] },
+                { month:"Q2 (Apr–Jun)", tasks:["Annual ITR Filing", "MCA Form AOC-4 prep", "GSTR-9 (Annual) prep"] },
+                { month:"Q3 (Jul–Sep)", tasks:["AGM Conduct (by 30 Sep)", "MGT-7 Filing (60 days post AGM)", "DIR-3 KYC (30 Sep)"] },
+                { month:"Q4 (Oct–Dec)", tasks:["Advance Tax (15 Dec)", "Board Meeting Minute finalization", "Year-end audit readiness"] },
+              ].map((q, i) => (
+                <div key={i} className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                  <h3 className="font-black text-brand-navy text-sm mb-3 pb-2 border-b border-slate-100">{q.month}</h3>
+                  <ul className="space-y-2">
+                    {q.tasks.map((t, j) => (
+                      <li key={j} className="flex items-start gap-2 text-xs text-slate-600">
+                        <LIcon name="check" size={12} className="text-emerald-500 flex-shrink-0 mt-0.5" strokeWidth={2.5} />
+                        {t}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+      <JoinSection />
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════
+   PAGE: Packages
+   ═══════════════════════════════════════════ */
+function PackagesPage() {
+  return (
+    <div className="pt-16">
+      <section className="gradient-hero py-20 lg:py-24 relative overflow-hidden">
+        <div className="absolute top-10 right-1/4 w-64 h-64 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-5">
+            <span className="text-emerald-400 text-xs font-semibold">Transparent Pricing</span>
+          </div>
+          <h1 className="text-4xl lg:text-5xl font-black text-white mb-5">Premium Packages</h1>
+          <p className="text-slate-300 text-lg max-w-2xl mx-auto">One flat price. Zero hidden fees. Everything your startup needs legally — bundled intelligently.</p>
+        </div>
+      </section>
+      <section className="py-20 bg-slate-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-3 gap-6 items-start">
+            {PACKAGES.map((pkg, i) => (
+              <div key={i}
+                className={`price-card bg-white rounded-3xl p-7 border-2 ${pkg.color} shadow-sm relative overflow-hidden`}>
+                {pkg.badge && (
+                  <div className="absolute top-5 right-5">
+                    <span className="tag-badge text-white text-xs font-black px-3 py-1.5 rounded-full shadow-lg">{pkg.badge}</span>
+                  </div>
+                )}
+                <div className="mb-6">
+                  <h3 className="font-black text-brand-navy text-xl mb-1">{pkg.name}</h3>
+                  <p className="text-slate-500 text-sm">{pkg.subtitle}</p>
+                  <div className="mt-4">
+                    <span className="text-4xl font-black text-brand-navy">{pkg.price}</span>
+                    <span className="text-slate-500 text-sm ml-2">one-time</span>
+                  </div>
+                  <p className="text-emerald-600 text-xs font-semibold mt-1">Inclusive of all govt. fees & professional charges</p>
+                </div>
+
+                <button onClick={() => window.open(GOOGLE_FORM_URL, "_blank")}
+                  className={`w-full py-3.5 rounded-xl font-black text-sm mb-7 transition-all hover:scale-[1.02] ${pkg.btnColor} ${pkg.badge ? "text-white shadow-lg" : ""}`}>
+                  Get Started with {pkg.name.split(" ")[0]} →
+                </button>
+
+                <div className="space-y-2.5 mb-6">
+                  <p className="text-xs font-bold text-slate-700 uppercase tracking-wide mb-3">What's Included</p>
+                  {pkg.features.map((f, j) => (
+                    <div key={j} className="flex items-start gap-2.5">
+                      <LIcon name="checkCircle" size={14} className="text-emerald-500 flex-shrink-0 mt-0.5" />
+                      <span className="text-slate-600 text-sm">{f}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {pkg.notIncluded.length > 0 && (
+                  <div className="space-y-2 pt-4 border-t border-slate-100">
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wide mb-2">Not Included</p>
+                    {pkg.notIncluded.map((f, j) => (
+                      <div key={j} className="flex items-start gap-2.5">
+                        <LIcon name="x" size={14} className="text-slate-300 flex-shrink-0 mt-0.5" />
+                        <span className="text-slate-400 text-sm">{f}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Money-back guarantee */}
+          <div className="mt-12 text-center">
+            <div className="inline-flex items-center gap-3 px-7 py-4 rounded-2xl bg-emerald-50 border border-emerald-100">
+              <LIcon name="shield" size={20} className="text-emerald-600" />
+              <p className="text-emerald-800 text-sm font-semibold">30-Day Money-Back Guarantee on all packages if we fail to deliver</p>
+            </div>
+          </div>
+
+          {/* FAQ callout */}
+          <div className="mt-14 gradient-card rounded-3xl p-10 text-center">
+            <LIcon name="alertCircle" size={32} className="text-emerald-400 mx-auto mb-4" />
+            <h2 className="text-2xl font-black text-white mb-3">Need a Custom Quote?</h2>
+            <p className="text-slate-400 mb-6 max-w-xl mx-auto">Running a multi-entity structure? Need sector-specific licenses (FSSAI, NBFC, SEBI)? Or want a full-year outsourced compliance retainer? We build custom engagement models for complex needs.</p>
+            <button onClick={() => window.open(GOOGLE_FORM_URL, "_blank")}
+              className="px-8 py-3.5 rounded-xl gradient-emerald text-white font-black text-sm hover:opacity-90 transition-opacity shadow-lg">
+              Request Custom Package →
+            </button>
+          </div>
+        </div>
+      </section>
+      <JoinSection />
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════
+   PAGE: Contact
+   ═══════════════════════════════════════════ */
+function ContactPage() {
+  const [form, setForm] = useState({ name:"", phone:"", email:"", service:"", message:"" });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setSubmitted(true);
+  };
+
+  return (
+    <div className="pt-16">
+      <section className="gradient-hero py-20 lg:py-24 relative overflow-hidden">
+        <div className="absolute top-10 left-1/4 w-64 h-64 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-5">
+            <span className="text-emerald-400 text-xs font-semibold">Get in Touch</span>
+          </div>
+          <h1 className="text-4xl lg:text-5xl font-black text-white mb-5">Contact & Support</h1>
+          <p className="text-slate-300 text-lg max-w-2xl mx-auto">Real humans. Real expertise. We're available six days a week to answer your questions and guide your startup's legal journey.</p>
+        </div>
+      </section>
+
+      <section className="py-16 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12">
+
+            {/* Left: Contact Info */}
+            <div>
+              <h2 className="text-2xl font-black text-brand-navy mb-7">Reach Our Expert Team</h2>
+              <div className="space-y-5">
+                {[
+                  { icon:"phone", label:"Direct Consultation Line", value:"+91 98765 43210", sub:"Mon–Sat, 9:30 AM – 7:00 PM IST" },
+                  { icon:"phone", label:"Corporate Support Desk", value:"+91 80 4567 8901", sub:"Dedicated B2B & enterprise helpline" },
+                  { icon:"mail", label:"General Enquiries", value:"hello@aarambhh.com", sub:"Response within 2 business hours" },
+                  { icon:"mail", label:"Legal & Compliance Support", value:"legal@aarambhh.com", sub:"For ongoing compliance queries" },
+                  { icon:"mapPin", label:"Registered Office", value:"Aarambhh Legal-Tech Pvt. Ltd.", sub:"27, 3rd Floor, Sector 6, HSR Layout, Bengaluru, Karnataka – 560 102" },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-start gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm bento-card">
+                    <div className="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center flex-shrink-0">
+                      <LIcon name={item.icon} size={18} className="text-emerald-600" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-0.5">{item.label}</p>
+                      <p className="font-bold text-brand-navy text-base">{item.value}</p>
+                      <p className="text-slate-400 text-xs mt-0.5">{item.sub}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* WhatsApp CTA */}
+              <div className="mt-6 p-5 bg-green-50 border border-green-200 rounded-2xl flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-green-500 flex items-center justify-center flex-shrink-0">
+                  <LIcon name="phone" size={20} className="text-white" />
+                </div>
+                <div>
+                  <p className="font-bold text-green-800 text-sm">Chat on WhatsApp</p>
+                  <p className="text-green-700 text-xs">Instant responses for quick queries: <strong>+91 98765 43210</strong></p>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Callback Form */}
+            <div>
+              {!submitted ? (
+                <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-xl">
+                  <h2 className="text-2xl font-black text-brand-navy mb-2">Schedule a Free Callback</h2>
+                  <p className="text-slate-500 text-sm mb-7">Our experts will call you back within 30 minutes during business hours. No pressure. No sales pitch — just genuine guidance.</p>
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-600 mb-1.5">Full Name *</label>
+                        <input type="text" required value={form.name} onChange={e => setForm({...form, name:e.target.value})}
+                          placeholder="Rahul Sharma"
+                          className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-600 mb-1.5">Phone Number *</label>
+                        <input type="tel" required value={form.phone} onChange={e => setForm({...form, phone:e.target.value})}
+                          placeholder="+91 98765 43210"
+                          className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent" />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-600 mb-1.5">Email Address</label>
+                      <input type="email" value={form.email} onChange={e => setForm({...form, email:e.target.value})}
+                        placeholder="rahul@yourstartup.com"
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-600 mb-1.5">Service of Interest</label>
+                      <select value={form.service} onChange={e => setForm({...form, service:e.target.value})}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 bg-white">
+                        <option value="">Select a service…</option>
+                        {SERVICES.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
+                        <option value="package">Premium Package</option>
+                        <option value="compliance">Compliance Hub</option>
+                        <option value="other">General Inquiry</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-600 mb-1.5">Brief Message</label>
+                      <textarea value={form.message} onChange={e => setForm({...form, message:e.target.value})}
+                        placeholder="Tell us about your startup and what you need help with…"
+                        rows={4}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 resize-none" />
+                    </div>
+                    <button type="submit"
+                      className="w-full py-4 rounded-xl gradient-emerald text-white font-black text-sm hover:opacity-90 transition-opacity shadow-lg">
+                      📞 Schedule My Free Callback
+                    </button>
+                    <p className="text-center text-slate-400 text-xs">Your information is 100% confidential. We never share or sell your data.</p>
+                  </form>
+                </div>
+              ) : (
+                <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-xl text-center">
+                  <div className="w-20 h-20 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-6">
+                    <LIcon name="checkCircle" size={40} className="text-emerald-500" />
+                  </div>
+                  <h2 className="text-2xl font-black text-brand-navy mb-3">Callback Scheduled! 🎉</h2>
+                  <p className="text-slate-600 mb-2">Thank you, <strong>{form.name}</strong>! One of our legal consultants will call you at <strong>{form.phone}</strong> within the next 30 minutes.</p>
+                  <p className="text-slate-500 text-sm mb-7">In the meantime, explore our services and packages to get a head start.</p>
+                  <button onClick={() => setSubmitted(false)}
+                    className="px-6 py-3 rounded-xl border border-slate-200 text-slate-700 font-semibold text-sm hover:bg-slate-50 transition-colors">
+                    Submit Another Request
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+      <JoinSection />
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════
+   COMPONENT: Join Section
+   ═══════════════════════════════════════════ */
+function JoinSection() {
+  return (
+    <section className="py-20 gradient-hero relative overflow-hidden">
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-7">
+          <LIcon name="sparkles" size={14} className="text-emerald-400" />
+          <span className="text-emerald-400 text-xs font-semibold uppercase tracking-wide">Join 5,000+ Founders</span>
+        </div>
+        <h2 className="text-4xl lg:text-5xl font-black text-white mb-5">
+          Be A Part of<br />
+          <span className="text-transparent bg-clip-text" style={{ backgroundImage:"linear-gradient(135deg, #10b981, #34d399)" }}>
+            Something Bigger
+          </span>
+        </h2>
+        <p className="text-slate-300 text-lg mb-8 max-w-2xl mx-auto">
+          India's most ambitious founders trust Aarambhh.com to handle the legal complexities so they can focus on building category-defining companies. Your aarambhh starts here.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <button onClick={() => window.open(GOOGLE_FORM_URL, "_blank")}
+            className="px-8 py-4 rounded-2xl gradient-emerald text-white font-black text-base shadow-xl hover:opacity-90 hover:scale-105 transition-all duration-200">
+            🚀 Start My Startup Journey
+          </button>
+          <button onClick={() => { window.scrollTo(0,0); }}
+            className="px-8 py-4 rounded-2xl border border-slate-600 text-white font-semibold text-base hover:bg-white/5 transition-colors">
+            Explore Packages
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ═══════════════════════════════════════════
+   COMPONENT: Footer
+   ═══════════════════════════════════════════ */
+function Footer({ setPage }) {
+  const navTo = (id) => { setPage(id); window.scrollTo(0,0); };
+
+  return (
+    <footer className="bg-brand-navy border-t border-slate-800">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-14">
+
+          {/* Brand */}
+          <div className="lg:col-span-1">
+            <div className="flex items-center gap-2 mb-5">
+              <div className="w-9 h-9 rounded-xl gradient-emerald flex items-center justify-center">
+                <LIcon name="rocket" size={18} className="text-white" />
+              </div>
+              <span className="text-xl font-black text-white">Aarambhh<span className="text-emerald-400">.</span></span>
+            </div>
+            <p className="text-slate-400 text-sm leading-relaxed mb-5">
+              India's premier legal-tech platform for modern startups. Trusted by 5,000+ founders across 23 states.
+            </p>
+            <div className="flex items-center gap-2 text-emerald-400 text-xs font-semibold">
+              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse-slow"></div>
+              Actively accepting new clients
+            </div>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h3 className="text-white font-bold text-sm mb-5 uppercase tracking-wide">Quick Links</h3>
+            <ul className="space-y-2.5">
+              {[
+                { id:"home", label:"Home" },
+                { id:"about", label:"About Us" },
+                { id:"compliance", label:"Compliance Hub" },
+                { id:"packages", label:"Premium Packages" },
+                { id:"contact", label:"Contact Us" },
+              ].map(item => (
+                <li key={item.id}>
+                  <button onClick={() => navTo(item.id)} className="text-slate-400 hover:text-emerald-400 text-sm transition-colors">{item.label}</button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Services */}
+          <div>
+            <h3 className="text-white font-bold text-sm mb-5 uppercase tracking-wide">Our Services</h3>
+            <ul className="space-y-2.5">
+              {SERVICES.map(s => (
+                <li key={s.id}>
+                  <button onClick={() => navTo(s.id)} className="text-slate-400 hover:text-emerald-400 text-sm transition-colors">{s.label}</button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Legal & Contact */}
+          <div>
+            <h3 className="text-white font-bold text-sm mb-5 uppercase tracking-wide">Legal & Contact</h3>
+            <ul className="space-y-2.5 mb-5">
+              {["Privacy Policy", "Terms of Service", "Sitemap"].map(item => (
+                <li key={item}>
+                  <button className="text-slate-400 hover:text-emerald-400 text-sm transition-colors">{item}</button>
+                </li>
+              ))}
+            </ul>
+            <div className="space-y-2 text-slate-400 text-xs">
+              <p>📍 HSR Layout, Bangalore 560 102</p>
+              <p>📞 +91 98765 43210</p>
+              <p>✉️ hello@aarambhh.com</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Regulatory Disclaimer */}
+        <div className="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-6 mb-8">
+          <div className="flex items-start gap-3">
+            <LIcon name="alertCircle" size={18} className="text-amber-400 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-amber-400 font-bold text-xs uppercase tracking-wide mb-2">Regulatory Disclaimer</p>
+              <p className="text-slate-400 text-xs leading-relaxed">
+                Aarambhh.com is an independent, privately-owned legal-tech platform and is not affiliated with any government department. We act as professional consultants and facilitators to streamline your application process. However, all statutory approvals, licenses, and corporate registrations are exclusively granted by the respective government authorities.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom bar */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-slate-800">
+          <p className="text-slate-500 text-xs">© 2024 Aarambhh Legal-Tech Pvt. Ltd. All rights reserved. CIN: U74999KA2021PTC145XXX</p>
+          <div className="flex items-center gap-4">
+            <span className="text-slate-600 text-xs">Made with ❤️ in Bangalore</span>
+            <div className="flex items-center gap-1.5 text-emerald-500 text-xs">
+              <LIcon name="shield" size={12} />
+              <span>ISO 27001 Certified</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+/* ═══════════════════════════════════════════
+   ROOT APP
+   ═══════════════════════════════════════════ */
+function App() {
+  const [page, setPage] = useState("home");
+
+  const currentService = SERVICES.find(s => s.id === page);
+
+  const renderPage = () => {
+    if (currentService) return <ServicePage service={currentService} setPage={setPage} />;
+    switch(page) {
+      case "home":       return <HomePage setPage={setPage} />;
+      case "about":      return <AboutPage />;
+      case "compliance": return <CompliancePage />;
+      case "packages":   return <PackagesPage />;
+      case "contact":    return <ContactPage />;
+      default:           return <HomePage setPage={setPage} />;
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Navbar page={page} setPage={setPage} />
+      <main className="flex-1">
+        {renderPage()}
+      </main>
+      <Footer setPage={setPage} />
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+</script>
+</body>
+</html>
