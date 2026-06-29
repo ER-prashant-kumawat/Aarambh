@@ -4,6 +4,7 @@ import {
   User, Mail, Phone, MapPin, Building2, 
   MessageSquare, Loader2, CheckCircle2, AlertCircle, Star
 } from 'lucide-react';
+import { useToast } from '../context/ToastContext';
 
 interface FormData {
   name: string;
@@ -40,6 +41,7 @@ const COMMON_LOCATIONS = [
 ];
 
 export default function QuoteForm() {
+  const { showToast } = useToast();
   const [formData, setFormData] = useState<FormData>({
     name: '',
     phone: '',
@@ -59,7 +61,7 @@ export default function QuoteForm() {
   const [errorMessage, setErrorMessage] = useState('');
 
   // Validate form fields
-  const validateForm = (): boolean => {
+  const validateForm = (): { isValid: boolean; tempErrors: FormErrors } => {
     const tempErrors: FormErrors = {};
     let isValid = true;
 
@@ -105,7 +107,7 @@ export default function QuoteForm() {
     }
 
     setErrors(tempErrors);
-    return isValid;
+    return { isValid, tempErrors };
   };
 
   const handleInputChange = (
@@ -156,8 +158,10 @@ export default function QuoteForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateForm()) {
-      const firstError = Object.keys(errors)[0];
+    const { isValid, tempErrors } = validateForm();
+    if (!isValid) {
+      showToast('Please resolve the errors in the form before submitting.', 'error');
+      const firstError = Object.keys(tempErrors)[0];
       if (firstError) {
         document.getElementById(firstError)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
@@ -168,22 +172,28 @@ export default function QuoteForm() {
     setSubmitStatus('idle');
     setErrorMessage('');
 
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-
+    let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+    if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+      apiUrl = 'http://localhost:5000/api';
+    }
+    if (!apiUrl.endsWith('/api') && !apiUrl.endsWith('/api/')) {
+      apiUrl = apiUrl.replace(/\/$/, '') + '/api';
+    }
     try {
       // POST the 10 fields directly to the Express backend endpoint
       await axios.post(`${apiUrl}/quote`, formData);
 
       setIsSubmitting(false);
       setSubmitStatus('success');
+      showToast('Quote request submitted and email sent successfully!', 'success');
       resetForm();
     } catch (err: any) {
       console.error('Backend Quote API Submission Error:', err);
       setIsSubmitting(false);
       setSubmitStatus('error');
-      setErrorMessage(
-        err.response?.data?.msg || err.message || 'Failed to submit quote request. Please check your connection.'
-      );
+      const msg = err.response?.data?.msg || err.message || 'Failed to submit quote request. Please check your connection.';
+      setErrorMessage(msg);
+      showToast(msg, 'error');
     }
   };
 

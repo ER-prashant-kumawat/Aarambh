@@ -19,6 +19,7 @@ app.use('/api/leads', require('./routes/leads'));
 app.use('/api/mca', require('./routes/mca'));
 app.use('/api/documents', require('./routes/documents'));
 app.use('/api/quote', require('./routes/quote'));
+app.use('/api/categories', require('./routes/categories'));
 
 // Serve uploads in development
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

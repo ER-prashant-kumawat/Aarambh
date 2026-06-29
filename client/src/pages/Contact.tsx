@@ -3,10 +3,22 @@ import axios from 'axios';
 import JoinSection from '../components/JoinSection';
 import { SERVICES } from '../constants/data';
 import { Phone, Mail, MapPin, CheckCircle, Loader2 } from 'lucide-react';
+import { useToast } from '../context/ToastContext';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const getApiUrl = () => {
+  let url = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    url = 'http://localhost:5000/api';
+  }
+  if (!url.endsWith('/api') && !url.endsWith('/api/')) {
+    url = url.replace(/\/$/, '') + '/api';
+  }
+  return url;
+};
+const API_URL = getApiUrl();
 
 export default function Contact() {
+  const { showToast } = useToast();
   const [form, setForm] = useState({ name: "", phone: "", email: "", service: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -20,9 +32,12 @@ export default function Contact() {
     try {
       await axios.post(`${API_URL}/leads/callback`, form);
       setSubmitted(true);
+      showToast('Callback request registered successfully!', 'success');
     } catch (err: any) {
       console.error('Error submitting callback:', err);
-      setError(err.response?.data?.msg || 'Something went wrong, please try again.');
+      const errMsg = err.response?.data?.msg || 'Something went wrong, please try again.';
+      setError(errMsg);
+      showToast(errMsg, 'error');
     }
     setLoading(false);
   };

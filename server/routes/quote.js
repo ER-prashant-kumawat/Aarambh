@@ -7,6 +7,9 @@ const Lead = require('../models/Lead');
 // @desc    Receive quote form data, save lead to DB, and email details to vishal.kvanta@gmail.com
 // @access  Public
 router.post('/', async (req, res) => {
+  console.log('[API/QUOTE] Received incoming quote request at', new Date().toISOString());
+  console.log('[API/QUOTE] Request Body:', JSON.stringify(req.body, null, 2));
+
   const {
     name,
     phone,
@@ -22,6 +25,7 @@ router.post('/', async (req, res) => {
 
   // 1. Basic Validation
   if (!name || !phone || !email) {
+    console.warn('[API/QUOTE] Validation failed: Missing name, phone, or email.');
     return res.status(400).json({ success: false, msg: 'Name, Phone, and Email are required fields.' });
   }
 
@@ -32,6 +36,7 @@ router.post('/', async (req, res) => {
   // 2. Attempt Database Save
   let savedLead;
   try {
+    console.log('[API/QUOTE] Attempting to save lead in database...');
     const newLead = new Lead({
       name,
       phone,
@@ -41,8 +46,9 @@ router.post('/', async (req, res) => {
       type: 'detailedQuote'
     });
     savedLead = await newLead.save();
+    console.log('[API/QUOTE] Lead successfully saved in DB with ID:', savedLead._id);
   } catch (dbErr) {
-    console.error('Database Save Error:', dbErr);
+    console.error('[API/QUOTE] Database Save Error:', dbErr);
     return res.status(500).json({ 
       success: false, 
       msg: `Database Error: Failed to save lead details. Details: ${dbErr.message}` 
@@ -54,16 +60,26 @@ router.post('/', async (req, res) => {
     const emailUser = process.env.EMAIL_USER;
     const emailPass = process.env.EMAIL_PASS;
 
+    console.log('[API/QUOTE] Checking SMTP environment variables...');
+    console.log('[API/QUOTE] EMAIL_USER configured:', emailUser ? 'Yes' : 'No');
+    console.log('[API/QUOTE] EMAIL_PASS configured:', emailPass ? 'Yes' : 'No');
+
     if (!emailUser || !emailPass) {
       throw new Error('SMTP credentials (EMAIL_USER or EMAIL_PASS) are missing in the server configuration.');
     }
 
-    // Configure Gmail SMTP Transporter
+    // Configure SMTP Transporter using host for better stability
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true, // true for 465, false for other ports
       auth: {
         user: emailUser,
         pass: emailPass
+      },
+      tls: {
+        // do not fail on invalid certs
+        rejectUnauthorized: false
       }
     });
 
@@ -150,10 +166,14 @@ ${notes || 'None provided'}
     };
 
     // Verify SMTP connection config before sending
+    console.log('[API/QUOTE] Verifying SMTP transporter connection...');
     await transporter.verify();
+    console.log('[API/QUOTE] SMTP transporter connection verified successfully.');
 
     // Send Mail
-    await transporter.sendMail(mailOptions);
+    console.log('[API/QUOTE] Sending email to vishal.kvanta@gmail.com...');
+    const info = await transporter.sendMail(mailOptions);
+    console.log('[API/QUOTE] Email sent successfully. Message ID:', info.messageId);
 
     res.json({ 
       success: true, 
@@ -161,7 +181,7 @@ ${notes || 'None provided'}
       leadId: savedLead._id
     });
   } catch (emailErr) {
-    console.error('Email Send Error:', emailErr);
+    console.error('[API/QUOTE] Detailed Email Delivery Error:', emailErr);
     res.status(500).json({ 
       success: false, 
       msg: `Email Delivery Error: ${emailErr.message}. (Note: Lead was successfully saved in database under ID: ${savedLead._id})`

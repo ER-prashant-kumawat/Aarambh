@@ -3,7 +3,17 @@ import axios from 'axios';
 import { Search, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { GOOGLE_FORM_URL } from '../constants/data';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const getApiUrl = () => {
+  let url = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    url = 'http://localhost:5000/api';
+  }
+  if (!url.endsWith('/api') && !url.endsWith('/api/')) {
+    url = url.replace(/\/$/, '') + '/api';
+  }
+  return url;
+};
+const API_URL = getApiUrl();
 
 export default function MCAChecker() {
   const [val, setVal] = useState("");

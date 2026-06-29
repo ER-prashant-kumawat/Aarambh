@@ -2,14 +2,17 @@ import React, { useState, useEffect, useRef, useContext } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { SERVICES, GOOGLE_FORM_URL } from '../constants/data';
-import { Rocket, ChevronDown, Monitor, LogOut, FileText, Award, Briefcase } from 'lucide-react';
+import { Rocket, ChevronDown, Monitor, LogOut, FileText, Award, Briefcase, Layers, Search, Shield } from 'lucide-react';
 
 const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
   building: Briefcase,
   fileText: FileText,
   award: Award,
   briefcase: Briefcase,
-  rocket: Rocket
+  rocket: Rocket,
+  layers: Layers,
+  search: Search,
+  shield: Shield
 };
 
 export default function Navbar() {
@@ -94,24 +97,74 @@ export default function Navbar() {
                 <ChevronDown size={13} className={`transition-transform ${dropOpen ? "rotate-180" : ""}`} />
               </button>
               {dropOpen && (
-                <div className="drop-menu absolute top-full right-0 mt-3 w-72 rounded-2xl overflow-hidden shadow-2xl border border-slate-700/40"
+                <div className="drop-menu absolute top-full right-0 mt-3 w-[720px] rounded-3xl overflow-hidden shadow-2xl border border-slate-800/80 p-6"
                   style={{ background: "rgba(15,23,42,0.97)", backdropFilter: "blur(20px)" }}>
-                  <div className="p-2">
-                    {SERVICES.map(s => {
-                      const Icon = iconMap[s.icon] || Rocket;
-                      return (
-                        <Link key={s.id} to={`/services/${s.id}`}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-emerald-500/10 text-left group transition-colors">
-                          <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center flex-shrink-0 group-hover:bg-emerald-500/20 transition-colors">
-                            <Icon size={14} className="text-emerald-400" />
-                          </div>
-                          <div>
-                            <div className="text-sm font-semibold text-white">{s.label}</div>
-                            <div className="text-xs text-slate-400">{s.tagline}</div>
-                          </div>
-                        </Link>
-                      );
-                    })}
+                  <div className="grid grid-cols-3 gap-6">
+                    {/* Column 1: Core Services */}
+                    <div>
+                      <h4 className="text-emerald-400 font-bold text-xs uppercase tracking-wider mb-3 px-3">Core Services</h4>
+                      <div className="space-y-1">
+                        {SERVICES.filter(s => ['pvt-ltd', 'gst', 'trademark', 'llp', 'startup-india', 'compliance'].includes(s.id)).map(s => {
+                          const Icon = iconMap[s.icon] || Rocket;
+                          return (
+                            <Link key={s.id} to={`/services/${s.id}`}
+                              className="w-full flex items-start gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-800/60 text-left group transition-all duration-200">
+                              <div className="w-7 h-7 rounded-lg bg-slate-800/50 flex items-center justify-center flex-shrink-0 group-hover:bg-emerald-500/10 transition-colors border border-slate-800 mt-0.5">
+                                <Icon size={12} className="text-slate-400 group-hover:text-emerald-400" />
+                              </div>
+                              <div>
+                                <div className="text-xs font-bold text-white group-hover:text-emerald-400 transition-colors leading-tight">{s.label}</div>
+                                <div className="text-[10px] text-slate-500 mt-0.5 leading-snug">{s.tagline}</div>
+                              </div>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Column 2: Agreement & Contracts */}
+                    <div>
+                      <h4 className="text-orange-400 font-bold text-xs uppercase tracking-wider mb-3 px-3">Agreements</h4>
+                      <div className="space-y-1">
+                        {SERVICES.filter(s => ['mou', 'jv-agreement'].includes(s.id)).map(s => {
+                          const Icon = iconMap[s.icon] || Rocket;
+                          return (
+                            <Link key={s.id} to={`/services/${s.id}`}
+                              className="w-full flex items-start gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-800/60 text-left group transition-all duration-200">
+                              <div className="w-7 h-7 rounded-lg bg-slate-800/50 flex items-center justify-center flex-shrink-0 group-hover:bg-emerald-500/10 transition-colors border border-slate-800 mt-0.5">
+                                <Icon size={12} className="text-slate-400 group-hover:text-emerald-400" />
+                              </div>
+                              <div>
+                                <div className="text-xs font-bold text-white group-hover:text-emerald-400 transition-colors leading-tight">{s.label}</div>
+                                <div className="text-[10px] text-slate-500 mt-0.5 leading-snug">{s.tagline}</div>
+                              </div>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Column 3: Tools */}
+                    <div>
+                      <h4 className="text-orange-400 font-bold text-xs uppercase tracking-wider mb-3 px-3">Tools</h4>
+                      <div className="space-y-1">
+                        {SERVICES.filter(s => ['nic-code', 'tm-search', 'name-check', 'company-details', 'tm-class-search', 'logo-maker'].includes(s.id)).map(s => {
+                          const Icon = iconMap[s.icon] || Rocket;
+                          return (
+                            <Link key={s.id} to={`/services/${s.id}`}
+                              className="w-full flex items-start gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-800/60 text-left group transition-all duration-200">
+                              <div className="w-7 h-7 rounded-lg bg-slate-800/50 flex items-center justify-center flex-shrink-0 group-hover:bg-emerald-500/10 transition-colors border border-slate-800 mt-0.5">
+                                <Icon size={12} className="text-slate-400 group-hover:text-emerald-400" />
+                              </div>
+                              <div>
+                                <div className="text-xs font-bold text-white group-hover:text-emerald-400 transition-colors leading-tight">{s.label}</div>
+                                <div className="text-[10px] text-slate-500 mt-0.5 leading-snug">{s.tagline}</div>
+                              </div>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
@@ -170,16 +223,54 @@ export default function Navbar() {
                 Our Services <ChevronDown size={13} className={`transition-transform ${mobSvc ? "rotate-180" : ""}`} />
               </button>
               {mobSvc && (
-                <div className="ml-4 space-y-1 mt-1">
-                  {SERVICES.map(s => {
-                    const Icon = iconMap[s.icon] || Rocket;
-                    return (
-                      <Link key={s.id} to={`/services/${s.id}`}
-                        className="w-full text-left px-4 py-2.5 rounded-xl text-sm text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/5 flex items-center gap-2">
-                        <Icon size={13} className="text-emerald-400 flex-shrink-0" /> {s.label}
-                      </Link>
-                    );
-                  })}
+                <div className="ml-4 space-y-3 mt-2 pl-2 border-l border-slate-800">
+                  {/* Category 1: Core Services */}
+                  <div>
+                    <div className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest mb-1.5 px-2">Core Services</div>
+                    <div className="space-y-0.5">
+                      {SERVICES.filter(s => ['pvt-ltd', 'gst', 'trademark', 'llp', 'startup-india', 'compliance'].includes(s.id)).map(s => {
+                        const Icon = iconMap[s.icon] || Rocket;
+                        return (
+                          <Link key={s.id} to={`/services/${s.id}`}
+                            className="w-full text-left px-3 py-2 rounded-lg text-xs text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/5 flex items-center gap-2">
+                            <Icon size={12} className="text-emerald-400 flex-shrink-0" /> {s.label}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Category 2: Agreement & Contracts */}
+                  <div>
+                    <div className="text-[10px] font-bold text-orange-400 uppercase tracking-widest mb-1.5 px-2">Agreements & Contracts</div>
+                    <div className="space-y-0.5">
+                      {SERVICES.filter(s => ['mou', 'jv-agreement'].includes(s.id)).map(s => {
+                        const Icon = iconMap[s.icon] || Rocket;
+                        return (
+                          <Link key={s.id} to={`/services/${s.id}`}
+                            className="w-full text-left px-3 py-2 rounded-lg text-xs text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/5 flex items-center gap-2">
+                            <Icon size={12} className="text-emerald-400 flex-shrink-0" /> {s.label}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Category 3: Tools */}
+                  <div>
+                    <div className="text-[10px] font-bold text-orange-400 uppercase tracking-widest mb-1.5 px-2">Tools</div>
+                    <div className="space-y-0.5">
+                      {SERVICES.filter(s => ['nic-code', 'tm-search', 'name-check', 'company-details', 'tm-class-search', 'logo-maker'].includes(s.id)).map(s => {
+                        const Icon = iconMap[s.icon] || Rocket;
+                        return (
+                          <Link key={s.id} to={`/services/${s.id}`}
+                            className="w-full text-left px-3 py-2 rounded-lg text-xs text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/5 flex items-center gap-2">
+                            <Icon size={12} className="text-emerald-400 flex-shrink-0" /> {s.label}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
               )}
             </div>

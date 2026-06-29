@@ -6,6 +6,8 @@ export default function Footer() {
   return (
     <footer className="bg-brand-navy border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        
+        {/* Existing 4-Column Layout (Unmodified and Unrearranged) */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-14">
           
           {/* Brand */}
@@ -34,11 +36,11 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Services */}
+          {/* Our Services (Filtered to only show original core services, excluding GST and agreements/tools) */}
           <div>
             <h3 className="text-white font-bold text-sm mb-5 uppercase tracking-wide">Our Services</h3>
             <ul className="space-y-2.5">
-              {SERVICES.map(s => (
+              {SERVICES.filter(s => ['pvt-ltd', 'trademark', 'llp', 'startup-india'].includes(s.id)).map(s => (
                 <li key={s.id}>
                   <Link to={`/services/${s.id}`} className="text-slate-400 hover:text-emerald-400 text-sm transition-colors">
                     {s.label}
@@ -48,7 +50,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Legal & contact */}
+          {/* Legal & Contact */}
           <div>
             <h3 className="text-white font-bold text-sm mb-5 uppercase tracking-wide">Legal & Contact</h3>
             <ul className="space-y-2.5 mb-5">
@@ -62,6 +64,41 @@ export default function Footer() {
               <p>✉️ hello@aarambhh.com</p>
             </div>
           </div>
+        </div>
+
+        {/* New Wide Category Row: Agreement & Contracts and Tools with visual upgrades */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 border-t border-slate-800/80 pt-12 pb-8 mb-4">
+          
+          {/* Section 1: AGREEMENT AND CONTRACTS */}
+          <div>
+            <h3 className="text-amber-400 font-bold text-base md:text-lg uppercase tracking-wider mb-6">Agreement and Contracts</h3>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
+              <li>
+                <Link to="/services/mou" className="text-slate-400 hover:text-amber-300 text-sm md:text-base tracking-wide font-medium transition-all duration-300 ease-in-out hover:-translate-y-0.5 inline-block">
+                  Memorandum of Understanding MoU
+                </Link>
+              </li>
+              <li>
+                <Link to="/services/jv-agreement" className="text-slate-400 hover:text-amber-300 text-sm md:text-base tracking-wide font-medium transition-all duration-300 ease-in-out hover:-translate-y-0.5 inline-block">
+                  Joint Venture Agreement
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Section 2: TOOLS */}
+          <div>
+            <h3 className="text-amber-400 font-bold text-base md:text-lg uppercase tracking-wider mb-6">Tools</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-4 gap-x-6">
+              <Link to="/services/nic-code" className="text-slate-400 hover:text-amber-300 text-sm md:text-base tracking-wide font-medium transition-all duration-300 ease-in-out hover:-translate-y-0.5 inline-block">NIC Code</Link>
+              <Link to="/services/tm-search" className="text-slate-400 hover:text-amber-300 text-sm md:text-base tracking-wide font-medium transition-all duration-300 ease-in-out hover:-translate-y-0.5 inline-block">Trademark Search</Link>
+              <Link to="/services/name-check" className="text-slate-400 hover:text-amber-300 text-sm md:text-base tracking-wide font-medium transition-all duration-300 ease-in-out hover:-translate-y-0.5 inline-block">Company Name Check</Link>
+              <Link to="/services/company-details" className="text-slate-400 hover:text-amber-300 text-sm md:text-base tracking-wide font-medium transition-all duration-300 ease-in-out hover:-translate-y-0.5 inline-block">Company Details</Link>
+              <Link to="/services/tm-class-search" className="text-slate-400 hover:text-amber-300 text-sm md:text-base tracking-wide font-medium transition-all duration-300 ease-in-out hover:-translate-y-0.5 inline-block">Trademark Class Search</Link>
+              <Link to="/services/logo-maker" className="text-slate-400 hover:text-amber-300 text-sm md:text-base tracking-wide font-medium transition-all duration-300 ease-in-out hover:-translate-y-0.5 inline-block">Logo Maker</Link>
+            </div>
+          </div>
+
         </div>
 
         {/* Regulatory Disclaimer */}

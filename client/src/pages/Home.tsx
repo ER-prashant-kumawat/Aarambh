@@ -4,7 +4,8 @@ import { AuthContext } from '../context/AuthContext';
 import { SERVICES, GOOGLE_FORM_URL } from '../constants/data';
 import MCAChecker from '../components/MCAChecker';
 import JoinSection from '../components/JoinSection';
-import { Users, Star, Clock, Lock, DollarSign, Sparkles, Cpu, CheckCircle, ArrowRight, Zap, Check, Monitor } from 'lucide-react';
+import TrustedPartners from '../components/TrustedPartners';
+import { Users, Star, Clock, Lock, DollarSign, Sparkles, Cpu, CheckCircle, ArrowRight, Zap, Check, Monitor, Layers, Search, Shield } from 'lucide-react';
 
 const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
   users: Users,
@@ -19,7 +20,10 @@ const iconMap: Record<string, React.ComponentType<{ size?: number; className?: s
   fileText: Cpu,
   award: Star,
   briefcase: Users,
-  rocket: Sparkles
+  rocket: Sparkles,
+  layers: Layers,
+  search: Search,
+  shield: Shield
 };
 
 export default function Home() {
@@ -92,15 +96,15 @@ export default function Home() {
               </div>
               <div className="flex flex-wrap gap-3">
                 <Link to="/services/pvt-ltd" onClick={() => window.scrollTo(0, 0)}
-                  className="px-6 py-3 rounded-xl bg-white text-brand-navy font-bold text-sm hover:bg-slate-100 hover:scale-105 transition-all shadow-lg text-center">
+                  className="px-6 py-3 rounded-xl bg-slate-100 text-slate-950 font-bold text-sm hover:bg-slate-200 hover:scale-105 transition-all shadow-sm text-center">
                   Explore Services
                 </Link>
                 <button onClick={handleDemoLogin}
-                  className="px-6 py-3 rounded-xl border border-emerald-500/40 text-emerald-400 font-semibold text-sm hover:bg-emerald-500/10 transition-all flex items-center justify-center gap-2">
+                  className="px-6 py-3 rounded-xl border border-emerald-500/30 text-emerald-400 font-semibold text-sm hover:bg-emerald-500/10 transition-all flex items-center justify-center gap-2">
                   <Monitor size={15} /> Try Client Dashboard
                 </button>
               </div>
-            </div>
+                        </div>
 
             {/* Right: quote card + mca checker */}
             <div className="animate-fade-in" style={{ animationDelay: "0.12s" }}>
@@ -159,36 +163,90 @@ export default function Home() {
             <h2 className="text-3xl lg:text-4xl font-black text-white mb-4">Everything Your Startup Needs</h2>
             <p className="text-slate-400 max-w-2xl mx-auto">From day-zero incorporation to year-round compliance — handled by qualified professionals.</p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {SERVICES.map(s => {
-              const Icon = iconMap[s.icon] || Cpu;
-              return (
-                <Link key={s.id} to={`/services/${s.id}`} onClick={() => window.scrollTo(0, 0)}
-                  className="bento text-left bg-slate-900/60 rounded-2xl p-6 border border-slate-800/80 shadow-md hover:border-emerald-500/30 block">
-                  <div className="w-11 h-11 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4">
-                    <Icon size={20} className="text-emerald-400" />
+          <div className="space-y-16">
+            {/* Core Services Section */}
+            <div>
+              <h3 className="text-emerald-400 font-extrabold text-lg uppercase tracking-wider border-b border-slate-800 pb-2.5 mb-6">Core Services</h3>
+              <div className="flex md:grid md:grid-cols-2 lg:grid-cols-3 overflow-x-auto md:overflow-x-visible snap-x snap-mandatory md:snap-none gap-6 pb-6 md:pb-0 scrollbar-none">
+                {SERVICES.filter(s => ['pvt-ltd', 'gst', 'trademark', 'llp', 'startup-india'].includes(s.id)).map(s => {
+                  const Icon = iconMap[s.icon] || Cpu;
+                  return (
+                    <Link key={s.id} to={`/services/${s.id}`} onClick={() => window.scrollTo(0, 0)}
+                      className="bento text-left bg-slate-900/60 rounded-2xl p-6 border border-slate-800/80 shadow-md hover:border-emerald-500/30 block flex-shrink-0 min-w-[290px] sm:min-w-[340px] md:min-w-0 snap-center md:snap-align-none">
+                      <div className="w-11 h-11 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4">
+                        <Icon size={20} className="text-emerald-400" />
+                      </div>
+                      <h3 className="font-bold text-white text-base mb-1">{s.label}</h3>
+                      <p className="text-slate-400 text-sm mb-4 line-clamp-2">{s.tagline}</p>
+                      <div className="flex items-center justify-between mt-auto">
+                        <span className="text-emerald-400 font-black text-sm">{s.fee}</span>
+                        <span className="flex items-center gap-1 text-emerald-400 text-xs font-semibold">View Details <ArrowRight size={12} /></span>
+                      </div>
+                    </Link>
+                  );
+                })}
+                <div className="grad-card rounded-2xl p-6 flex flex-col justify-between flex-shrink-0 min-w-[290px] sm:min-w-[340px] md:min-w-0 snap-center md:snap-align-none min-h-[220px]">
+                  <div>
+                    <div className="w-11 h-11 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4">
+                      <Sparkles size={20} className="text-emerald-400" />
+                    </div>
+                    <h3 className="font-bold text-white text-base mb-2">Not Sure Where to Start?</h3>
+                    <p className="text-slate-400 text-sm mb-5">Our consultants map the perfect compliance roadmap for your business. Free of charge.</p>
                   </div>
-                  <h3 className="font-bold text-white text-base mb-1">{s.label}</h3>
-                  <p className="text-slate-400 text-sm mb-4 line-clamp-2">{s.tagline}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-emerald-400 font-black text-sm">{s.fee}</span>
-                    <span className="flex items-center gap-1 text-emerald-400 text-xs font-semibold">View Details <ArrowRight size={12} /></span>
-                  </div>
-                </Link>
-              );
-            })}
-            <div className="grad-card rounded-2xl p-6 flex flex-col justify-between">
-              <div>
-                <div className="w-11 h-11 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4">
-                  <Sparkles size={20} className="text-emerald-400" />
+                  <a href={GOOGLE_FORM_URL} target="_blank" rel="noopener noreferrer"
+                    className="w-full py-3 rounded-xl grad-em text-white font-bold text-sm hover:opacity-90 transition-opacity text-center block">
+                    Book Free Consultation
+                  </a>
                 </div>
-                <h3 className="font-bold text-white text-base mb-2">Not Sure Where to Start?</h3>
-                <p className="text-slate-400 text-sm mb-5">Our consultants map the perfect compliance roadmap for your business. Free of charge.</p>
               </div>
-              <a href={GOOGLE_FORM_URL} target="_blank" rel="noopener noreferrer"
-                className="w-full py-3 rounded-xl grad-em text-white font-bold text-sm hover:opacity-90 transition-opacity text-center block">
-                Book Free Consultation
-              </a>
+            </div>
+
+            {/* Agreements & Contracts Section */}
+            <div>
+              <h3 className="text-orange-400 font-extrabold text-lg uppercase tracking-wider border-b border-slate-800 pb-2.5 mb-6">Agreement & Contracts</h3>
+              <div className="flex md:grid md:grid-cols-2 lg:grid-cols-3 overflow-x-auto md:overflow-x-visible snap-x snap-mandatory md:snap-none gap-6 pb-6 md:pb-0 scrollbar-none">
+                {SERVICES.filter(s => ['mou', 'jv-agreement'].includes(s.id)).map(s => {
+                  const Icon = iconMap[s.icon] || Cpu;
+                  return (
+                    <Link key={s.id} to={`/services/${s.id}`} onClick={() => window.scrollTo(0, 0)}
+                      className="bento text-left bg-slate-900/60 rounded-2xl p-6 border border-slate-800/80 shadow-md hover:border-orange-500/30 block flex-shrink-0 min-w-[290px] sm:min-w-[340px] md:min-w-0 snap-center md:snap-align-none">
+                      <div className="w-11 h-11 rounded-xl bg-orange-500/10 flex items-center justify-center mb-4">
+                        <Icon size={20} className="text-orange-400" />
+                      </div>
+                      <h3 className="font-bold text-white text-base mb-1">{s.label}</h3>
+                      <p className="text-slate-400 text-sm mb-4 line-clamp-2">{s.tagline}</p>
+                      <div className="flex items-center justify-between mt-auto">
+                        <span className="text-orange-400 font-black text-sm">{s.fee}</span>
+                        <span className="flex items-center gap-1 text-orange-400 text-xs font-semibold">View Details <ArrowRight size={12} /></span>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Tools & Utilities Section */}
+            <div>
+              <h3 className="text-blue-400 font-extrabold text-lg uppercase tracking-wider border-b border-slate-800 pb-2.5 mb-6">Tools & Utilities</h3>
+              <div className="flex md:grid md:grid-cols-2 lg:grid-cols-3 overflow-x-auto md:overflow-x-visible snap-x snap-mandatory md:snap-none gap-6 pb-6 md:pb-0 scrollbar-none">
+                {SERVICES.filter(s => ['nic-code', 'tm-search', 'name-check', 'company-details', 'tm-class-search', 'logo-maker'].includes(s.id)).map(s => {
+                  const Icon = iconMap[s.icon] || Cpu;
+                  return (
+                    <Link key={s.id} to={`/services/${s.id}`} onClick={() => window.scrollTo(0, 0)}
+                      className="bento text-left bg-slate-900/60 rounded-2xl p-6 border border-slate-800/80 shadow-md hover:border-blue-500/30 block flex-shrink-0 min-w-[290px] sm:min-w-[340px] md:min-w-0 snap-center md:snap-align-none">
+                      <div className="w-11 h-11 rounded-xl bg-blue-500/10 flex items-center justify-center mb-4">
+                        <Icon size={20} className="text-blue-400" />
+                      </div>
+                      <h3 className="font-bold text-white text-base mb-1">{s.label}</h3>
+                      <p className="text-slate-400 text-sm mb-4 line-clamp-2">{s.tagline}</p>
+                      <div className="flex items-center justify-between mt-auto">
+                        <span className="text-blue-400 font-black text-sm">{s.fee}</span>
+                        <span className="flex items-center gap-1 text-blue-400 text-xs font-semibold">View Details <ArrowRight size={12} /></span>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
@@ -218,6 +276,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* TRUSTED PARTNERS */}
+      <TrustedPartners />
 
       {/* PROCESS STRIP */}
       <section className="py-20 grad-hero">
