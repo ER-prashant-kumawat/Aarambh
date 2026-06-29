@@ -182,9 +182,12 @@ ${notes || 'None provided'}
     });
   } catch (emailErr) {
     console.error('[API/QUOTE] Detailed Email Delivery Error:', emailErr);
-    res.status(500).json({ 
-      success: false, 
-      msg: `Email Delivery Error: ${emailErr.message}. (Note: Lead was successfully saved in database under ID: ${savedLead._id})`
+    res.json({ 
+      success: true, 
+      msg: 'Quote request submitted successfully! (Note: DB Lead saved; admin email dispatch logged).',
+      leadId: savedLead._id,
+      emailSent: false,
+      emailError: emailErr.message
     });
   }
 });
