@@ -69,19 +69,20 @@ router.post('/', async (req, res) => {
     }
 
     // Configure SMTP Transporter using host for better stability
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true, // true for 465, false for other ports
-      auth: {
-        user: emailUser,
-        pass: emailPass
-      },
-      tls: {
-        // do not fail on invalid certs
-        rejectUnauthorized: false
-      }
-    });
+    // ✅ YEH VALA CODE CHIPKA DO
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 587, // 465 ki jagah 587 block nahi hota
+  secure: false, // 587 ke liye secure hamesha false rahega
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS // Tumhara bina space wala app password
+  },
+  tls: {
+    rejectUnauthorized: false, // Yeh Render ke network block ko bypass karega
+    minVersion: 'TLSv1.2'
+  }
+});
 
     const textContent = `
 ==================================================
