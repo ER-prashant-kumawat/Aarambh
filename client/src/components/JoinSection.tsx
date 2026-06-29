@@ -22,10 +22,10 @@ export default function JoinSection() {
           India's most ambitious founders trust Aarambhh.com to handle legal complexities so they can focus on building category-defining companies. Your aarambhh starts here.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a href={GOOGLE_FORM_URL} target="_blank" rel="noopener noreferrer"
+          <Link to={GOOGLE_FORM_URL} onClick={() => window.scrollTo(0, 0)}
             className="px-8 py-4 rounded-2xl grad-em text-white font-black text-base shadow-xl hover:opacity-90 hover:scale-105 transition-all text-center">
             🚀 Start My Startup Journey
-          </a>
+          </Link>
           <Link to="/packages" onClick={() => window.scrollTo(0, 0)}
             className="px-8 py-4 rounded-2xl border border-slate-600 text-white font-semibold text-base hover:bg-white/5 transition-colors text-center">
             Explore Packages

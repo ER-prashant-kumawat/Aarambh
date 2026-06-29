@@ -131,10 +131,10 @@ export default function Home() {
                     </div>
                   ))}
                 </div>
-                <a href={GOOGLE_FORM_URL} target="_blank" rel="noopener noreferrer"
+                <Link to={GOOGLE_FORM_URL} onClick={() => window.scrollTo(0, 0)}
                   className="w-full py-4 rounded-2xl grad-em text-white font-black text-base shadow-xl hover:opacity-90 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 text-center">
                   <Zap size={18} className="text-white" /> Get Your Free Quote Now
-                </a>
+                </Link>
                 <p className="text-center text-slate-500 text-xs mt-3">No credit card · No commitment · 100% free</p>
               </div>
               <MCAChecker />
@@ -193,10 +193,10 @@ export default function Home() {
                     <h3 className="font-bold text-white text-base mb-2">Not Sure Where to Start?</h3>
                     <p className="text-slate-400 text-sm mb-5">Our consultants map the perfect compliance roadmap for your business. Free of charge.</p>
                   </div>
-                  <a href={GOOGLE_FORM_URL} target="_blank" rel="noopener noreferrer"
+                  <Link to={GOOGLE_FORM_URL} onClick={() => window.scrollTo(0, 0)}
                     className="w-full py-3 rounded-xl grad-em text-white font-bold text-sm hover:opacity-90 transition-opacity text-center block">
                     Book Free Consultation
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

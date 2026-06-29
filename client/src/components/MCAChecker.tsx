@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import { Search, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { GOOGLE_FORM_URL } from '../constants/data';
 
 const getApiUrl = () => {
-  let url = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  let url = import.meta.env.VITE_API_URL || 'https://aarambhh-backend.onrender.com/api';
   if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
     url = 'http://localhost:5000/api';
   }
@@ -71,10 +72,10 @@ export default function MCAChecker() {
             <p className="font-bold text-emerald-300">Name Available for Registration!</p>
           </div>
           <p className="text-sm text-emerald-400/90 mb-3"><strong>"{val} Private Limited"</strong> appears available. Reserve it before someone else does!</p>
-          <a href={GOOGLE_FORM_URL} target="_blank" rel="noopener noreferrer"
+          <Link to={GOOGLE_FORM_URL} onClick={() => window.scrollTo(0, 0)}
             className="block text-center w-full py-2.5 rounded-lg grad-em text-white text-sm font-bold hover:opacity-90">
             🚀 Register This Name – Starting ₹6,999
-          </a>
+          </Link>
         </div>
       )}
       {st === "taken" && (
@@ -84,10 +85,10 @@ export default function MCAChecker() {
             <p className="font-bold text-red-300">Name Conflict Detected</p>
           </div>
           <p className="text-sm text-red-400/90 mb-3"><strong>"{val}"</strong> conflicts with an existing registered entity. Try a unique keyword or suffix.</p>
-          <a href={GOOGLE_FORM_URL} target="_blank" rel="noopener noreferrer"
+          <Link to={GOOGLE_FORM_URL} onClick={() => window.scrollTo(0, 0)}
             className="block text-center w-full py-2.5 rounded-lg bg-slate-800 text-white text-sm font-bold hover:bg-slate-700">
             💡 Get Expert Name Suggestions – Free Consultation
-          </a>
+          </Link>
         </div>
       )}
       <p className="text-xs text-slate-500 mt-3 text-center">*Simulated preview. Final availability confirmed via official MCA portal.</p>

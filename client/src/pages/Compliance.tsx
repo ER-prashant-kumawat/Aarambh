@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import JoinSection from '../components/JoinSection';
 import { COMPLIANCE_ITEMS, colorMap, GOOGLE_FORM_URL } from '../constants/data';
 import { FileText, DollarSign, Users, Shield, Lock, Globe, AlertCircle, CheckCircle } from 'lucide-react';
@@ -60,9 +61,9 @@ export default function Compliance() {
                         Configure →
                       </button>
                     )}
-                    <a href={GOOGLE_FORM_URL} target="_blank" rel="noopener noreferrer" className="text-xs text-slate-500 hover:text-emerald-400 font-medium transition-colors">
+                    <Link to={GOOGLE_FORM_URL} onClick={() => window.scrollTo(0, 0)} className="text-xs text-slate-500 hover:text-emerald-400 font-medium transition-colors">
                       Get Quote
-                    </a>
+                    </Link>
                   </div>
                 </div>
               );

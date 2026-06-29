@@ -192,10 +192,10 @@ export default function Navbar() {
                 Client Dashboard
               </Link>
             )}
-            <a href={GOOGLE_FORM_URL} target="_blank" rel="noopener noreferrer"
+            <Link to={GOOGLE_FORM_URL} onClick={() => window.scrollTo(0, 0)}
               className="px-5 py-2.5 rounded-xl grad-em text-white text-sm font-bold shadow-lg hover:opacity-90 hover:scale-105 transition-all">
               Get Free Quote
-            </a>
+            </Link>
           </div>
 
           {/* Mobile hamburger */}
@@ -289,9 +289,9 @@ export default function Navbar() {
                   Client Dashboard →
                 </Link>
               )}
-              <a href={GOOGLE_FORM_URL} target="_blank" rel="noopener noreferrer" className="block w-full text-center py-3 rounded-xl grad-em text-white font-bold text-sm">
+              <Link to={GOOGLE_FORM_URL} onClick={() => window.scrollTo(0, 0)} className="block w-full text-center py-3 rounded-xl grad-em text-white font-bold text-sm">
                 Get Free Quote Now
-              </a>
+              </Link>
             </div>
           </div>
         </div>

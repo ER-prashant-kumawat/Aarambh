@@ -3,7 +3,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { Shield, Folder, Loader2, Upload, Download, Eye, Trash2 } from 'lucide-react';
 
 const getApiUrl = () => {
-  let url = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  let url = import.meta.env.VITE_API_URL || 'https://aarambhh-backend.onrender.com/api';
   if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
     url = 'http://localhost:5000/api';
   }

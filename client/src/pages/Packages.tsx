@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import JoinSection from '../components/JoinSection';
 import { PACKAGES, GOOGLE_FORM_URL } from '../constants/data';
 import { CheckCircle, AlertCircle, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -136,7 +137,7 @@ export default function Packages() {
                         </p>
                       </div>
 
-                      <a href={GOOGLE_FORM_URL} target="_blank" rel="noopener noreferrer"
+                      <Link to={GOOGLE_FORM_URL} onClick={() => window.scrollTo(0, 0)}
                         className={`w-full py-3 rounded-xl font-bold text-sm mb-6 transition-all duration-300 text-center block ${
                           pkg.name === 'Hyper Growth Scale' 
                             ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:opacity-95 shadow-lg shadow-emerald-500/10 shadow-md'
@@ -144,7 +145,7 @@ export default function Packages() {
                         }`}
                       >
                         Get Started →
-                      </a>
+                      </Link>
 
                       <div className="space-y-2 pt-2 border-t border-slate-800/40">
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">What's Included</p>
@@ -183,10 +184,10 @@ export default function Packages() {
                   </p>
                 </div>
                 
-                <a href={GOOGLE_FORM_URL} target="_blank" rel="noopener noreferrer"
+                <Link to={GOOGLE_FORM_URL} onClick={() => window.scrollTo(0, 0)}
                   className="w-full py-3 rounded-xl font-bold text-sm transition-all duration-300 text-center block grad-em text-white hover:opacity-95 shadow-lg">
                   Request Custom Package →
-                </a>
+                </Link>
               </div>
 
             </div>
