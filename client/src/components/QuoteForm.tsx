@@ -172,28 +172,36 @@ export default function QuoteForm() {
     setSubmitStatus('idle');
     setErrorMessage('');
 
-    let apiUrl = import.meta.env.VITE_API_URL || 'https://aarambhh-backend.onrender.com/api';
+    const baseURL = import.meta.env.VITE_API_URL || 'https://aarambhh-backend.onrender.com';
+    
+    // Clean trailing slashes and potential '/api' suffix to build a clean base
+    let cleanedBase = baseURL.replace(/\/$/, '');
+    if (cleanedBase.endsWith('/api')) {
+      cleanedBase = cleanedBase.substring(0, cleanedBase.length - 4);
+    }
+
+    // Override base URL on local development machines
     if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
-      apiUrl = 'http://localhost:5000/api';
+      cleanedBase = 'http://localhost:5000';
     }
-    if (!apiUrl.endsWith('/api') && !apiUrl.endsWith('/api/')) {
-      apiUrl = apiUrl.replace(/\/$/, '') + '/api';
-    }
+
+    const apiUrl = `${cleanedBase}/api/quote`;
+
     try {
       // POST the 10 fields directly to the Express backend endpoint
-      await axios.post(`${apiUrl}/quote`, formData);
+      await axios.post(apiUrl, formData);
 
-      setIsSubmitting(false);
       setSubmitStatus('success');
       showToast('Quote request submitted and email sent successfully!', 'success');
       resetForm();
     } catch (err: any) {
       console.error('Backend Quote API Submission Error:', err);
-      setIsSubmitting(false);
       setSubmitStatus('error');
       const msg = err.response?.data?.msg || err.message || 'Failed to submit quote request. Please check your connection.';
       setErrorMessage(msg);
       showToast(msg, 'error');
+    } finally {
+      setIsSubmitting(false); // Reset loading state in finally block to ensure it never hangs
     }
   };
 
