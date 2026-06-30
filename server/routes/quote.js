@@ -3,11 +3,34 @@ const router = express.Router();
 const nodemailer = require('nodemailer');
 const Lead = require('../models/Lead');
 
-// @route   POST api/quote
-// @desc    Receive quote form data, save lead to DB, and email details to vishal.kvanta@gmail.com
+// ─── SMTP Transporter ────────────────────────────────────────────────────────
+// Instantiated once at module load, not on every request.
+// family:4 forces IPv4 — bypasses Render's IPv6 ENETUNREACH block.
+// pool:true reuses connections across sends.
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false,          // STARTTLS — must be false for port 587
+  family: 4,              // Force IPv4 for Render cloud compatibility
+  pool: true,
+  connectionTimeout: 20000,
+  greetingTimeout: 20000,
+  socketTimeout: 30000,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  },
+  tls: {
+    rejectUnauthorized: false,
+    minVersion: 'TLSv1.2'
+  }
+});
+
+// ─── POST /api/quote ─────────────────────────────────────────────────────────
+// @desc    Save lead to DB AND send admin email — both must succeed.
 // @access  Public
 router.post('/', async (req, res) => {
-  console.log('[API/QUOTE] Received incoming quote request at', new Date().toISOString());
+  console.log('[API/QUOTE] ─── Incoming request at', new Date().toISOString());
   console.log('[API/QUOTE] Request Body:', JSON.stringify(req.body, null, 2));
 
   const {
@@ -23,20 +46,33 @@ router.post('/', async (req, res) => {
     notes
   } = req.body;
 
-  // 1. Basic Validation
+  // ── Validation ──────────────────────────────────────────────────────────────
   if (!name || !phone || !email) {
-    console.warn('[API/QUOTE] Validation failed: Missing name, phone, or email.');
-    return res.status(400).json({ success: false, msg: 'Name, Phone, and Email are required fields.' });
+    console.warn('[API/QUOTE] ⚠️  Validation failed: Missing name, phone, or email.');
+    return res.status(400).json({
+      success: false,
+      msg: 'Name, Phone, and Email are required fields.'
+    });
   }
 
-  const formattedServices = Array.isArray(servicesRequired) 
-    ? servicesRequired.join(', ') 
+  // ── Env Guard ───────────────────────────────────────────────────────────────
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.error('[API/QUOTE] ❌ SMTP credentials missing in environment variables.');
+    return res.status(500).json({
+      success: false,
+      msg: 'Server misconfiguration: SMTP credentials are not set.'
+    });
+  }
+
+  const formattedServices = Array.isArray(servicesRequired)
+    ? servicesRequired.join(', ')
     : servicesRequired || 'Not Specified';
 
-  // 2. Attempt Database Save
-  let savedLead;
+  // ── Single Unified Try/Catch — DB + Email are atomic ────────────────────────
   try {
-    console.log('[API/QUOTE] Attempting to save lead in database...');
+
+    // ── STEP 1: Save Lead to Database ─────────────────────────────────────────
+    console.log('[API/QUOTE] 💾 Saving lead to database...');
     const newLead = new Lead({
       name,
       phone,
@@ -45,49 +81,10 @@ router.post('/', async (req, res) => {
       message: `Stage: ${businessStage} | Structure: ${corporateStructure} | Timeline: ${timeline} | City: ${cityState || 'N/A'} | Notes: ${notes || 'None'}`,
       type: 'detailedQuote'
     });
-    savedLead = await newLead.save();
-    console.log('[API/QUOTE] Lead successfully saved in DB with ID:', savedLead._id);
-  } catch (dbErr) {
-    console.error('[API/QUOTE] Database Save Error:', dbErr);
-    return res.status(500).json({ 
-      success: false, 
-      msg: `Database Error: Failed to save lead details. Details: ${dbErr.message}` 
-    });
-  }
+    const savedLead = await newLead.save();
+    console.log('[API/QUOTE] ✅ Lead saved to DB. ID:', savedLead._id);
 
-  // 3. Attempt Email Delivery
-  try {
-    const emailUser = process.env.EMAIL_USER;
-    const emailPass = process.env.EMAIL_PASS;
-
-    console.log('[API/QUOTE] Checking SMTP environment variables...');
-    console.log('[API/QUOTE] EMAIL_USER configured:', emailUser ? 'Yes' : 'No');
-    console.log('[API/QUOTE] EMAIL_PASS configured:', emailPass ? 'Yes' : 'No');
-
-    if (!emailUser || !emailPass) {
-      throw new Error('SMTP credentials (EMAIL_USER or EMAIL_PASS) are missing in the server configuration.');
-    }
-
-    // Configure SMTP Transporter — Port 587 (STARTTLS) for Render compatibility
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 587,
-      secure: false,
-      family: 4,
-      pool: true,
-      connectionTimeout: 20000,
-      greetingTimeout: 20000,
-      socketTimeout: 30000,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      },
-      tls: {
-        rejectUnauthorized: false,
-        minVersion: 'TLSv1.2'
-      }
-    });
-
+    // ── STEP 2: Build Mail Payload ────────────────────────────────────────────
     const textContent = `
 ==================================================
 NEW ONBOARDING & CORPORATE QUOTE REQUEST
@@ -108,9 +105,9 @@ ${notes || 'None provided'}
 
     const htmlContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
-        <h2 style="color: #0f172a; border-bottom: 2px solid #10b981; padding-bottom: 8px; margin-top: 0;">New Onboarding & Quote Request</h2>
+        <h2 style="color: #0f172a; border-bottom: 2px solid #10b981; padding-bottom: 8px; margin-top: 0;">New Onboarding &amp; Quote Request</h2>
         <p style="color: #475569; font-size: 14px;">A new user has submitted a corporate quote questionnaire on the Aarambhh Onboarding Portal.</p>
-        
+
         <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
           <tr style="background-color: #f8fafc;">
             <td style="padding: 10px; border: 1px solid #e2e8f0; font-weight: bold; width: 40%;">Contact Person</td>
@@ -125,7 +122,7 @@ ${notes || 'None provided'}
             <td style="padding: 10px; border: 1px solid #e2e8f0;"><a href="mailto:${email}">${email}</a></td>
           </tr>
           <tr>
-            <td style="padding: 10px; border: 1px solid #e2e8f0; font-weight: bold;">City & State</td>
+            <td style="padding: 10px; border: 1px solid #e2e8f0; font-weight: bold;">City &amp; State</td>
             <td style="padding: 10px; border: 1px solid #e2e8f0;">${cityState || 'Not Specified'}</td>
           </tr>
           <tr style="background-color: #f8fafc;">
@@ -150,19 +147,19 @@ ${notes || 'None provided'}
           </tr>
         </table>
 
-        <h3 style="color: #0f172a; margin-top: 20px; font-size: 16px;">Specific Notes & Pain Points</h3>
+        <h3 style="color: #0f172a; margin-top: 20px; font-size: 16px;">Specific Notes &amp; Pain Points</h3>
         <div style="background-color: #f1f5f9; border-left: 4px solid #10b981; padding: 12px; border-radius: 6px; font-size: 14px; color: #334155; font-style: italic;">
           ${notes ? notes.replace(/\n/g, '<br>') : 'No extra notes provided.'}
         </div>
 
         <div style="margin-top: 25px; padding-top: 15px; border-top: 1px solid #e2e8f0; text-align: center; font-size: 11px; color: #94a3b8;">
-          This email was automatically generated and sent from the Aarambhh Backend Server.
+          This email was automatically generated and sent from the Aarambhh Backend Server. | Lead ID: ${savedLead._id}
         </div>
       </div>
     `;
 
     const mailOptions = {
-      from: `"Aarambhh Onboarding" <${emailUser}>`,
+      from: `"Aarambhh Onboarding" <${process.env.EMAIL_USER}>`,
       to: 'vishal.kvanta@gmail.com',
       replyTo: email,
       subject: `New Corporate Quote Request - ${startupName || name}`,
@@ -170,26 +167,27 @@ ${notes || 'None provided'}
       html: htmlContent
     };
 
-    // NOTE: transporter.verify() intentionally removed — causes SMTP handshake hang on Render free tier.
-
-    // Send Mail
-    console.log('[API/QUOTE] Sending email to vishal.kvanta@gmail.com...');
+    // ── STEP 3: Send Email — explicit await, no fire-and-forget ───────────────
+    console.log('[API/QUOTE] 📧 Sending email via SMTP...');
     const info = await transporter.sendMail(mailOptions);
-    console.log('[API/QUOTE] Email sent successfully. Message ID:', info.messageId);
+    console.log('[API/QUOTE] 🔥 REAL MAIL SENT SUCCESS. Message ID:', info.messageId);
 
-    res.json({ 
-      success: true, 
-      msg: 'Quote request submitted and email sent successfully!',
+    // ── STEP 4: Return success ONLY when both DB save AND email succeed ────────
+    return res.status(200).json({
+      success: true,
+      msg: 'Quote request submitted and confirmation email sent successfully!',
       leadId: savedLead._id
     });
-  } catch (emailErr) {
-    console.error('[API/QUOTE] Detailed Email Delivery Error:', emailErr);
-    res.json({ 
-      success: true, 
-      msg: 'Quote request submitted successfully! (Note: DB Lead saved; admin email dispatch logged).',
-      leadId: savedLead._id,
-      emailSent: false,
-      emailError: emailErr.message
+
+  } catch (error) {
+    // Any failure — DB write OR email send — surfaces here with a real 500.
+    // The frontend will correctly show an error state instead of silent success.
+    console.error('[API/QUOTE] ❌ OPERATION FAILED:', error.message);
+    console.error('[API/QUOTE] Full error stack:', error.stack);
+    return res.status(500).json({
+      success: false,
+      msg: 'Failed to process your request. Please try again.',
+      error: error.message
     });
   }
 });
