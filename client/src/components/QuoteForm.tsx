@@ -5,6 +5,7 @@ import {
   MessageSquare, Loader2, CheckCircle2, AlertCircle, Star
 } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
+import { API_URL } from '../utils/api';
 
 interface FormData {
   name: string;
@@ -172,20 +173,7 @@ export default function QuoteForm() {
     setSubmitStatus('idle');
     setErrorMessage('');
 
-    const baseURL = import.meta.env.VITE_API_URL || 'https://aarambh-k6rv.vercel.app';
-    
-    // Clean trailing slashes and potential '/api' suffix to build a clean base
-    let cleanedBase = baseURL.replace(/\/$/, '');
-    if (cleanedBase.endsWith('/api')) {
-      cleanedBase = cleanedBase.substring(0, cleanedBase.length - 4);
-    }
-
-    // Override base URL on local development machines
-    if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
-      cleanedBase = 'http://localhost:5000';
-    }
-
-    const apiUrl = `${cleanedBase}/api/quote`;
+    const apiUrl = `${API_URL}/quote`;
 
     try {
       // POST the 10 fields directly to the Express backend endpoint

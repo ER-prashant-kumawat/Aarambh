@@ -46,17 +46,7 @@ export interface AuthContextProps {
 
 export const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
-const getApiUrl = () => {
-  let url = import.meta.env.VITE_API_URL || 'https://aarambh-k6rv.vercel.app/api';
-  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
-    url = 'http://localhost:5000/api';
-  }
-  if (!url.endsWith('/api') && !url.endsWith('/api/')) {
-    url = url.replace(/\/$/, '') + '/api';
-  }
-  return url;
-};
-const API_URL = getApiUrl();
+import { API_URL } from '../utils/api';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);

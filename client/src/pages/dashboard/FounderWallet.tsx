@@ -2,17 +2,8 @@ import React, { useState, useRef, useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { Shield, Folder, Loader2, Upload, Download, Eye, Trash2 } from 'lucide-react';
 
-const getApiUrl = () => {
-  let url = import.meta.env.VITE_API_URL || 'https://aarambh-k6rv.vercel.app/api';
-  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
-    url = 'http://localhost:5000/api';
-  }
-  if (!url.endsWith('/api') && !url.endsWith('/api/')) {
-    url = url.replace(/\/$/, '') + '/api';
-  }
-  return url;
-};
-const API_URL = getApiUrl();
+import { API_URL } from '../../utils/api';
+
 const SERVER_URL = API_URL.replace('/api', '');
 
 export default function FounderWallet() {

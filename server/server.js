@@ -10,7 +10,9 @@ const app = express();
 app.use(cors({
   origin: [
     'https://aarambh-git-main-vishal-sukhwal-s-projects.vercel.app',
+    'https://aarambhh.com',
     'https://www.aarambhh.com',
+    'https://aarambh.vercel.app',
     'http://localhost:5173',
     'http://localhost:3000'
   ],
