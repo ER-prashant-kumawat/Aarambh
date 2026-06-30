@@ -69,24 +69,24 @@ router.post('/', async (req, res) => {
     }
 
     // Configure SMTP Transporter — Port 587 (STARTTLS) for Render compatibility
-  const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,              // Live server ke liye secure port
-  secure: false,          // 587 ke liye hamesha false rahega
-  family: 4,
-  pool: true,              
-  connectionTimeout: 20000, 
-  greetingTimeout: 20000,   
-  socketTimeout: 30000,    
-  auth : {          
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS, 
-  },
-  tls: {
-    rejectUnauthorized: false, 
-    minVersion: 'TLSv1.2'
-  }
-});
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false,
+      family: 4,
+      pool: true,
+      connectionTimeout: 20000,
+      greetingTimeout: 20000,
+      socketTimeout: 30000,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      },
+      tls: {
+        rejectUnauthorized: false,
+        minVersion: 'TLSv1.2'
+      }
+    });
 
     const textContent = `
 ==================================================
@@ -170,10 +170,7 @@ ${notes || 'None provided'}
       html: htmlContent
     };
 
-    // Verify SMTP connection config before sending
-    console.log('[API/QUOTE] Verifying SMTP transporter connection...');
-    await transporter.verify();
-    console.log('[API/QUOTE] SMTP transporter connection verified successfully.');
+    // NOTE: transporter.verify() intentionally removed — causes SMTP handshake hang on Render free tier.
 
     // Send Mail
     console.log('[API/QUOTE] Sending email to vishal.kvanta@gmail.com...');
