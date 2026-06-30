@@ -69,17 +69,21 @@ router.post('/', async (req, res) => {
     }
 
     // Configure SMTP Transporter — Port 587 (STARTTLS) for Render compatibility
-    const transporter = nodemailer.createTransport({
+  const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 587,              // Live server ke liye secure port
   secure: false,          // 587 ke liye hamesha false rahega
-  family: 4,              // 🔥 YEH LINE LIVE SERVER PAR IPv6 BLOCK KO BYPASS KAREGI (Localhost jaisa chalega)
-  auth: {
+  family: 4,
+  pool: true,              
+  connectionTimeout: 20000, 
+  greetingTimeout: 20000,   
+  socketTimeout: 30000,    
+  auth : {          
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS, // Bina space wala app password
+    pass: process.env.EMAIL_PASS, 
   },
   tls: {
-    rejectUnauthorized: false, // Cloud deployment me certificates reject nahi hone dega
+    rejectUnauthorized: false, 
     minVersion: 'TLSv1.2'
   }
 });
