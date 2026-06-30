@@ -6,21 +6,9 @@ const fs = require('fs');
 const auth = require('../middleware/auth');
 const Document = require('../models/Document');
 
-// Ensure uploads folder exists
+// Init memory storage to prevent any write attempts to Vercel's read-only filesystem
+const storage = multer.memoryStorage();
 const uploadDir = path.join(__dirname, '../uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-// Set storage engine
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
-  }
-});
 
 // Init upload
 const upload = multer({
@@ -47,7 +35,7 @@ router.post('/upload', auth, upload.single('file'), async (req, res) => {
       type: req.body.type || 'Uploaded Document',
       size: fileSizeMB,
       ext: ext,
-      filePath: req.file.filename,
+      filePath: 'in-memory-storage-bypass',
       status: 'verified'
     });
 
