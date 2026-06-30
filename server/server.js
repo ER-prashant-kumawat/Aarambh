@@ -42,15 +42,23 @@ app.use('/api/mca', require('./routes/mca'));
 app.use('/api/documents', require('./routes/documents'));
 app.use('/api/quote', require('./routes/quote'));
 app.use('/api/categories', require('./routes/categories'));
+// Root route for server verification/health checks
+app.get('/', (req, res) => {
+  res.json({
+    success: true,
+    message: "Aarambhh Backend API is running smoothly!",
+    timestamp: new Date().toISOString()
+  });
+});
 
 // Serve uploads in development only (Vercel has no persistent disk)
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
   app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 }
 
 // ── Local Development Server ──────────────────────────────────────────────────
 // app.listen() is guarded so it does NOT run inside Vercel's serverless runtime.
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => console.log(`[SERVER] Running locally on port ${PORT}`));
 }
