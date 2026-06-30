@@ -6,9 +6,6 @@ require('dotenv').config();
 
 const app = express();
 
-// Connect to Database
-connectDB();
-
 // Init Middleware
 app.use(cors({
   origin: [
@@ -20,6 +17,23 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json({ extended: false }));
+
+// ── Serverless DB Middleware ──────────────────────────────────────────────────
+// In serverless environments, we cannot guarantee the DB is connected at
+// module load time. This middleware ensures the connection is established
+// (or reused from cache) before every request hits a route handler.
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    console.error('[SERVER] DB connection failed:', error.message);
+    return res.status(503).json({
+      success: false,
+      msg: 'Database temporarily unavailable. Please try again.',
+    });
+  }
+});
 
 // Define Routes
 app.use('/api/auth', require('./routes/auth'));
@@ -34,14 +48,12 @@ if (process.env.NODE_ENV !== 'production') {
   app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 }
 
-// ── Serverless-compatible listen ─────────────────────────────────────────────
-// On Vercel, the runtime imports `app` directly via module.exports.
-// app.listen() is only called in local development so it doesn't crash
-// the serverless function invocation.
+// ── Local Development Server ──────────────────────────────────────────────────
+// app.listen() is guarded so it does NOT run inside Vercel's serverless runtime.
 if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => console.log(`[SERVER] Running locally on port ${PORT}`));
 }
 
-// Required for Vercel serverless — exports app as the request handler
+// Required for Vercel — exports the Express app as the serverless handler
 module.exports = app;
