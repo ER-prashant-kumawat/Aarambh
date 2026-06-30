@@ -71,6 +71,7 @@ router.post('/', async (req, res) => {
     // Configure SMTP Transporter — Port 587 (STARTTLS) for Render compatibility
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
+      family: 4,
       port: 587,
       secure: false, // false = STARTTLS; port 465 (SSL) is blocked on most cloud hosts
       auth: {
