@@ -75,7 +75,7 @@ export default function Home() {
                 Launchpad
               </h1>
               <p className="text-slate-250 text-lg leading-relaxed mb-8 max-w-lg font-medium">
-                Company registration to GST, trademark to compliance dashboards — Aarambhh.com is your single trusted partner to launch and legally protect your Indian startup. Fast. Transparent. Expert-supervised.
+                Company registration to Digital Footprint , trademark to compliance dashboards — Aarambhh.com is your single trusted partner to launch and legally protect your Indian startup. Fast. Transparent. Expert-supervised.
               </p>
               {/* Stats */}
               <div className="flex flex-wrap gap-6 mb-8">
@@ -122,7 +122,7 @@ export default function Home() {
                   </div>
                 </div>
                 <p className="text-slate-300 text-sm mb-5 leading-relaxed">
-                  Tell us what you need — company registration, GST, trademark, or a full compliance stack. We'll send a custom quote within the hour with zero obligation.
+                  Tell us what you need — company registration, Digital Footprint, trademark, or a full compliance stack. We'll send a custom quote within the hour with zero obligation.
                 </p>
                 <div className="grid grid-cols-2 gap-2 mb-5">
                   {["Company Registration", "GST Registration", "Trademark Filing", "Startup India"].map((item, i) => (

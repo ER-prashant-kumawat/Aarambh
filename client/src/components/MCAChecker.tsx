@@ -3,7 +3,6 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Search, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { GOOGLE_FORM_URL } from '../constants/data';
-
 import { API_URL } from '../utils/api';
 
 export default function MCAChecker() {
@@ -23,7 +22,6 @@ export default function MCAChecker() {
       }
     } catch (err) {
       console.error('Error checking name:', err);
-      // Fallback in case backend has a temporary connection issue
       setSt("available");
     }
   };
@@ -81,7 +79,19 @@ export default function MCAChecker() {
           </Link>
         </div>
       )}
-      <p className="text-xs text-slate-500 mt-3 text-center">*Simulated preview. Final availability confirmed via official MCA portal.</p>
+      
+      {/* 🚀 FIX: Yahan official MCA link ko anchor tag ke sath attach kar diya hai */}
+      <p className="text-xs text-slate-500 mt-3 text-center">
+        *Simulated preview. Final availability confirmed via{' '}
+        <a 
+          href="https://www.mca.gov.in/content/mca/global/en/mca/fo-llp-services/company-llp-name-search.html" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="text-blue-400 hover:underline inline-flex items-center gap-0.5"
+        >
+          official MCA portal
+        </a>.
+      </p>
     </div>
   );
 }

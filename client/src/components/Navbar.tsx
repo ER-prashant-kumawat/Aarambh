@@ -76,7 +76,7 @@ export default function Navbar() {
               <Rocket size={17} className="text-white" />
             </div>
             <span className="text-xl font-black text-white tracking-tight">
-              Aarambhh<span className="text-emerald-400">.</span>
+              Aarambhh
             </span>
           </Link>
 
