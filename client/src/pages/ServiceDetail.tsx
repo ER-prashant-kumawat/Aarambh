@@ -41,7 +41,6 @@ export default function ServiceDetail() {
                 <span className="text-white text-sm font-semibold">{service.timeline}</span>
               </div>
               <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-                {/* <DollarSign size={15} className="text-emerald-400" /> */}
                 <span className="text-emerald-300 text-sm font-bold">{service.fee}</span>
               </div>
             </div>
