@@ -1,7 +1,7 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import JoinSection from '../components/JoinSection';
 import { SERVICES, GOOGLE_FORM_URL } from '../constants/data';
-import { ChevronRight, Clock, DollarSign, Check, CheckCircle2, Shield } from 'lucide-react';
+import { ChevronRight, Clock, Check, CheckCircle2, Shield } from 'lucide-react';
 
 export default function ServiceDetail() {
   const { id } = useParams<{ id: string }>();
