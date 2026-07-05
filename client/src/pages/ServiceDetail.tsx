@@ -104,7 +104,7 @@ export default function ServiceDetail() {
                 <div className="text-center mb-5">
                   <p className="text-slate-400 text-sm font-bold">Starting at</p>
                   <p className="text-3xl font-black text-white">{service.fee}</p>
-                  <p className="text-emerald-400 text-xs font-bold mt-1">All-inclusive, no hidden fees</p>
+                  <p className="text-emerald-400 text-xs font-bold mt-1">Zero hidden fees. Scalable architecture.</p>
                 </div>
                 <a href={GOOGLE_FORM_URL} target="_blank" rel="noopener noreferrer"
                   className="w-full py-3.5 rounded-xl grad-em text-white font-black text-sm hover:opacity-90 transition-opacity mb-3 shadow-lg text-center block">
@@ -112,17 +112,18 @@ export default function ServiceDetail() {
                 </a>
                 <button onClick={() => { navigate('/contact'); window.scrollTo(0, 0); }}
                   className="w-full py-3 rounded-xl border border-slate-700 bg-slate-800/40 text-slate-300 font-semibold text-sm hover:bg-slate-800 transition-colors">
-                  Schedule a Free Call
+                  Schedule a Free Tech Consultation
                 </button>
-                <p className="text-center text-slate-500 text-xs mt-3 font-semibold">✅ Expert-supervised • ✅ MCA Registered</p>
+                <p className="text-center text-slate-500 text-xs mt-3 font-semibold">✅ Expert-supervised • ✅  Secure Architecture</p>
               </div>
 
               <div className="bg-emerald-500/10 rounded-2xl p-5 border border-emerald-500/20">
                 <div className="flex items-center gap-2 mb-2">
                   <Shield size={16} className="text-emerald-400" />
-                  <span className="font-bold text-emerald-300 text-sm">100% Satisfaction Guarantee</span>
+                  <span className="font-bold text-emerald-300 text-sm">YOUR PEACE OF MIND, OUR PROMISE</span>
                 </div>
-                <p className="text-emerald-400/90 text-xs leading-relaxed font-semibold">If we're unable to complete your registration for any reason attributable to us, we provide a full refund — no questions asked.</p>
+                <p className="text-emerald-400/90 text-xs leading-relaxed font-semibold">The Founder’s Peace of Mind
+Transparent pricing, expert execution, and zero statutory shortcuts. We commit to delivering your corporate and digital architecture exactly as scoped, ensuring your business is protected from Day 1.</p>
               </div>
             </div>
           </div>
