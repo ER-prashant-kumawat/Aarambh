@@ -25,7 +25,6 @@ interface FormErrors {
   email?: string;
   phone?: string;
   cityState?: string;
-  servicesRequired?: string;
 }
 
 const COMMON_LOCATIONS = [
@@ -87,6 +86,34 @@ export default function QuoteForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+  const [submittedPercent, setSubmittedPercent] = useState(100);
+
+  // Form completion % across all 10 fields (stage/structure/timeline have defaults, so they always count)
+  const completionPercent = (() => {
+    const filled = [
+      formData.name.trim(),
+      formData.phone.trim(),
+      formData.email.trim(),
+      formData.cityState,
+      formData.startupName.trim(),
+      formData.businessStage,
+      formData.corporateStructure,
+      formData.servicesRequired.length > 0,
+      formData.timeline,
+      formData.notes.trim(),
+    ].filter(Boolean).length;
+    return Math.round((filled / 10) * 100);
+  })();
+
+  // Human-readable names of the optional fields still left empty (sent to backend for the profile page)
+  const missingFields = [
+    !formData.startupName.trim() && 'Proposed Startup Name',
+    !formData.businessStage && 'Current Business Stage',
+    !formData.corporateStructure && 'Desired Corporate Structure',
+    formData.servicesRequired.length === 0 && 'Services Required',
+    !formData.timeline && 'Launch Timeline',
+    !formData.notes.trim() && 'Specific Notes / Pain Points',
+  ].filter(Boolean) as string[];
 
   // Validate form fields
   const validateForm = (): { isValid: boolean; tempErrors: FormErrors } => {
@@ -128,12 +155,6 @@ export default function QuoteForm() {
       isValid = false;
     }
 
-    // Services Required
-    if (formData.servicesRequired.length === 0) {
-      tempErrors.servicesRequired = 'Please select at least one required service';
-      isValid = false;
-    }
-
     setErrors(tempErrors);
     return { isValid, tempErrors };
   };
@@ -168,18 +189,16 @@ export default function QuoteForm() {
       };
     });
 
-    if (errors.servicesRequired) {
-      setErrors((prev) => ({
-        ...prev,
-        servicesRequired: undefined,
-      }));
-    }
   };
 
-  const handleRadioChange = (fieldName: keyof FormData, val: string) => {
+  // Toggle behaviour: clicking the selected option again deselects it
+  const handleRadioChange = (
+    fieldName: 'businessStage' | 'corporateStructure' | 'timeline',
+    val: string
+  ) => {
     setFormData((prev) => ({
       ...prev,
-      [fieldName]: val,
+      [fieldName]: prev[fieldName] === val ? '' : val,
     }));
   };
 
@@ -203,9 +222,10 @@ export default function QuoteForm() {
     const apiUrl = `${API_URL}/quote`;
 
     try {
-      // POST the 10 fields directly to the Express backend endpoint
-      await axios.post(apiUrl, formData);
+      // POST the 10 fields + completion % + pending fields directly to the Express backend endpoint
+      await axios.post(apiUrl, { ...formData, completionPercent, missingFields });
 
+      setSubmittedPercent(completionPercent);
       setSubmitStatus('success');
       showToast('Quote request submitted and email sent successfully!', 'success');
       resetForm();
@@ -257,6 +277,16 @@ export default function QuoteForm() {
               <p className="text-slate-400 text-sm leading-relaxed mb-8 max-w-md mx-auto">
                 All details have been compiled and sent directly to <strong>vishal.kvanta@gmail.com</strong> via our secure backend email server. Our consultants will evaluate your business profile and contact you soon.
               </p>
+              {submittedPercent < 100 && (
+                <div className="mb-8 max-w-md mx-auto p-4 rounded-2xl bg-amber-500/10 border border-amber-500/25 text-left">
+                  <p className="text-amber-300 text-sm font-bold">
+                    Your form is {submittedPercent}% complete — {100 - submittedPercent}% remaining.
+                  </p>
+                  <p className="text-amber-400/80 text-xs mt-1 font-medium">
+                    No worries! You can add the remaining details anytime later. Your profile will show the pending completion.
+                  </p>
+                </div>
+              )}
               <button
                 type="button"
                 onClick={() => setSubmitStatus('idle')}
@@ -275,6 +305,27 @@ export default function QuoteForm() {
                 <p className="text-slate-400 text-xs sm:text-sm mt-2 font-medium">
                   Provide your project dimensions below to receive a secure corporate cost and timeline estimate.
                 </p>
+
+                {/* Live form completion indicator */}
+                <div className="mt-5">
+                  <div className="flex justify-between items-center mb-1.5">
+                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                      Form Completion
+                    </span>
+                    <span className={`text-[11px] font-black ${completionPercent === 100 ? 'text-emerald-400' : 'text-amber-400'}`}>
+                      {completionPercent}%{completionPercent < 100 && ` — ${100 - completionPercent}% remaining`}
+                    </span>
+                  </div>
+                  <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full transition-all duration-500"
+                      style={{ width: `${completionPercent}%` }}
+                    ></div>
+                  </div>
+                  <p className="text-slate-500 text-[11px] mt-1.5 font-medium">
+                    Only fields marked <span className="text-emerald-400 font-bold">*</span> are required to submit — you can complete the rest anytime later.
+                  </p>
+                </div>
               </div>
 
               {submitStatus === 'error' && (
@@ -463,7 +514,7 @@ export default function QuoteForm() {
                   {/* Current Business Stage */}
                   <div>
                     <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-3">
-                      Current Business Stage <span className="text-emerald-400">*</span>
+                      Current Business Stage <span className="text-slate-500 font-medium normal-case italic">(optional — tap again to deselect)</span>
                     </label>
                     <div className="grid sm:grid-cols-2 gap-3">
                       {[
@@ -498,7 +549,7 @@ export default function QuoteForm() {
                   {/* Desired Corporate Structure */}
                   <div>
                     <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-3">
-                      Desired Corporate Structure <span className="text-emerald-400">*</span>
+                      Desired Corporate Structure <span className="text-slate-500 font-medium normal-case italic">(optional — tap again to deselect)</span>
                     </label>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                       {[
@@ -535,13 +586,8 @@ export default function QuoteForm() {
                   <div id="servicesRequired">
                     <div className="flex items-center gap-2 mb-3">
                       <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
-                        Services Required <span className="text-emerald-400">*</span>
+                        Services Required <span className="text-slate-500 font-medium normal-case italic">(optional — you can add this later)</span>
                       </label>
-                      {errors.servicesRequired && (
-                        <span className="text-red-400 text-[10px] font-bold flex items-center gap-1 animate-pulse">
-                          ⚠️ Required
-                        </span>
-                      )}
                     </div>
                     
                     <div className="space-y-2.5">
@@ -603,7 +649,7 @@ export default function QuoteForm() {
                   {/* Timeline */}
                   <div>
                     <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-3">
-                      Launch Timeline <span className="text-emerald-400">*</span>
+                      Launch Timeline <span className="text-slate-500 font-medium normal-case italic">(optional — tap again to deselect)</span>
                     </label>
                     <div className="grid grid-cols-3 gap-3">
                       {[

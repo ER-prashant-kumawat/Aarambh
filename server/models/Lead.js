@@ -7,6 +7,8 @@ const LeadSchema = new mongoose.Schema({
   service: { type: String },
   message: { type: String },
   type: { type: String, default: "callback" }, // "callback" or "nameCheckQuote"
+  completionPercent: { type: Number, default: 100, min: 0, max: 100 },
+  missingFields: { type: [String], default: [] },
   dateSubmitted: { type: Date, default: Date.now }
 });
 

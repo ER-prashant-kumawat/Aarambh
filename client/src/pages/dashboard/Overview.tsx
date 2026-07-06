@@ -1,17 +1,38 @@
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 import type { User } from '../../context/AuthContext';
-import { AlertCircle, Building2, Users, FileText, Check, Phone, Mail, Folder, Monitor, Shield } from 'lucide-react';
+import { AlertCircle, Building2, Users, FileText, Check, Phone, Mail, Folder, Monitor, Shield, ClipboardList } from 'lucide-react';
+import { API_URL } from '../../utils/api';
 
 interface OverviewProps {
   user: User;
   setTab: (tabId: string) => void;
 }
 
+interface FormStatus {
+  found: boolean;
+  completionPercent?: number;
+}
+
 export default function Overview({ user, setTab }: OverviewProps) {
   const milestones = [
     "Form Submitted", "Name Approved", "Docs Uploaded", "Ministry Review", "COI Issued",
   ];
-  
+
   const progress = Math.round((user.progressDays / user.totalDays) * 100);
+
+  const [formStatus, setFormStatus] = useState<FormStatus | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    axios.get(`${API_URL}/quote/status`)
+      .then((res) => { if (!cancelled) setFormStatus(res.data); })
+      .catch(() => { if (!cancelled) setFormStatus(null); });
+    return () => { cancelled = true; };
+  }, []);
+
+  const formPercent = formStatus?.found ? (formStatus.completionPercent ?? 100) : null;
 
   return (
     <div className="animate-fade-in space-y-6">
@@ -23,6 +44,47 @@ export default function Overview({ user, setTab }: OverviewProps) {
           <p className="text-amber-400/80 text-xs mt-0.5 font-medium">Your application is currently under review with the Ministry of Corporate Affairs. Estimated completion in {user.totalDays - user.progressDays} working days.</p>
         </div>
       </div>
+
+      {/* Onboarding form completion */}
+      {formStatus && (
+        <div className="glass rounded-2xl p-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-4 min-w-0">
+              <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${formPercent === 100 ? 'bg-emerald-500/10' : 'bg-amber-500/10'}`}>
+                <ClipboardList size={19} className={formPercent === 100 ? 'text-emerald-400' : 'text-amber-400'} />
+              </div>
+              <div className="min-w-0">
+                <p className="text-white font-bold text-sm">Onboarding Form</p>
+                {formPercent === null ? (
+                  <p className="text-slate-400 text-xs mt-0.5 font-medium">You haven't filled the onboarding form yet.</p>
+                ) : formPercent === 100 ? (
+                  <p className="text-emerald-400 text-xs mt-0.5 font-medium">100% complete — all details submitted. 🎉</p>
+                ) : (
+                  <p className="text-amber-400 text-xs mt-0.5 font-medium">{formPercent}% complete — {100 - formPercent}% remaining. Add the missing details anytime.</p>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center gap-4 sm:w-64 flex-shrink-0">
+              {formPercent !== null && (
+                <div className="flex-1 h-2 bg-slate-700/60 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all duration-700 ${formPercent === 100 ? 'grad-em' : 'bg-gradient-to-r from-amber-500 to-amber-400'}`}
+                    style={{ width: `${formPercent}%` }}
+                  ></div>
+                </div>
+              )}
+              {formPercent !== 100 && (
+                <Link
+                  to="/get-quote"
+                  className="px-4 py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/25 text-emerald-400 text-xs font-bold hover:bg-emerald-500/25 transition-colors whitespace-nowrap"
+                >
+                  {formPercent === null ? 'Fill Form' : 'Complete Form'}
+                </Link>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Stats row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

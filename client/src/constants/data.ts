@@ -19,6 +19,7 @@ export interface ComplianceItem {
 }
 
 export interface Package {
+  id: string;
   name: string;
   price: string;
   subtitle: string;
@@ -30,6 +31,17 @@ export interface Package {
 }
 
 export const GOOGLE_FORM_URL = "/get-quote";
+
+// Which Premium Package a service detail page's pricing card should lead to
+export const SERVICE_TO_PACKAGE: Record<string, string> = {
+  "pvt-ltd": "corporate-structuring",
+  "llp": "corporate-structuring",
+  "startup-india": "corporate-structuring",
+  "gst": "digital-infrastructure",
+  "trademark": "contracts-compliance",
+  "mou": "contracts-compliance",
+  "jv-agreement": "contracts-compliance",
+};
 
 export const SERVICES: Service[] = [
   {
@@ -210,7 +222,8 @@ export const colorMap: Record<string, string> = {
 
 export const PACKAGES: Package[] = [
   {
-    name: "🛡️ TIER 1 :  The Digital Foundation", 
+    id: "tier-1-digital-foundation",
+    name: "🛡️ TIER 1 :  The Digital Foundation",
     price: "₹9,500", 
     subtitle: "Best for early-stage websites, solo consultants, and mobile apps requiring immediate statutory digital compliance.", 
     badge: "",
@@ -220,7 +233,8 @@ export const PACKAGES: Package[] = [
     not: ["LLP Registration", "Full Payroll & TDS Setup"],
   },
   {
-    name: "🤝 TIER 2 : The Co-Founder Shield", 
+    id: "tier-2-cofounder-shield",
+    name: "🤝 TIER 2 : The Co-Founder Shield",
     price: "₹14,000", 
     subtitle: "Best for multi-founder teams building an MVP who need to lock in equity boundaries and secure their IP.", 
     badge: "",
@@ -230,13 +244,68 @@ export const PACKAGES: Package[] = [
     not: ["LLP Registration", "Full Payroll & TDS Setup"], 
   },
   {
-    name: "🚀 TIER 3 : The Complete Tech-Legal Incubator", 
+    id: "tier-3-complete-incubator",
+    name: "🚀 TIER 3 : The Complete Tech-Legal Incubator",
     price: "₹24,500", 
     subtitle: "Everything required to incorporate, build, protect, and pitch to venture capitalists with absolute confidence.", 
     badge: "Our Flagship Ecosystem",
     border: "border-purple-700", 
     btn: "bg-purple-600 hover:bg-purple-700 text-white",
     features: ["Corporate Delivery","Complete Pvt Ltd or LLP Incorporation Advisory & Execution","Government Filing & Statutory Sign-off (By Authorized Advocates)","Tech Delivery ","Full Corporate Web Presence & Architecture","SSL Security & Cloud Server Setup","1-Year Dedicated Digital Vault Access (Your entire corporate history, secured)", "Legal Delivery","Master Services Agreement (MSA) Engine","Employment Offer Tiers & Independent Contractor Agreements","Employee Stock Ownership Plan (ESOP) Policy Outline","Bonus : Direct Retainer mapping with independent legal counsel via Jayam Law Chambers." ],
+    not: [],
+  },
+  {
+    id: "corporate-structuring",
+    name: "🏛️ Corporate Structuring & Incorporation",
+    price: "₹11,500",
+    subtitle: "The right entity structure dictates your ability to raise funds, protect personal assets, and scale.",
+    badge: "",
+    border: "border-slate-700",
+    btn: "bg-slate-900 hover:bg-slate-800 text-white",
+    features: [
+      "Private Limited Company (Pvt Ltd) — The Gold Standard",
+      "Ideal for raising venture capital, issuing ESOPs & scalable equity structures",
+      "Limited Liability Partnership (LLP) — The Bootstrapper's Shield",
+      "Premium personal asset protection without heavy statutory audit compliance",
+      "One Person Company (OPC) — The Solo Founder's Launchpad",
+      "Corporate entity with limited liability, while you retain 100% control",
+    ],
+    not: [],
+  },
+  {
+    id: "digital-infrastructure",
+    name: "💻 Secure Digital Infrastructure (Tech)",
+    price: "₹8,500",
+    subtitle: "Traditional law firms don't write code. We build your digital footprint to pass enterprise IT audits.",
+    badge: "",
+    border: "border-slate-700",
+    btn: "bg-slate-900 hover:bg-slate-800 text-white",
+    features: [
+      "Express Web Presence — Live in 3 Days",
+      "Domain procurement to custom responsive web deployment",
+      "Enterprise-Grade SSL Security with top-tier encryption",
+      "Meets global data security standards & builds instant user trust",
+      "Encrypted Digital Vault & Dashboard",
+      "Secure cloud portal for contracts, entity milestones & boardroom data",
+    ],
+    not: [],
+  },
+  {
+    id: "contracts-compliance",
+    name: "📄 Corporate Contracts & Compliance Hub",
+    price: "₹12,500",
+    subtitle: "Stop using free templates. Protect your business with contracts drafted by legal architects.",
+    badge: "",
+    border: "border-slate-700",
+    btn: "bg-slate-900 hover:bg-slate-800 text-white",
+    features: [
+      "Foundational Agreements — Bespoke Co-Founders' Agreements, Vesting Schedules & Mutual NDAs",
+      "Full protection for your IP and equity splits",
+      "Commercial Infrastructure — MSAs, Vendor Contracts & Employment Offer Letters",
+      "Designed to protect your operational cash flow",
+      "Data & Digital Compliance — Website Terms of Service (ToS) & Privacy Policies",
+      "Strictly compliant with the new Digital Personal Data Protection (DPDP) Act",
+    ],
     not: [],
   },
 ];

@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const nodemailer = require('nodemailer');
 const Lead = require('../models/Lead');
+const User = require('../models/User');
+const auth = require('../middleware/auth');
 
 // ─── SMTP Transporter ────────────────────────────────────────────────────────
 // Instantiated once at module load, not on every request.
@@ -43,15 +45,17 @@ router.post('/', async (req, res) => {
     corporateStructure,
     servicesRequired,
     timeline,
-    notes
+    notes,
+    completionPercent,
+    missingFields
   } = req.body;
 
   // ── Validation ──────────────────────────────────────────────────────────────
-  if (!name || !phone || !email) {
-    console.warn('[API/QUOTE] ⚠️  Validation failed: Missing name, phone, or email.');
+  if (!name || !phone || !email || !cityState) {
+    console.warn('[API/QUOTE] ⚠️  Validation failed: Missing name, phone, email, or cityState.');
     return res.status(400).json({
       success: false,
-      msg: 'Name, Phone, and Email are required fields.'
+      msg: 'Name, Mobile Number, Email, and City & State are required fields.'
     });
   }
 
@@ -78,8 +82,14 @@ router.post('/', async (req, res) => {
       phone,
       email,
       service: formattedServices,
-      message: `Stage: ${businessStage} | Structure: ${corporateStructure} | Timeline: ${timeline} | City: ${cityState || 'N/A'} | Notes: ${notes || 'None'}`,
-      type: 'detailedQuote'
+      message: `Stage: ${businessStage || 'Not Specified'} | Structure: ${corporateStructure || 'Not Specified'} | Timeline: ${timeline || 'Not Specified'} | City: ${cityState || 'N/A'} | Notes: ${notes || 'None'}`,
+      type: 'detailedQuote',
+      completionPercent: typeof completionPercent === 'number'
+        ? Math.max(0, Math.min(100, Math.round(completionPercent)))
+        : 100,
+      missingFields: Array.isArray(missingFields)
+        ? missingFields.filter((f) => typeof f === 'string').slice(0, 20)
+        : []
     });
     const savedLead = await newLead.save();
     console.log('[API/QUOTE] ✅ Lead saved to DB. ID:', savedLead._id);
@@ -94,10 +104,10 @@ NEW ONBOARDING & CORPORATE QUOTE REQUEST
 3. Email ID            : ${email}
 4. City & State        : ${cityState || 'Not Specified'}
 5. Proposed Startup    : ${startupName || 'Not Specified'}
-6. Business Stage      : ${businessStage}
-7. Corporate Structure : ${corporateStructure}
+6. Business Stage      : ${businessStage || 'Not Specified'}
+7. Corporate Structure : ${corporateStructure || 'Not Specified'}
 8. Services Required   : ${formattedServices}
-9. Launch Timeline     : ${timeline}
+9. Launch Timeline     : ${timeline || 'Not Specified'}
 10. Notes / Pain Points:
 ${notes || 'None provided'}
 ==================================================
@@ -131,11 +141,11 @@ ${notes || 'None provided'}
           </tr>
           <tr>
             <td style="padding: 10px; border: 1px solid #e2e8f0; font-weight: bold;">Business Stage</td>
-            <td style="padding: 10px; border: 1px solid #e2e8f0;">${businessStage}</td>
+            <td style="padding: 10px; border: 1px solid #e2e8f0;">${businessStage || 'Not Specified'}</td>
           </tr>
           <tr style="background-color: #f8fafc;">
             <td style="padding: 10px; border: 1px solid #e2e8f0; font-weight: bold;">Desired Structure</td>
-            <td style="padding: 10px; border: 1px solid #e2e8f0;">${corporateStructure}</td>
+            <td style="padding: 10px; border: 1px solid #e2e8f0;">${corporateStructure || 'Not Specified'}</td>
           </tr>
           <tr>
             <td style="padding: 10px; border: 1px solid #e2e8f0; font-weight: bold;">Services Required</td>
@@ -143,7 +153,7 @@ ${notes || 'None provided'}
           </tr>
           <tr style="background-color: #f8fafc;">
             <td style="padding: 10px; border: 1px solid #e2e8f0; font-weight: bold;">Timeline</td>
-            <td style="padding: 10px; border: 1px solid #e2e8f0;">${timeline}</td>
+            <td style="padding: 10px; border: 1px solid #e2e8f0;">${timeline || 'Not Specified'}</td>
           </tr>
         </table>
 
@@ -189,6 +199,37 @@ ${notes || 'None provided'}
       msg: 'Failed to process your request. Please try again.',
       error: error.message
     });
+  }
+});
+
+// ─── GET /api/quote/status ───────────────────────────────────────────────────
+// @desc    Return the logged-in user's latest onboarding form completion %
+// @access  Private (JWT via x-auth-token)
+router.get('/status', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('email');
+    if (!user) {
+      return res.status(404).json({ success: false, msg: 'User not found' });
+    }
+
+    const latestLead = await Lead.findOne({ email: user.email, type: 'detailedQuote' })
+      .sort({ dateSubmitted: -1 })
+      .select('completionPercent missingFields dateSubmitted');
+
+    if (!latestLead) {
+      return res.status(200).json({ success: true, found: false });
+    }
+
+    return res.status(200).json({
+      success: true,
+      found: true,
+      completionPercent: latestLead.completionPercent ?? 100,
+      missingFields: latestLead.missingFields || [],
+      dateSubmitted: latestLead.dateSubmitted
+    });
+  } catch (error) {
+    console.error('[API/QUOTE/STATUS] ❌', error.message);
+    return res.status(500).json({ success: false, msg: 'Failed to fetch form status.' });
   }
 });
 

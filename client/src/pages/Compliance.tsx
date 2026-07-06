@@ -70,27 +70,85 @@ export default function Compliance() {
             })}
           </div>
 
-          <h2 className="text-2xl font-black text-white text-center mb-7">Annual Compliance Calendar</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              { q: "Q1 (Jan–Mar)", tasks: ["TDS Quarterly Return (Q3)", "Advance Tax (15 Mar)", "GSTR-1 Monthly"] },
-              { q: "Q2 (Apr–Jun)", tasks: ["Annual ITR Filing", "MCA Form AOC-4 prep", "GSTR-9 (Annual) prep"] },
-              { q: "Q3 (Jul–Sep)", tasks: ["AGM Conduct (by 30 Sep)", "MGT-7 Filing (60 days)", "DIR-3 KYC (30 Sep)"] },
-              { q: "Q4 (Oct–Dec)", tasks: ["Advance Tax (15 Dec)", "Board Meeting Minutes", "Year-end Audit Readiness"] },
-            ].map((q, i) => (
-              <div key={i} className="bg-slate-900/60 rounded-2xl p-5 border border-slate-800/80 shadow-md">
-                <h3 className="font-black text-white text-sm mb-3 pb-2 border-b border-slate-800">{q.q}</h3>
-                <ul className="space-y-2">
-                  {q.tasks.map((t, j) => (
-                    <li key={j} className="flex items-start gap-2 text-xs text-slate-400">
-                      <CheckCircle size={11} className="text-emerald-400 flex-shrink-0 mt-0.5" />
-                      {t}
-                    </li>
-                  ))}
-                </ul>
+          {/* --- THE STARTUP PROTECTION ROADMAP SECTION (REPLACING LEGACY CALENDAR) --- */}
+          <section className="py-16 text-center">
+            <div className="max-w-6xl mx-auto px-4">
+              
+              {/* Section Typography */}
+              <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-3">
+                The Startup Protection Roadmap
+              </h2>
+              <p className="text-slate-400 text-sm font-medium max-w-2xl mx-auto mb-12">
+                Ditch the generic timeline. Map out your complete tech-legal journey from Day 1 to institutional scaling.
+              </p>
+
+              {/* Responsive Grid Structure */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
+                {[
+                  {
+                    phase: "Phase 1",
+                    title: "The Foundation",
+                    tagline: "Deploy secure infra & legal entities.",
+                    items: ["Digital Infrastructure Deployment", "SSL Security Implementation", "Private Limited / LLP Incorporation"]
+                  },
+                  {
+                    phase: "Phase 2",
+                    title: "The Shield",
+                    tagline: "Protect core stakeholders & public portals.",
+                    items: ["Founders' Agreement", "Website Terms of Service", "DPDP Privacy Policy"]
+                  },
+                  {
+                    phase: "Phase 3",
+                    title: "The Assets",
+                    tagline: "Lock down operational IPs & core workforce.",
+                    items: ["Trademark Filing", "Vendor Agreements", "Employment NDAs"]
+                  },
+                  {
+                    phase: "Phase 4",
+                    title: "The Growth",
+                    tagline: "Prepare architecture for institutional scaling.",
+                    items: ["Master Services Agreements", "Cap-Table Structuring", "Digital Vault Management"]
+                  }
+                ].map((item, index) => (
+                  <div 
+                    key={index} 
+                    className="bg-slate-900/50 border border-slate-800/80 rounded-2xl p-6 relative overflow-hidden transition-all hover:border-emerald-500/30 group"
+                  >
+                    {/* Phase Pill Badge */}
+                    <div className="flex justify-between items-center mb-4">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md">
+                        {item.phase}
+                      </span>
+                      <span className="text-xs text-slate-600 group-hover:text-emerald-500/40 font-mono font-bold transition-colors">
+                        0{index + 1}
+                      </span>
+                    </div>
+
+                    {/* Heading Elements */}
+                    <h3 className="text-lg font-bold text-white mb-1 group-hover:text-emerald-300 transition-colors">
+                      {item.title}
+                    </h3>
+                    <p className="text-[11px] text-slate-500 font-medium mb-4 leading-normal">
+                      {item.tagline}
+                    </p>
+
+                    {/* Map Items */}
+                    <div className="space-y-2.5 pt-2 border-t border-slate-800/60">
+                      {item.items.map((step, idx) => (
+                        <div key={idx} className="flex items-start gap-2">
+                          <span className="text-emerald-400 text-xs mt-0.5">✓</span>
+                          <p className="text-xs text-slate-300 font-medium leading-relaxed">
+                            {step}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+
+            </div>
+          </section>
         </div>
       </section>
       <JoinSection />

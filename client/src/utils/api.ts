@@ -18,7 +18,7 @@ export const getApiUrl = (): string => {
   }
 
   // Production: read from env or use fallback
-  let url = import.meta.env.VITE_API_URL || 'https://aarambh-k6rv.vercel.app';
+  let url = import.meta.env.VITE_API_URL || 'https://server-dun-six-65.vercel.app';
 
   // Sanitize: trim whitespace, remove trailing slashes
   url = url.trim().replace(/\/+$/, '');

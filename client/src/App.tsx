@@ -9,6 +9,8 @@ import Compliance from './pages/Compliance';
 import Packages from './pages/Packages';
 import Contact from './pages/Contact';
 import ServiceDetail from './pages/ServiceDetail';
+import OurServices from './pages/OurServices';
+import PackageDetail from './pages/PackageDetail';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import DashboardShell from './pages/dashboard/DashboardShell';
@@ -27,7 +29,9 @@ function AppContent() {
           <Route path="/about" element={<About />} />
           <Route path="/compliance" element={<Compliance />} />
           <Route path="/packages" element={<Packages />} />
+          <Route path="/packages/:id" element={<PackageDetail />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/our-services" element={<OurServices />} />
           <Route path="/services/:id" element={<ServiceDetail />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

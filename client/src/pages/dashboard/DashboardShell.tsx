@@ -5,7 +5,8 @@ import Overview from './Overview';
 import FounderWallet from './FounderWallet';
 import TechSetupHub from './TechSetupHub';
 import ComplianceDash from './ComplianceDash';
-import { Activity, Folder, Monitor, Shield, Loader2 } from 'lucide-react';
+import Profile from './Profile';
+import { Activity, Folder, Monitor, Shield, Loader2, UserCircle } from 'lucide-react';
 import { GOOGLE_FORM_URL } from '../../constants/data';
 
 const tabs = [
@@ -13,6 +14,7 @@ const tabs = [
   { id: "wallet", icon: Folder, label: "Document Vault" },
   { id: "techsetup", icon: Monitor, label: "Tech Setup" },
   { id: "compliance", icon: Shield, label: "Compliance" },
+  { id: "profile", icon: UserCircle, label: "My Profile" },
 ];
 
 export default function DashboardShell() {
@@ -56,7 +58,7 @@ export default function DashboardShell() {
       <div className="border-b border-slate-700/40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 cursor-pointer" onClick={() => handleTabChange('profile')} title="View My Profile">
               <div className="w-14 h-14 rounded-2xl grad-em flex items-center justify-center shadow-xl">
                 <span className="text-white font-black text-xl">{user.name.charAt(0)}</span>
               </div>
@@ -102,6 +104,7 @@ export default function DashboardShell() {
         {tab === "wallet" && <FounderWallet />}
         {tab === "techsetup" && <TechSetupHub user={user} />}
         {tab === "compliance" && <ComplianceDash />}
+        {tab === "profile" && <Profile user={user} />}
       </div>
     </div>
   );

@@ -129,17 +129,21 @@ export default function Packages() {
                         <p className="text-slate-400 text-xs font-medium leading-relaxed">{pkg.subtitle}</p>
                         
                         <div className="mt-4 flex items-baseline">
-                          <span className="text-4xl font-extrabold text-white tracking-tight">{pkg.price}</span>
-                          <span className="text-slate-500 text-xs ml-2 font-medium">one-time</span>
+                          <span className={`font-extrabold text-white tracking-tight ${pkg.price === 'On Request' ? 'text-3xl' : 'text-4xl'}`}>{pkg.price}</span>
+                          {pkg.price !== 'On Request' && (
+                            <span className="text-slate-500 text-xs ml-2 font-medium">one-time</span>
+                          )}
                         </div>
                         <p className="text-emerald-400/90 text-[10px] font-bold mt-1.5 flex items-center gap-1">
-                          ✨ Govt. fees & professional service included
+                          {pkg.price === 'On Request'
+                            ? '💼 Tailored pricing based on your requirements'
+                            : '✨ Govt. fees & professional service included'}
                         </p>
                       </div>
 
-                      <Link to={GOOGLE_FORM_URL} onClick={() => window.scrollTo(0, 0)}
+                      <Link to={`/packages/${pkg.id}`} onClick={() => window.scrollTo(0, 0)}
                         className={`w-full py-3 rounded-xl font-bold text-sm mb-6 transition-all duration-300 text-center block ${
-                          pkg.name === 'Hyper Growth Scale' 
+                          pkg.name === 'Hyper Growth Scale'
                             ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:opacity-95 shadow-lg shadow-emerald-500/10 shadow-md'
                             : 'bg-slate-800 hover:bg-slate-700 text-slate-100'
                         }`}

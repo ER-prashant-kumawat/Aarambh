@@ -43,6 +43,7 @@ app.use('/api/leads', require('./routes/leads'));
 app.use('/api/mca', require('./routes/mca'));
 app.use('/api/documents', require('./routes/documents'));
 app.use('/api/quote', require('./routes/quote'));
+app.use('/api/orders', require('./routes/orders'));
 app.use('/api/categories', require('./routes/categories'));
 // Root route for server verification/health checks
 app.get('/', (req, res) => {

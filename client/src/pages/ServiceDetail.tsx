@@ -1,6 +1,6 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import JoinSection from '../components/JoinSection';
-import { SERVICES, GOOGLE_FORM_URL } from '../constants/data';
+import { SERVICES, SERVICE_TO_PACKAGE } from '../constants/data';
 import { ChevronRight, Clock, Check, CheckCircle2, Shield } from 'lucide-react';
 
 export default function ServiceDetail() {
@@ -106,10 +106,11 @@ export default function ServiceDetail() {
                   <p className="text-3xl font-black text-white">{service.fee}</p>
                   <p className="text-emerald-400 text-xs font-bold mt-1">Zero hidden fees. Scalable architecture.</p>
                 </div>
-                <a href={GOOGLE_FORM_URL} target="_blank" rel="noopener noreferrer"
+                <Link to={`/packages/${SERVICE_TO_PACKAGE[service.id] || 'tier-3-complete-incubator'}`}
+                  onClick={() => window.scrollTo(0, 0)}
                   className="w-full py-3.5 rounded-xl grad-em text-white font-black text-sm hover:opacity-90 transition-opacity mb-3 shadow-lg text-center block">
                   Get Started Now →
-                </a>
+                </Link>
                 <button onClick={() => { navigate('/contact'); window.scrollTo(0, 0); }}
                   className="w-full py-3 rounded-xl border border-slate-700 bg-slate-800/40 text-slate-300 font-semibold text-sm hover:bg-slate-800 transition-colors">
                   Schedule a Free Tech Consultation
