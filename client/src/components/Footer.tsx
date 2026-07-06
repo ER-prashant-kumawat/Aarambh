@@ -118,7 +118,7 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-slate-800">
           <p className="text-slate-500 text-xs">© 2024 Aarambhh Legal-Tech Pvt. Ltd. All rights reserved. CIN: U74999KA2021PTC145XXX</p>
           <div className="flex items-center gap-4">
-            <span className="text-slate-600 text-xs">Made with ❤️ in Bangalore</span>
+            <span className="text-slate-600 text-xs"></span>
             <div className="flex items-center gap-1.5 text-emerald-500 text-xs"><Shield size={11} /><span>ISO 27001 Certified</span></div>
           </div>
         </div>

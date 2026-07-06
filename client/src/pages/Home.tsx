@@ -68,7 +68,7 @@ export default function Home() {
                 <span className="text-emerald-400 text-xs font-semibold tracking-wide uppercase">India's #1 Legal-Tech Startup Platform</span>
               </div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
-                The All-in-One<br />
+                Your All-in-One<br />
                 <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg,#10b981,#34d399)" }}>
                   Tech & Legal
                 </span><br />
@@ -284,14 +284,14 @@ export default function Home() {
       <section className="py-20 grad-hero">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <h2 className="text-3xl lg:text-4xl font-black text-white mb-4">Register in 3 Simple Steps</h2>
-            <p className="text-slate-400 max-w-xl mx-auto font-semibold">Our streamlined process means you go from idea to incorporated in as little as 72 hours.</p>
+            <h2 className="text-3xl lg:text-4xl font-black text-white mb-4">Launch in 3 Simple Steps</h2>
+            <p className="text-slate-400 max-w-xl mx-auto font-semibold">Our frictionless process takes you from ideation to secure deployment without the traditional administrative chaos.</p>
           </div>
           <div className="grid sm:grid-cols-3 gap-8 relative">
             {[
-              { step: "01", icon: "fileText", title: "Submit Documents", desc: "Upload your PAN, Aadhaar, and address proof through our secure portal. Takes less than 5 minutes." },
-              { step: "02", icon: "cpu", title: "Expert Processing", desc: "Our qualified CS and CA team verifies, prepares, and files your application with government authorities." },
-              { step: "03", icon: "checkCircle", title: "Get Certified", desc: "Receive your official Certificate of Incorporation, GSTIN, or Trademark filing acknowledgment directly." },
+              { stepNumber: 1, icon: "fileText", title: "Request Your Scope (Get a Quote)", desc: "Tell us about your business stage and desired infrastructure. We'll instantly provide a transparent, flat-fee proposal tailored to your exact tech and legal requirements." },
+              { stepNumber: 2, icon: "cpu",      title: "Submit Your Documents",            desc: "Upload your basic KYC through our encrypted portal. Our tech-legal architects take over immediately—handling all government filings, contract drafting, and server deployments." },
+              { stepNumber: 3, icon: "checkCircle", title: "Receive Your Assets",           desc: "Your business is live and protected. Receive your official Incorporation Certificates, bespoke legal contracts, and access credentials to your secure digital vault and website." },
             ].map((item, i) => {
               const Icon = iconMap[item.icon] || Star;
               return (
@@ -300,7 +300,7 @@ export default function Home() {
                     <Icon size={28} className="text-emerald-400" />
                   </div>
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 w-7 h-7 rounded-full grad-em flex items-center justify-center">
-                    <span className="text-white text-xs font-black">{i + 1}</span>
+                    <span className="text-white text-xs font-black">{item.stepNumber}</span>
                   </div>
                   <h3 className="font-bold text-white text-lg mb-3">{item.title}</h3>
                   <p className="text-slate-400 text-sm leading-relaxed">{item.desc}</p>

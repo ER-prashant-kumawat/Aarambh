@@ -24,7 +24,7 @@ export default function JoinSection() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link to={GOOGLE_FORM_URL} onClick={() => window.scrollTo(0, 0)}
             className="px-8 py-4 rounded-2xl grad-em text-white font-black text-base shadow-xl hover:opacity-90 hover:scale-105 transition-all text-center">
-            🚀 Start My Startup Journey
+             Start My Startup Journey
           </Link>
           <Link to="/packages" onClick={() => window.scrollTo(0, 0)}
             className="px-8 py-4 rounded-2xl border border-slate-600 text-white font-semibold text-base hover:bg-white/5 transition-colors text-center">
