@@ -6,7 +6,14 @@ const LeadSchema = new mongoose.Schema({
   email: { type: String },
   service: { type: String },
   message: { type: String },
-  type: { type: String, default: "callback" }, // "callback" or "nameCheckQuote"
+  type: { type: String, default: 'callback' },
+  source: { type: String },
+  answers: { type: mongoose.Schema.Types.Mixed, default: {} },
+  recommendation: { type: mongoose.Schema.Types.Mixed, default: {} },
+  resultLink: { type: String },
+  whatsappMessage: { type: String },
+  whatsappStatus: { type: String, default: 'not_configured' },
+  whatsappError: { type: String },
   completionPercent: { type: Number, default: 100, min: 0, max: 100 },
   missingFields: { type: [String], default: [] },
   dateSubmitted: { type: Date, default: Date.now }

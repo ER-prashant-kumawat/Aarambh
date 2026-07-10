@@ -37,6 +37,7 @@ export const SERVICE_TO_PACKAGE: Record<string, string> = {
   "pvt-ltd": "corporate-structuring",
   "llp": "corporate-structuring",
   "startup-india": "corporate-structuring",
+  "opc": "corporate-structuring",
   "gst": "digital-infrastructure",
   "trademark": "contracts-compliance",
   "mou": "contracts-compliance",
@@ -50,8 +51,8 @@ export const SERVICES: Service[] = [
     icon: "building",
     tagline: "India's most preferred startup structure",
     description: "A Private Limited Company (Pvt. Ltd.) is the gold standard for Indian startups seeking scalability, investor readiness, and limited liability. Governed by the Ministry of Corporate Affairs (MCA) under the Companies Act 2013, it provides a separate legal identity, perpetual succession, and the ability to raise VC/angel funding. It's the backbone of India's startup ecosystem — from Day 1 ideation to IPO-ready scale.",
-    timeline: "5–7 Working Days",
-    fee:  "₹6,999 All-Inclusive",
+    timeline: "Day 1 to 3 Weeks",
+    fee:  "Rs. 9448 (Adjustable) + Stamp Duty",
     benefits: ["Limited Liability Protection for all shareholders", "Separate Legal Entity with perpetual succession", "Easier fundraising from VCs, angels & institutions", "ESOP issuance for talent acquisition", "Higher credibility with vendors & partners", "Corporate bank account eligibility", " Website and Online Presence", "Legal Documentation", "Security Services","Cloud Storage", "Dedicated Professional Dashboard", "Company Employee Management", "Posh Compliance", "ICC"],
     docs: ["PAN Card of all Directors", "Aadhaar / Passport of Directors", "Passport-size Photographs", "Utility Bill (address proof)", "NOC from property owner", "DSC & DIN – we arrange", "MoA & AoA – we draft professionally"],
     process: ["Document collection & DSC application", "DIN procurement for all directors", "Name reservation via RUN on MCA", "SPICe+ form filing with MCA", "Certificate of Incorporation issued", "PAN & TAN allotment for the company", "Current bank account setup guidance"],
@@ -86,11 +87,23 @@ export const SERVICES: Service[] = [
     icon: "briefcase",
     tagline: "Flexibility meets limited liability",
     description: "A Limited Liability Partnership (LLP) combines the operational flexibility of a traditional partnership with the liability protection of a company. Under the LLP Act 2008, it has a separate legal identity, no minimum capital requirement, and lower compliance overhead than a Pvt. Ltd. — ideal for professional service firms, consultancies, boutique agencies, and businesses preferring a partnership model without unlimited personal risk.",
-    timeline: "7–10 Working Days",
-    fee: "₹5,499 All-Inclusive",
+    timeline: "Day 1 to 3 Weeks",
+    fee: "Rs. 5866 (Adjustable) + Stamp Duty",
     benefits: ["Limited liability for designated partners", "Separate legal entity & perpetual existence", "No minimum capital requirement", "Lower compliance vs. Pvt. Ltd.", "Flexible profit-sharing structure", "No upper limit on number of partners"],
     docs: ["PAN of all Designated Partners", "Aadhaar / Passport of all partners", "Passport-size Photographs", "Utility Bill (address proof)", "Registered Office proof (NOC + bill)", "Proposed LLP Name (3 options)", "LLP Agreement – we draft"],
     process: ["Name reservation via RUN-LLP on MCA", "DSC procurement for partners", "DPIN application for each partner", "FiLLiP Form filing on MCA", "Certificate of Incorporation issued", "LLP Agreement drafting & execution", "Form 3 filing with MCA"],
+  },
+  {
+    id: "opc",
+    label: "One Person Company",
+    icon: "userCheck",
+    tagline: "For solo founders who want corporate protection",
+    description: "A One Person Company (OPC) gives a solo founder the benefits of a corporate entity with limited liability and full control. It is ideal for individual entrepreneurs who want a cleaner structure than a proprietorship while keeping decision-making simple.",
+    timeline: "Day 1 to 3 Weeks",
+    fee: "Rs. 6948 (Adjustable) + Stamp Duty",
+    benefits: ["Limited liability for the solo founder", "100% ownership and control", "Better brand credibility than proprietorship", "Separate legal identity with perpetual succession", "Easy transition path to Pvt Ltd as you scale"],
+    docs: ["PAN Card of the applicant", "Aadhaar / Passport of the applicant", "Passport-size photograph", "Utility bill (address proof)", "NOC from property owner", "DSC & DIN - we arrange", "MoA & AoA - we draft professionally"],
+    process: ["Incorporation/Registration documentation starts on Day 1", "Your business website is live within 5 days", "Your OPC is market ready within 3 weeks"],
   },
   {
     id: "startup-india",
@@ -309,3 +322,6 @@ export const PACKAGES: Package[] = [
     not: [],
   },
 ];
+
+
+

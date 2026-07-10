@@ -593,7 +593,8 @@ export default function QuoteForm() {
                     <div className="space-y-2.5">
                       {[
                         { id: 'infra', label: 'Tech Infrastructure' },
-                        { id: 'legal', label: 'Corporate Legal Setup' },
+                        { id: 'legal', label: 'Incorporation/ Corporate Structuring' },
+                        { id: 'docs', label: 'Legal Documentation Assistance' },
                         { 
                           id: 'launchpad', 
                           label: 'Complete Tech-Legal Launchpad (highly recommended)', 
@@ -724,3 +725,5 @@ export default function QuoteForm() {
     </div>
   );
 }
+
+

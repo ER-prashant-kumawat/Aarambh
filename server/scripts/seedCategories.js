@@ -37,9 +37,7 @@ const categoriesData = [
       { name: 'Trademark Search', slug: 'tm-search' },
       { name: 'Company Name Check', slug: 'name-check' },
       { name: 'Company Details', slug: 'company-details' },
-      { name: 'Trademark Class Search', slug: 'tm-class-search' },
-      { name: 'Logo Maker', slug: 'logo-maker' }
-    ]
+      { name: 'Trademark Class Search', slug: 'tm-class-search' },    ]
   }
 ];
 
@@ -69,3 +67,4 @@ const seedDB = async () => {
 };
 
 seedDB();
+

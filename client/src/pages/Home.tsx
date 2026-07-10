@@ -56,39 +56,39 @@ export default function Home() {
   return (
     <div>
       {/* HERO */}
-      <section className="grad-hero pt-28 pb-16 lg:pt-36 lg:pb-24 relative overflow-hidden">
+      <section className="grad-hero pt-24 pb-4 lg:pt-28 lg:pb-6 relative overflow-hidden">
         <div className="absolute top-24 left-1/4 w-96 h-96 bg-emerald-500/8 rounded-full blur-3xl pointer-events-none"></div>
         <div className="absolute bottom-10 right-1/5 w-64 h-64 bg-blue-500/8 rounded-full blur-3xl pointer-events-none"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-4 lg:gap-5 items-start lg:pt-2">
             {/* Left copy */}
             <div className="animate-fade-in">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-2">
                 <div className="status-dot animate-pulse-slow"></div>
                 <span className="text-emerald-400 text-xs font-semibold tracking-wide uppercase">India's #1 Legal-Tech Startup Platform</span>
               </div>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
+              <h1 className="text-xl sm:text-2xl lg:text-[2.2rem] font-black text-white leading-tight mb-2">
                 Your All-in-One<br />
                 <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg,#10b981,#34d399)" }}>
                   Tech & Legal
                 </span><br />
                 Launchpad
               </h1>
-              <p className="text-slate-250 text-lg leading-relaxed mb-8 max-w-lg font-medium">
+              <p className="text-slate-250 text-xs sm:text-sm leading-relaxed mb-3 max-w-lg font-medium">
                 Company registration to Digital Footprint , trademark to compliance dashboards — Aarambhh.com is your single trusted partner to launch and legally protect your Indian startup. Fast. Transparent. Expert-supervised.
               </p>
               {/* Stats */}
-              <div className="flex flex-wrap gap-6 mb-8">
+              <div className="flex flex-wrap gap-2.5 mb-3">
                 {stats.map((s, i) => {
                   const Icon = iconMap[s.icon] || Star;
                   return (
                     <div key={i} className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-emerald-500/15 flex items-center justify-center">
-                        <Icon size={14} className="text-emerald-400" />
+                      <div className="w-5 h-5 rounded-lg bg-emerald-500/15 flex items-center justify-center">
+                        <Icon size={11} className="text-emerald-400" />
                       </div>
                       <div>
-                        <div className="text-white font-black text-lg leading-none">{s.val}</div>
-                        <div className="text-slate-400 text-xs mt-0.5">{s.lbl}</div>
+                        <div className="text-white font-black text-sm leading-none">{s.val}</div>
+                        <div className="text-slate-400 text-[9px] mt-0.5">{s.lbl}</div>
                       </div>
                     </div>
                   );
@@ -96,49 +96,67 @@ export default function Home() {
               </div>
               <div className="flex flex-wrap gap-3">
                 <Link to="/our-services" onClick={() => window.scrollTo(0, 0)}
-                  className="px-6 py-3 rounded-xl bg-slate-100 text-slate-950 font-bold text-sm hover:bg-slate-200 hover:scale-105 transition-all shadow-sm text-center">
+                  className="px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-950 font-bold text-[10px] sm:text-[11px] hover:bg-slate-200 hover:scale-105 transition-all shadow-sm text-center">
                   Explore Services
                 </Link>
                 <button onClick={handleDemoLogin}
-                  className="px-6 py-3 rounded-xl border border-emerald-500/30 text-emerald-400 font-semibold text-sm hover:bg-emerald-500/10 transition-all flex items-center justify-center gap-2">
+                  className="px-3.5 py-1.5 rounded-xl border border-emerald-500/30 text-emerald-400 font-semibold text-[10px] sm:text-[11px] hover:bg-emerald-500/10 transition-all flex items-center justify-center gap-2">
                   <Monitor size={15} /> Try Client Dashboard
                 </button>
               </div>
                         </div>
 
-            {/* Right: quote card + mca checker */}
+            {/* Right: quote card + audit card */}
             <div className="animate-fade-in" style={{ animationDelay: "0.12s" }}>
               {/* QUOTE CARD */}
-              <div className="rounded-3xl p-6 shadow-2xl border border-emerald-500/20 relative overflow-hidden"
+              <div className="rounded-3xl p-3 shadow-2xl border border-emerald-500/20 relative overflow-hidden"
                 style={{ background: "linear-gradient(148deg,rgba(16,185,129,0.11),rgba(15,23,42,0.92))", backdropFilter: "blur(22px)" }}>
                 <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-400/8 rounded-full blur-2xl pointer-events-none"></div>
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="w-12 h-12 rounded-2xl grad-em flex items-center justify-center shadow-lg">
+                <div className="flex items-center gap-2.5 mb-2">
+                  <div className="w-8 h-8 rounded-2xl grad-em flex items-center justify-center shadow-lg">
                     <Zap size={22} className="text-white" />
                   </div>
                   <div>
-                    <h2 className="text-white font-black text-lg">Get Quote Instantly</h2>
+                    <h2 className="text-white font-black text-sm sm:text-base">Get Quote Instantly</h2>
                     <p className="text-emerald-400 text-xs font-semibold">In Under 60 Seconds ⚡</p>
                   </div>
                 </div>
-                <p className="text-slate-300 text-sm mb-5 leading-relaxed">
+                <p className="text-slate-300 text-[10px] sm:text-[11px] mb-2 leading-relaxed">
                   Tell us what you need — company registration, Digital Footprint, trademark, or a full compliance stack. We'll send a custom quote within the hour with zero obligation.
                 </p>
-                <div className="grid grid-cols-2 gap-2 mb-5">
+                <div className="grid grid-cols-2 gap-1 mb-2">
                   {["Company Registration", "GST Registration", "Trademark Filing", "Startup India"].map((item, i) => (
-                    <div key={i} className="flex items-center gap-1.5 text-xs text-emerald-300">
+                    <div key={i} className="flex items-center gap-1 text-[9px] sm:text-[10px] text-emerald-300">
                       <Check size={12} className="text-emerald-400 flex-shrink-0" /> {item}
                     </div>
                   ))}
                 </div>
                 <Link to={GOOGLE_FORM_URL} onClick={() => window.scrollTo(0, 0)}
-                  className="w-full py-4 rounded-2xl grad-em text-white font-black text-base shadow-xl hover:opacity-90 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 text-center">
+                  className="w-full py-2 rounded-2xl grad-em text-white font-black text-[10px] sm:text-[11px] shadow-xl hover:opacity-90 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 text-center">
                   <Zap size={18} className="text-white" /> Get Your Free Quote Now
                 </Link>
-                <p className="text-center text-slate-500 text-xs mt-3">No credit card · No commitment · 100% free</p>
+                <p className="text-center text-slate-500 text-[11px] mt-2">No credit card · No commitment · 100% free</p>
               </div>
-              <MCAChecker />
+              <Link
+                to="/audit"
+                onClick={() => window.scrollTo(0, 0)}
+                className="mt-3 block rounded-3xl border border-cyan-500/20 bg-slate-950/45 p-3.5 shadow-2xl transition-all hover:border-cyan-400/40 hover:bg-slate-950/55"
+              >
+                <div className="w-9 h-9 rounded-2xl bg-cyan-500/10 flex items-center justify-center mb-3">
+                  <Sparkles size={16} className="text-cyan-300" />
+                </div>
+                <h3 className="text-white font-black text-base mb-2">Not Sure Where to Start?</h3>
+                <p className="text-slate-400 text-[11px] sm:text-xs leading-relaxed mb-3 max-w-md">
+                  Run the 3-step Aarambhh Audit to compare your current setup and reveal the right tech-legal tier instantly.
+                </p>
+                <span className="inline-flex w-full items-center justify-center rounded-2xl border border-cyan-500/20 bg-cyan-500/10 py-2 text-cyan-300 font-bold text-xs hover:bg-cyan-500/15 transition-colors">
+                  Open Audit Tool
+                </span>
+              </Link>
             </div>
+          </div>
+          <div className="mt-2.5 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+            <MCAChecker />
           </div>
         </div>
       </section>
@@ -185,19 +203,18 @@ export default function Home() {
                     </Link>
                   );
                 })}
-                <div className="grad-card rounded-2xl p-6 flex flex-col justify-between flex-shrink-0 min-w-[290px] sm:min-w-[340px] md:min-w-0 snap-center md:snap-align-none min-h-[220px]">
+                <Link to="/audit" onClick={() => window.scrollTo(0, 0)} className="grad-card rounded-2xl p-6 flex flex-col justify-between flex-shrink-0 min-w-[290px] sm:min-w-[340px] md:min-w-0 snap-center md:snap-align-none min-h-[220px] border border-cyan-500/15 hover:border-cyan-400/30 transition-all">
                   <div>
-                    <div className="w-11 h-11 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4">
-                      <Sparkles size={20} className="text-emerald-400" />
+                    <div className="w-11 h-11 rounded-xl bg-cyan-500/10 flex items-center justify-center mb-4">
+                      <Sparkles size={20} className="text-cyan-300" />
                     </div>
                     <h3 className="font-bold text-white text-base mb-2">Not Sure Where to Start?</h3>
-                    <p className="text-slate-400 text-sm mb-5">Our consultants map the perfect compliance roadmap for your business. Free of charge.</p>
+                    <p className="text-slate-400 text-sm mb-5">Run the 3-step Aarambhh Audit to compare your current setup and reveal the right tech-legal tier instantly.</p>
                   </div>
-                  <Link to={GOOGLE_FORM_URL} onClick={() => window.scrollTo(0, 0)}
-                    className="w-full py-3 rounded-xl grad-em text-white font-bold text-sm hover:opacity-90 transition-opacity text-center block">
-                    Book Free Consultation
-                  </Link>
-                </div>
+                  <span className="w-full py-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 font-bold text-sm hover:bg-cyan-500/15 transition-opacity text-center block">
+                    Open Audit Tool
+                  </span>
+                </Link>
               </div>
             </div>
 
@@ -229,7 +246,7 @@ export default function Home() {
             <div>
               <h3 className="text-blue-400 font-extrabold text-lg uppercase tracking-wider border-b border-slate-800 pb-2.5 mb-6">Tools & Utilities</h3>
               <div className="flex md:grid md:grid-cols-2 lg:grid-cols-3 overflow-x-auto md:overflow-x-visible snap-x snap-mandatory md:snap-none gap-6 pb-6 md:pb-0 scrollbar-none">
-                {SERVICES.filter(s => ['nic-code', 'tm-search', 'name-check', 'company-details', 'tm-class-search', 'logo-maker'].includes(s.id)).map(s => {
+                {SERVICES.filter(s => ['nic-code', 'tm-search', 'name-check', 'company-details', 'tm-class-search'].includes(s.id)).map(s => {
                   const Icon = iconMap[s.icon] || Cpu;
                   return (
                     <Link key={s.id} to={`/services/${s.id}`} onClick={() => window.scrollTo(0, 0)}
@@ -315,3 +332,18 @@ export default function Home() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
