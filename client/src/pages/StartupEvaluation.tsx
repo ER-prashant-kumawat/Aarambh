@@ -238,20 +238,11 @@ export default function StartupEvaluation() {
       const phoneRegex = /^[+]?[0-9\s\-()]{10,18}$/;
       if (!form.mobileNumber.trim()) e.mobileNumber = 'Mobile number is required';
       else if (!phoneRegex.test(form.mobileNumber.replace(/\s+/g, ''))) e.mobileNumber = 'Enter a valid mobile number';
-      if (!form.startupName.trim()) e.startupName = 'Startup name is required';
-    }
-    if (s === 1) {
-      if (!form.oneLineDescription.trim()) e.oneLineDescription = 'One-line description is required';
-      if (!form.problemSolved.trim()) e.problemSolved = 'Please describe the problem you are solving';
-      if (!form.targetCustomer.trim()) e.targetCustomer = 'Please describe your target customer';
     }
     return e;
   };
 
-  const validateAll = (): Record<string, string> => ({
-    ...validateStep(0),
-    ...validateStep(1)
-  });
+  const validateAll = (): Record<string, string> => validateStep(0);
 
   const goNext = () => {
     const stepErrors = validateStep(step);
@@ -286,8 +277,7 @@ export default function StartupEvaluation() {
       setErrors(allErrors);
       showToast('Please complete the required fields before submitting.', 'error');
       const firstError = Object.keys(allErrors)[0];
-      const firstErrorStep = validateStep(0)[firstError] !== undefined ? 0 : 1;
-      setStep(firstErrorStep);
+      setStep(0);
       setTimeout(() => document.getElementById(firstError)?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50);
       return;
     }
@@ -414,7 +404,7 @@ export default function StartupEvaluation() {
                         <Field id="cityCountry" label="City & Country">
                           <input name="cityCountry" value={form.cityCountry} onChange={handleChange} disabled={isSubmitting} placeholder="Bengaluru, India" className={inputCls()} />
                         </Field>
-                        <Field id="startupName" label="Startup Name" required error={errors.startupName}>
+                        <Field id="startupName" label="Startup Name">
                           <input name="startupName" value={form.startupName} onChange={handleChange} disabled={isSubmitting} placeholder="Your startup's name" className={inputCls(!!errors.startupName)} />
                         </Field>
                       </div>
@@ -446,13 +436,13 @@ export default function StartupEvaluation() {
                   {/* Section 2: Startup Overview */}
                   {step === 1 && (
                     <div className="space-y-2.5">
-                      <Field id="oneLineDescription" label="One-line startup description" required error={errors.oneLineDescription}>
+                      <Field id="oneLineDescription" label="One-line startup description">
                         <input name="oneLineDescription" value={form.oneLineDescription} onChange={handleChange} disabled={isSubmitting} placeholder="What you do, in one sentence" className={inputCls(!!errors.oneLineDescription)} />
                       </Field>
-                      <Field id="problemSolved" label="What problem are you solving?" required error={errors.problemSolved}>
+                      <Field id="problemSolved" label="What problem are you solving?">
                         <textarea name="problemSolved" value={form.problemSolved} onChange={handleChange} disabled={isSubmitting} rows={2} className={`${inputCls(!!errors.problemSolved)} resize-none`} />
                       </Field>
-                      <Field id="targetCustomer" label="Who is your target customer?" required error={errors.targetCustomer}>
+                      <Field id="targetCustomer" label="Who is your target customer?">
                         <textarea name="targetCustomer" value={form.targetCustomer} onChange={handleChange} disabled={isSubmitting} rows={2} className={`${inputCls(!!errors.targetCustomer)} resize-none`} />
                       </Field>
                       <Field id="howItWorks" label="How does your solution work?">
