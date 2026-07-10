@@ -73,11 +73,11 @@ export default function Footer() {
           <div>
             <h3 className="text-white font-bold text-[11px] mb-2.5 uppercase tracking-[0.18em]">Quick Links</h3>
             <ul className="space-y-1.5">
-              <li><Link to="/" className="text-slate-400 hover:text-emerald-400 text-[13px] transition-colors">Home</Link></li>
-              <li><Link to="/about" className="text-slate-400 hover:text-emerald-400 text-[13px] transition-colors">About Us</Link></li>
-              <li><Link to="/compliance" className="text-slate-400 hover:text-emerald-400 text-[13px] transition-colors">Compliance Hub</Link></li>
-              <li><Link to="/packages" className="text-slate-400 hover:text-emerald-400 text-[13px] transition-colors">Premium Packages</Link></li>
-              <li><Link to="/contact" className="text-slate-400 hover:text-emerald-400 text-[13px] transition-colors">Contact Us</Link></li>
+              <li><Link to="/" onClick={() => window.scrollTo(0, 0)} className="text-slate-400 hover:text-emerald-400 text-[13px] transition-colors">Home</Link></li>
+              <li><Link to="/about" onClick={() => window.scrollTo(0, 0)} className="text-slate-400 hover:text-emerald-400 text-[13px] transition-colors">About Us</Link></li>
+              <li><Link to="/compliance" onClick={() => window.scrollTo(0, 0)} className="text-slate-400 hover:text-emerald-400 text-[13px] transition-colors">Compliance Hub</Link></li>
+              <li><Link to="/packages" onClick={() => window.scrollTo(0, 0)} className="text-slate-400 hover:text-emerald-400 text-[13px] transition-colors">Premium Packages</Link></li>
+              <li><Link to="/contact" onClick={() => window.scrollTo(0, 0)} className="text-slate-400 hover:text-emerald-400 text-[13px] transition-colors">Contact Us</Link></li>
             </ul>
           </div>
 
@@ -86,7 +86,7 @@ export default function Footer() {
             <ul className="space-y-1.5">
               {SERVICES.filter((service) => coreServiceIds.includes(service.id)).map((service) => (
                 <li key={service.id}>
-                  <Link to={`/services/${service.id}`} className="text-slate-400 hover:text-emerald-400 text-[13px] transition-colors">
+                  <Link to={`/services/${service.id}`} onClick={() => window.scrollTo(0, 0)} className="text-slate-400 hover:text-emerald-400 text-[13px] transition-colors">
                     {service.label}
                   </Link>
                 </li>
