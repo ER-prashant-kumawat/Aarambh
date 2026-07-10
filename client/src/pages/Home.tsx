@@ -55,8 +55,18 @@ export default function Home() {
 
   return (
     <div>
+      {/* ANNOUNCEMENT BANNER */}
+      <div className="pt-[76px] bg-emerald-500/10 border-b border-emerald-500/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center justify-center gap-2 text-center">
+          <Zap size={14} className="text-emerald-400 flex-shrink-0" />
+          <p className="text-emerald-300 text-xs sm:text-sm font-semibold">
+            Limited Time Offer — Get your Private Limited Company registered starting at just Rs. 9,448. No hidden fees.
+          </p>
+        </div>
+      </div>
+
       {/* HERO */}
-      <section className="grad-hero pt-24 pb-4 lg:pt-28 lg:pb-6 relative overflow-hidden">
+      <section className="grad-hero pt-4 pb-4 lg:pt-5 lg:pb-6 relative overflow-hidden">
         <div className="absolute top-24 left-1/4 w-96 h-96 bg-emerald-500/8 rounded-full blur-3xl pointer-events-none"></div>
         <div className="absolute bottom-10 right-1/5 w-64 h-64 bg-blue-500/8 rounded-full blur-3xl pointer-events-none"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
