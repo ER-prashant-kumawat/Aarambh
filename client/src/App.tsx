@@ -16,6 +16,8 @@ import Register from './pages/Register';
 import DashboardShell from './pages/dashboard/DashboardShell';
 import GetQuote from './pages/GetQuote';
 import Audit from './pages/Audit';
+import StartupEvaluation from './pages/StartupEvaluation';
+import AdminEvaluations from './pages/admin/Evaluations';
 
 function AppContent() {
   const location = useLocation();
@@ -39,6 +41,8 @@ function AppContent() {
           <Route path="/our-services" element={<OurServices />} />
           <Route path="/services/:id" element={<ServiceDetail />} />
           <Route path="/audit" element={<Audit />} />
+          <Route path="/evaluation" element={<StartupEvaluation />} />
+          <Route path="/admin/evaluations" element={<AdminEvaluations />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/get-quote" element={<GetQuote />} />
