@@ -93,9 +93,9 @@ export default function Navbar() {
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'glass-dark shadow-2xl' : 'bg-brand-navy/96'}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-5 lg:px-6">
         <div className="flex items-center justify-between h-[76px]">
-          <Link to="/" className="flex items-center gap-3 group">
+          <Link to="/" className="flex items-center gap-3 group shrink-0">
             <div className="w-9 h-9 rounded-xl grad-em flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
               <Rocket size={17} className="text-white" />
             </div>
