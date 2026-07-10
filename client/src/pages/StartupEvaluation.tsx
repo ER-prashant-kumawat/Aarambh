@@ -102,11 +102,11 @@ const SECTIONS = [
 ];
 
 const inputCls = (hasError?: boolean) =>
-  `w-full px-3 py-2 rounded-lg border bg-slate-955/40 text-white text-xs focus:outline-none focus:ring-2 transition-all duration-300 placeholder-slate-600 ${
+  `w-full px-3.5 py-2.5 rounded-lg border bg-slate-955/40 text-white text-sm focus:outline-none focus:ring-2 transition-all duration-300 placeholder-slate-600 ${
     hasError ? 'border-red-500/50 focus:ring-red-500/25' : 'border-slate-800 focus:border-emerald-500/50 focus:ring-emerald-500/15'
   }`;
 
-const labelCls = 'block text-[10px] font-bold text-slate-300 uppercase tracking-wider mb-1';
+const labelCls = 'block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5';
 
 function Field({ id, label, required, error, children }: { id: string; label: string; required?: boolean; error?: string; children: React.ReactNode }) {
   return (
@@ -128,14 +128,14 @@ function ChoiceGroup({ options, value, onChange, columns = 2 }: { options: strin
             key={opt}
             type="button"
             onClick={() => onChange(selected ? '' : opt)}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-left transition-all duration-200 cursor-pointer ${
+            className={`flex items-center gap-2 px-3.5 py-2.5 rounded-lg border text-left transition-all duration-200 cursor-pointer ${
               selected ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-300' : 'bg-slate-950/20 border-slate-800 text-slate-400 hover:border-slate-700'
             }`}
           >
             <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center flex-shrink-0 ${selected ? 'border-emerald-400 bg-emerald-500/20' : 'border-slate-600'}`}>
               {selected && <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />}
             </div>
-            <span className="text-[11px] font-semibold">{opt}</span>
+            <span className="text-xs font-semibold">{opt}</span>
           </button>
         );
       })}
@@ -153,14 +153,14 @@ function MultiChoiceGroup({ options, values, onToggle, columns = 2 }: { options:
             key={opt}
             type="button"
             onClick={() => onToggle(opt)}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-left transition-all duration-200 cursor-pointer ${
+            className={`flex items-center gap-2 px-3.5 py-2.5 rounded-lg border text-left transition-all duration-200 cursor-pointer ${
               selected ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-300' : 'bg-slate-950/20 border-slate-800 text-slate-400 hover:border-slate-700'
             }`}
           >
             <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center flex-shrink-0 ${selected ? 'border-emerald-400 bg-emerald-500/20' : 'border-slate-600'}`}>
               {selected && <div className="w-1.5 h-1.5 rounded-sm bg-emerald-400" />}
             </div>
-            <span className="text-[11px] font-semibold">{opt}</span>
+            <span className="text-xs font-semibold">{opt}</span>
           </button>
         );
       })}
@@ -173,8 +173,8 @@ function FileInput({ label, file, onChange, accept, multiple }: { label: string;
   return (
     <div>
       <label className={labelCls}>{label} <span className="text-slate-500 font-medium normal-case italic">(optional)</span></label>
-      <label className="flex items-center gap-2 px-3 py-2 rounded-lg border border-dashed border-slate-700 bg-slate-950/20 text-slate-400 text-[11px] font-semibold cursor-pointer hover:border-emerald-500/40 hover:text-emerald-300 transition-colors">
-        <Upload size={13} />
+      <label className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg border border-dashed border-slate-700 bg-slate-950/20 text-slate-400 text-xs font-semibold cursor-pointer hover:border-emerald-500/40 hover:text-emerald-300 transition-colors">
+        <Upload size={14} />
         <span>{files.length > 0 ? `${files.length} file(s) selected` : 'Click to upload'}</span>
         <input type="file" accept={accept} multiple={multiple} className="hidden" onChange={(e) => onChange(e.target.files)} />
       </label>
@@ -390,7 +390,7 @@ export default function StartupEvaluation() {
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-3">
-                  <div className="h-[54vh] min-h-[320px] max-h-[440px] overflow-y-auto pr-1 -mr-1">
+                  <div className="h-[64vh] min-h-[420px] max-h-[560px] overflow-y-auto pr-1 -mr-1">
                   {/* Section 1: Founder Details */}
                   {step === 0 && (
                     <div className="space-y-2.5">
