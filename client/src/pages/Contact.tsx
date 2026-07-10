@@ -54,9 +54,9 @@ export default function Contact() {
               <h2 className="text-2xl font-black text-white mb-7">Reach Our Expert Team</h2>
               <div className="space-y-4">
                 {[
-                  { icon: Phone, label: "Direct Consultation Line", val: "+91 98765 43210", sub: "Mon–Sat, 9:30 AM – 7:00 PM IST" },
+                  { icon: Phone, label: "Direct Consultation Line", val: "+91 82786 99221", sub: "Mon–Sat, 9:30 AM – 7:00 PM IST" },
                   { icon: Phone, label: "Corporate Support Desk", val: "+91 80 4567 8901", sub: "Dedicated B2B & enterprise helpline" },
-                  { icon: Mail, label: "General Enquiries", val: "hello@aarambhh.com", sub: "Response within 2 business hours" },
+                  { icon: Mail, label: "General Enquiries", val: "aarambhh100@gmail.com", sub: "Response within 2 business hours" },
                   { icon: Mail, label: "Legal & Compliance Support", val: "legal@aarambhh.com", sub: "For ongoing compliance queries" },
                   { icon: MapPin, label: "Registered Office", val: "Aarambhh Legal-Tech Pvt. Ltd.", sub: "27, 3rd Floor, Sector 6, HSR Layout, Bengaluru, Karnataka – 560 102" },
                 ].map((item, i) => {
@@ -81,7 +81,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <p className="font-bold text-emerald-400 text-sm">Chat on WhatsApp</p>
-                  <p className="text-emerald-500/90 text-xs">Instant responses: <strong>+91 98765 43210</strong></p>
+                  <p className="text-emerald-500/90 text-xs">Instant responses: <strong>+91 82786 99221</strong></p>
                 </div>
               </div>
             </div>

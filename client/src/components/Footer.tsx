@@ -107,8 +107,8 @@ export default function Footer() {
             </ul>
             <div className="space-y-1.5 text-slate-400 text-[11px]">
               <p className="flex items-center gap-2"><MapPin size={11} className="text-emerald-400" /> HSR Layout, Bangalore 560 102</p>
-              <p className="flex items-center gap-2"><Phone size={11} className="text-emerald-400" /> +91 98765 43210</p>
-              <p className="flex items-center gap-2"><Mail size={11} className="text-emerald-400" /> hello@aarambhh.com</p>
+              <p className="flex items-center gap-2"><Phone size={11} className="text-emerald-400" /> +91 82786 99221</p>
+              <p className="flex items-center gap-2"><Mail size={11} className="text-emerald-400" /> aarambhh100@gmail.com</p>
             </div>
           </div>
         </div>
