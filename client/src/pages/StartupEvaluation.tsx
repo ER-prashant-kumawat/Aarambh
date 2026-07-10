@@ -102,25 +102,25 @@ const SECTIONS = [
 ];
 
 const inputCls = (hasError?: boolean) =>
-  `w-full px-4 py-3 rounded-xl border bg-slate-955/40 text-white text-sm focus:outline-none focus:ring-2 transition-all duration-300 placeholder-slate-600 ${
+  `w-full px-3 py-2 rounded-lg border bg-slate-955/40 text-white text-xs focus:outline-none focus:ring-2 transition-all duration-300 placeholder-slate-600 ${
     hasError ? 'border-red-500/50 focus:ring-red-500/25' : 'border-slate-800 focus:border-emerald-500/50 focus:ring-emerald-500/15'
   }`;
 
-const labelCls = 'block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2';
+const labelCls = 'block text-[10px] font-bold text-slate-300 uppercase tracking-wider mb-1';
 
 function Field({ id, label, required, error, children }: { id: string; label: string; required?: boolean; error?: string; children: React.ReactNode }) {
   return (
     <div id={id}>
       <label className={labelCls}>{label} {required && <span className="text-emerald-400">*</span>}</label>
       {children}
-      {error && <p className="text-red-400 text-[11px] font-bold mt-1.5">{error}</p>}
+      {error && <p className="text-red-400 text-[10px] font-bold mt-1">{error}</p>}
     </div>
   );
 }
 
 function ChoiceGroup({ options, value, onChange, columns = 2 }: { options: string[]; value: string; onChange: (v: string) => void; columns?: number }) {
   return (
-    <div className={`grid gap-3`} style={{ gridTemplateColumns: `repeat(${columns}, minmax(0,1fr))` }}>
+    <div className={`grid gap-2`} style={{ gridTemplateColumns: `repeat(${columns}, minmax(0,1fr))` }}>
       {options.map((opt) => {
         const selected = value === opt;
         return (
@@ -128,14 +128,14 @@ function ChoiceGroup({ options, value, onChange, columns = 2 }: { options: strin
             key={opt}
             type="button"
             onClick={() => onChange(selected ? '' : opt)}
-            className={`flex items-center gap-2.5 px-4 py-3 rounded-xl border text-left transition-all duration-200 cursor-pointer ${
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-left transition-all duration-200 cursor-pointer ${
               selected ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-300' : 'bg-slate-950/20 border-slate-800 text-slate-400 hover:border-slate-700'
             }`}
           >
-            <div className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 ${selected ? 'border-emerald-400 bg-emerald-500/20' : 'border-slate-600'}`}>
-              {selected && <div className="w-2 h-2 rounded-full bg-emerald-400" />}
+            <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center flex-shrink-0 ${selected ? 'border-emerald-400 bg-emerald-500/20' : 'border-slate-600'}`}>
+              {selected && <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />}
             </div>
-            <span className="text-xs font-semibold">{opt}</span>
+            <span className="text-[11px] font-semibold">{opt}</span>
           </button>
         );
       })}
@@ -145,7 +145,7 @@ function ChoiceGroup({ options, value, onChange, columns = 2 }: { options: strin
 
 function MultiChoiceGroup({ options, values, onToggle, columns = 2 }: { options: string[]; values: string[]; onToggle: (v: string) => void; columns?: number }) {
   return (
-    <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${columns}, minmax(0,1fr))` }}>
+    <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${columns}, minmax(0,1fr))` }}>
       {options.map((opt) => {
         const selected = values.includes(opt);
         return (
@@ -153,14 +153,14 @@ function MultiChoiceGroup({ options, values, onToggle, columns = 2 }: { options:
             key={opt}
             type="button"
             onClick={() => onToggle(opt)}
-            className={`flex items-center gap-2.5 px-4 py-3 rounded-xl border text-left transition-all duration-200 cursor-pointer ${
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-left transition-all duration-200 cursor-pointer ${
               selected ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-300' : 'bg-slate-950/20 border-slate-800 text-slate-400 hover:border-slate-700'
             }`}
           >
-            <div className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 ${selected ? 'border-emerald-400 bg-emerald-500/20' : 'border-slate-600'}`}>
-              {selected && <div className="w-2 h-2 rounded-sm bg-emerald-400" />}
+            <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center flex-shrink-0 ${selected ? 'border-emerald-400 bg-emerald-500/20' : 'border-slate-600'}`}>
+              {selected && <div className="w-1.5 h-1.5 rounded-sm bg-emerald-400" />}
             </div>
-            <span className="text-xs font-semibold">{opt}</span>
+            <span className="text-[11px] font-semibold">{opt}</span>
           </button>
         );
       })}
@@ -173,15 +173,15 @@ function FileInput({ label, file, onChange, accept, multiple }: { label: string;
   return (
     <div>
       <label className={labelCls}>{label} <span className="text-slate-500 font-medium normal-case italic">(optional)</span></label>
-      <label className="flex items-center gap-3 px-4 py-3 rounded-xl border border-dashed border-slate-700 bg-slate-950/20 text-slate-400 text-xs font-semibold cursor-pointer hover:border-emerald-500/40 hover:text-emerald-300 transition-colors">
-        <Upload size={15} />
+      <label className="flex items-center gap-2 px-3 py-2 rounded-lg border border-dashed border-slate-700 bg-slate-950/20 text-slate-400 text-[11px] font-semibold cursor-pointer hover:border-emerald-500/40 hover:text-emerald-300 transition-colors">
+        <Upload size={13} />
         <span>{files.length > 0 ? `${files.length} file(s) selected` : 'Click to upload'}</span>
         <input type="file" accept={accept} multiple={multiple} className="hidden" onChange={(e) => onChange(e.target.files)} />
       </label>
       {files.length > 0 && (
-        <div className="mt-2 space-y-1">
+        <div className="mt-1 space-y-1">
           {files.map((f, i) => (
-            <div key={i} className="flex items-center justify-between text-[11px] text-slate-500 bg-slate-900/50 rounded-lg px-3 py-1.5">
+            <div key={i} className="flex items-center justify-between text-[10px] text-slate-500 bg-slate-900/50 rounded-md px-2 py-1">
               <span className="truncate">{f.name} ({(f.size / 1024).toFixed(0)} KB)</span>
             </div>
           ))}
@@ -333,47 +333,44 @@ export default function StartupEvaluation() {
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-3xl blur opacity-20 group-hover:opacity-30 transition duration-1000" />
 
-          <div className="relative glass rounded-3xl p-6 sm:p-10 shadow-2xl overflow-hidden bg-slate-900/80 border border-slate-800/80">
+          <div className="relative glass rounded-2xl p-4 sm:p-6 shadow-2xl overflow-hidden bg-slate-900/80 border border-slate-800/80">
             {submitStatus === 'success' ? (
-              <div className="text-center py-10 px-4 animate-fade-in">
-                <div className="w-20 h-20 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-6 border border-emerald-500/25">
-                  <CheckCircle2 size={44} className="text-emerald-400" />
+              <div className="text-center py-8 px-4 animate-fade-in">
+                <div className="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-4 border border-emerald-500/25">
+                  <CheckCircle2 size={36} className="text-emerald-400" />
                 </div>
-                <h2 className="text-3xl font-extrabold text-white mb-3 tracking-tight">Evaluation Submitted</h2>
-                <p className="text-emerald-400 text-sm font-bold tracking-wider uppercase mb-5">Our investment team will review your startup</p>
-                <p className="text-slate-400 text-sm leading-relaxed mb-8 max-w-md mx-auto">
+                <h2 className="text-2xl font-extrabold text-white mb-2 tracking-tight">Evaluation Submitted</h2>
+                <p className="text-emerald-400 text-xs font-bold tracking-wider uppercase mb-4">Our investment team will review your startup</p>
+                <p className="text-slate-400 text-xs leading-relaxed mb-6 max-w-md mx-auto">
                   Thank you for sharing your details. Our team will evaluate your submission and reach out with feedback and next steps.
                 </p>
                 <button
                   type="button"
                   onClick={() => setSubmitStatus('idle')}
-                  className="px-8 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-600 text-white font-extrabold text-sm shadow-lg hover:opacity-95 transition-all duration-300 transform active:scale-95 cursor-pointer"
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-600 text-white font-extrabold text-xs shadow-lg hover:opacity-95 transition-all duration-300 transform active:scale-95 cursor-pointer"
                 >
                   Submit Another Evaluation
                 </button>
               </div>
             ) : (
               <>
-                <div className="mb-8 border-b border-slate-800/60 pb-6">
-                  <div className="flex items-center gap-2 mb-3">
-                    <ClipboardCheck size={16} className="text-emerald-400" />
-                    <span className="text-[11px] font-black uppercase tracking-[0.3em] text-emerald-400">Investment Readiness</span>
+                <div className="mb-3 border-b border-slate-800/60 pb-3">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <ClipboardCheck size={14} className="text-emerald-400" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.25em] text-emerald-400">Investment Readiness</span>
                   </div>
-                  <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">Basic Startup Evaluation Form</h2>
-                  <p className="text-slate-400 text-xs sm:text-sm mt-2 font-medium">
-                    From idea to pre-seed — tell us about your startup and our team will evaluate your investment readiness.
-                  </p>
+                  <h2 className="text-lg sm:text-xl font-black text-white tracking-tight">Basic Startup Evaluation Form</h2>
 
-                  <div className="mt-6">
-                    <div className="flex justify-between items-center mb-1.5">
-                      <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                  <div className="mt-3">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                         Step {step + 1} of {SECTIONS.length} — {SECTIONS[step].title}
                       </span>
-                      <span className="text-[11px] font-black text-emerald-400">
+                      <span className="text-[10px] font-black text-emerald-400">
                         {Math.round(((step + 1) / SECTIONS.length) * 100)}%
                       </span>
                     </div>
-                    <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                    <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
                       <div
                         className="h-full bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-500"
                         style={{ width: `${((step + 1) / SECTIONS.length) * 100}%` }}
@@ -383,20 +380,21 @@ export default function StartupEvaluation() {
                 </div>
 
                 {submitStatus === 'error' && (
-                  <div className="mb-6 p-4 bg-red-500/10 border border-red-500/25 text-red-400 text-sm rounded-2xl flex items-start gap-3">
-                    <AlertCircle size={20} className="flex-shrink-0 mt-0.5 text-red-400" />
+                  <div className="mb-3 p-3 bg-red-500/10 border border-red-500/25 text-red-400 text-xs rounded-xl flex items-start gap-2.5">
+                    <AlertCircle size={16} className="flex-shrink-0 mt-0.5 text-red-400" />
                     <div>
-                      <span className="font-bold block text-sm">Submission Error</span>
-                      <span className="text-xs leading-relaxed">{errorMessage}</span>
+                      <span className="font-bold block text-xs">Submission Error</span>
+                      <span className="text-[11px] leading-relaxed">{errorMessage}</span>
                     </div>
                   </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-8">
+                <form onSubmit={handleSubmit} className="space-y-3">
+                  <div className="h-[54vh] min-h-[320px] max-h-[440px] overflow-y-auto pr-1 -mr-1">
                   {/* Section 1: Founder Details */}
                   {step === 0 && (
-                    <div className="space-y-4">
-                      <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="space-y-2.5">
+                      <div className="grid sm:grid-cols-2 gap-2.5">
                         <Field id="founderName" label="Founder Name" required error={errors.founderName}>
                           <input name="founderName" value={form.founderName} onChange={handleChange} disabled={isSubmitting} placeholder="Your full name" className={inputCls(!!errors.founderName)} />
                         </Field>
@@ -404,7 +402,7 @@ export default function StartupEvaluation() {
                           <input type="email" name="email" value={form.email} onChange={handleChange} disabled={isSubmitting} placeholder="you@startup.com" className={inputCls(!!errors.email)} />
                         </Field>
                       </div>
-                      <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="grid sm:grid-cols-2 gap-2.5">
                         <Field id="mobileNumber" label="Mobile Number" required error={errors.mobileNumber}>
                           <input type="tel" name="mobileNumber" value={form.mobileNumber} onChange={handleChange} disabled={isSubmitting} placeholder="10 digit number" className={inputCls(!!errors.mobileNumber)} />
                         </Field>
@@ -412,7 +410,7 @@ export default function StartupEvaluation() {
                           <input name="linkedinProfile" value={form.linkedinProfile} onChange={handleChange} disabled={isSubmitting} placeholder="linkedin.com/in/you" className={inputCls()} />
                         </Field>
                       </div>
-                      <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="grid sm:grid-cols-2 gap-2.5">
                         <Field id="cityCountry" label="City & Country">
                           <input name="cityCountry" value={form.cityCountry} onChange={handleChange} disabled={isSubmitting} placeholder="Bengaluru, India" className={inputCls()} />
                         </Field>
@@ -420,7 +418,7 @@ export default function StartupEvaluation() {
                           <input name="startupName" value={form.startupName} onChange={handleChange} disabled={isSubmitting} placeholder="Your startup's name" className={inputCls(!!errors.startupName)} />
                         </Field>
                       </div>
-                      <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="grid sm:grid-cols-2 gap-2.5">
                         <Field id="website" label="Website">
                           <input name="website" value={form.website} onChange={handleChange} disabled={isSubmitting} placeholder="yourstartup.com" className={inputCls()} />
                         </Field>
@@ -431,7 +429,7 @@ export default function StartupEvaluation() {
                       <Field id="stage" label="Stage">
                         <ChoiceGroup options={['Idea', 'Prototype', 'MVP', 'Early Revenue']} value={form.stage} onChange={setChoice('stage')} columns={4} />
                       </Field>
-                      <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="grid sm:grid-cols-2 gap-2.5">
                         <Field id="fullTime" label="Working full-time on this startup?">
                           <ChoiceGroup options={['Yes', 'No']} value={form.fullTime} onChange={setChoice('fullTime')} columns={2} />
                         </Field>
@@ -440,36 +438,36 @@ export default function StartupEvaluation() {
                         </Field>
                       </div>
                       <Field id="founderBackground" label="Briefly describe your background">
-                        <textarea name="founderBackground" value={form.founderBackground} onChange={handleChange} disabled={isSubmitting} rows={4} maxLength={2000} placeholder="Relevant experience, past ventures, education... (max 300 words)" className={`${inputCls()} resize-none`} />
+                        <textarea name="founderBackground" value={form.founderBackground} onChange={handleChange} disabled={isSubmitting} rows={2} maxLength={2000} placeholder="Relevant experience, past ventures, education... (max 300 words)" className={`${inputCls()} resize-none`} />
                       </Field>
                     </div>
                   )}
 
                   {/* Section 2: Startup Overview */}
                   {step === 1 && (
-                    <div className="space-y-4">
+                    <div className="space-y-2.5">
                       <Field id="oneLineDescription" label="One-line startup description" required error={errors.oneLineDescription}>
                         <input name="oneLineDescription" value={form.oneLineDescription} onChange={handleChange} disabled={isSubmitting} placeholder="What you do, in one sentence" className={inputCls(!!errors.oneLineDescription)} />
                       </Field>
                       <Field id="problemSolved" label="What problem are you solving?" required error={errors.problemSolved}>
-                        <textarea name="problemSolved" value={form.problemSolved} onChange={handleChange} disabled={isSubmitting} rows={3} className={`${inputCls(!!errors.problemSolved)} resize-none`} />
+                        <textarea name="problemSolved" value={form.problemSolved} onChange={handleChange} disabled={isSubmitting} rows={2} className={`${inputCls(!!errors.problemSolved)} resize-none`} />
                       </Field>
                       <Field id="targetCustomer" label="Who is your target customer?" required error={errors.targetCustomer}>
                         <textarea name="targetCustomer" value={form.targetCustomer} onChange={handleChange} disabled={isSubmitting} rows={2} className={`${inputCls(!!errors.targetCustomer)} resize-none`} />
                       </Field>
                       <Field id="howItWorks" label="How does your solution work?">
-                        <textarea name="howItWorks" value={form.howItWorks} onChange={handleChange} disabled={isSubmitting} rows={3} className={`${inputCls()} resize-none`} />
+                        <textarea name="howItWorks" value={form.howItWorks} onChange={handleChange} disabled={isSubmitting} rows={2} className={`${inputCls()} resize-none`} />
                       </Field>
                       <Field id="differentiation" label="What makes your solution different?">
-                        <textarea name="differentiation" value={form.differentiation} onChange={handleChange} disabled={isSubmitting} rows={3} className={`${inputCls()} resize-none`} />
+                        <textarea name="differentiation" value={form.differentiation} onChange={handleChange} disabled={isSubmitting} rows={2} className={`${inputCls()} resize-none`} />
                       </Field>
                     </div>
                   )}
 
                   {/* Section 3: Market Opportunity */}
                   {step === 2 && (
-                    <div className="space-y-4">
-                      <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="space-y-2.5">
+                      <div className="grid sm:grid-cols-2 gap-2.5">
                         <Field id="targetMarket" label="Target Market">
                           <input name="targetMarket" value={form.targetMarket} onChange={handleChange} disabled={isSubmitting} placeholder="e.g. Indian D2C brands" className={inputCls()} />
                         </Field>
@@ -481,18 +479,18 @@ export default function StartupEvaluation() {
                         <input name="mainCompetitors" value={form.mainCompetitors} onChange={handleChange} disabled={isSubmitting} placeholder="List key competitors" className={inputCls()} />
                       </Field>
                       <Field id="whyCustomersChooseYou" label="Why will customers choose you?">
-                        <textarea name="whyCustomersChooseYou" value={form.whyCustomersChooseYou} onChange={handleChange} disabled={isSubmitting} rows={3} className={`${inputCls()} resize-none`} />
+                        <textarea name="whyCustomersChooseYou" value={form.whyCustomersChooseYou} onChange={handleChange} disabled={isSubmitting} rows={2} className={`${inputCls()} resize-none`} />
                       </Field>
                     </div>
                   )}
 
                   {/* Section 4: Product Status */}
                   {step === 3 && (
-                    <div className="space-y-4">
+                    <div className="space-y-2.5">
                       <Field id="productStage" label="Current Stage">
                         <ChoiceGroup options={['Idea', 'Prototype', 'MVP', 'Live Product']} value={form.productStage} onChange={setChoice('productStage')} columns={4} />
                       </Field>
-                      <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="grid sm:grid-cols-2 gap-2.5">
                         <FileInput label="Pitch Deck (PDF)" file={files.pitchDeck} accept=".pdf" onChange={(fl) => setFiles((p) => ({ ...p, pitchDeck: fl?.[0] || null }))} />
                         <Field id="productDemoLink" label="Product Demo Link">
                           <input name="productDemoLink" value={form.productDemoLink} onChange={handleChange} disabled={isSubmitting} placeholder="Link to demo video (optional)" className={inputCls()} />
@@ -504,8 +502,8 @@ export default function StartupEvaluation() {
 
                   {/* Section 5: Customers & Traction */}
                   {step === 4 && (
-                    <div className="space-y-4">
-                      <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="space-y-2.5">
+                      <div className="grid sm:grid-cols-2 gap-2.5">
                         <Field id="numberOfUsers" label="Number of Users">
                           <input name="numberOfUsers" value={form.numberOfUsers} onChange={handleChange} disabled={isSubmitting} placeholder="e.g. 1,200" className={inputCls()} />
                         </Field>
@@ -513,7 +511,7 @@ export default function StartupEvaluation() {
                           <input name="payingCustomers" value={form.payingCustomers} onChange={handleChange} disabled={isSubmitting} placeholder="e.g. 40" className={inputCls()} />
                         </Field>
                       </div>
-                      <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="grid sm:grid-cols-2 gap-2.5">
                         <Field id="monthlyRevenue" label="Monthly Revenue (₹)">
                           <input name="monthlyRevenue" value={form.monthlyRevenue} onChange={handleChange} disabled={isSubmitting} placeholder="e.g. 50,000" className={inputCls()} />
                         </Field>
@@ -521,7 +519,7 @@ export default function StartupEvaluation() {
                           <input name="monthlyGrowthPercent" value={form.monthlyGrowthPercent} onChange={handleChange} disabled={isSubmitting} placeholder="e.g. 15" className={inputCls()} />
                         </Field>
                       </div>
-                      <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="grid sm:grid-cols-2 gap-2.5">
                         <Field id="pilotCustomers" label="Pilot Customers">
                           <ChoiceGroup options={['Yes', 'No']} value={form.pilotCustomers} onChange={setChoice('pilotCustomers')} columns={2} />
                         </Field>
@@ -534,9 +532,9 @@ export default function StartupEvaluation() {
 
                   {/* Section 6: Business Model */}
                   {step === 5 && (
-                    <div className="space-y-4">
+                    <div className="space-y-2.5">
                       <Field id="howYouMakeMoney" label="How will you make money?">
-                        <textarea name="howYouMakeMoney" value={form.howYouMakeMoney} onChange={handleChange} disabled={isSubmitting} rows={3} className={`${inputCls()} resize-none`} />
+                        <textarea name="howYouMakeMoney" value={form.howYouMakeMoney} onChange={handleChange} disabled={isSubmitting} rows={2} className={`${inputCls()} resize-none`} />
                       </Field>
                       <Field id="pricingModel" label="Pricing Model">
                         <ChoiceGroup options={['Subscription', 'Commission', 'One-time Sale', 'Marketplace', 'Freemium', 'Other']} value={form.pricingModel} onChange={setChoice('pricingModel')} columns={3} />
@@ -549,8 +547,8 @@ export default function StartupEvaluation() {
 
                   {/* Section 7: Funding */}
                   {step === 6 && (
-                    <div className="space-y-4">
-                      <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="space-y-2.5">
+                      <div className="grid sm:grid-cols-2 gap-2.5">
                         <Field id="raisedFundingBefore" label="Have you raised funding before?">
                           <ChoiceGroup options={['Yes', 'No']} value={form.raisedFundingBefore} onChange={setChoice('raisedFundingBefore')} columns={2} />
                         </Field>
@@ -569,11 +567,11 @@ export default function StartupEvaluation() {
 
                   {/* Section 8: Legal & Compliance */}
                   {step === 7 && (
-                    <div className="space-y-4">
+                    <div className="space-y-2.5">
                       <Field id="legalCompliance" label="Select all that apply">
                         <MultiChoiceGroup options={['Company Incorporated', 'Startup India Registered', 'DPIIT Recognition', 'GST Registered', 'Trademark Filed', 'Patent Filed']} values={form.legalCompliance} onToggle={toggleMulti('legalCompliance')} columns={2} />
                       </Field>
-                      <div className="grid sm:grid-cols-3 gap-4">
+                      <div className="grid sm:grid-cols-3 gap-2.5">
                         <FileInput label="Certificate of Incorporation" file={files.incorporationCert} onChange={(fl) => setFiles((p) => ({ ...p, incorporationCert: fl?.[0] || null }))} />
                         <FileInput label="Trademark Certificate" file={files.trademarkCert} onChange={(fl) => setFiles((p) => ({ ...p, trademarkCert: fl?.[0] || null }))} />
                         <FileInput label="GST Certificate" file={files.gstCert} onChange={(fl) => setFiles((p) => ({ ...p, gstCert: fl?.[0] || null }))} />
@@ -583,27 +581,27 @@ export default function StartupEvaluation() {
 
                   {/* Section 9: Vision */}
                   {step === 8 && (
-                    <div className="space-y-4">
+                    <div className="space-y-2.5">
                       <Field id="whyBuildingThis" label="Why are you building this startup?">
-                        <textarea name="whyBuildingThis" value={form.whyBuildingThis} onChange={handleChange} disabled={isSubmitting} rows={3} className={`${inputCls()} resize-none`} />
+                        <textarea name="whyBuildingThis" value={form.whyBuildingThis} onChange={handleChange} disabled={isSubmitting} rows={2} className={`${inputCls()} resize-none`} />
                       </Field>
                       <Field id="fiveYearVision" label="Where do you see the company in 5 years?">
-                        <textarea name="fiveYearVision" value={form.fiveYearVision} onChange={handleChange} disabled={isSubmitting} rows={3} className={`${inputCls()} resize-none`} />
+                        <textarea name="fiveYearVision" value={form.fiveYearVision} onChange={handleChange} disabled={isSubmitting} rows={2} className={`${inputCls()} resize-none`} />
                       </Field>
                       <Field id="whyInvestInYou" label="Why should an investor invest in you?">
-                        <textarea name="whyInvestInYou" value={form.whyInvestInYou} onChange={handleChange} disabled={isSubmitting} rows={3} className={`${inputCls()} resize-none`} />
+                        <textarea name="whyInvestInYou" value={form.whyInvestInYou} onChange={handleChange} disabled={isSubmitting} rows={2} className={`${inputCls()} resize-none`} />
                       </Field>
                     </div>
                   )}
 
                   {/* Section 10: Documents */}
                   {step === 9 && (
-                    <div className="space-y-4">
-                      <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="space-y-2.5">
+                      <div className="grid sm:grid-cols-2 gap-2.5">
                         <FileInput label="One-Pager" file={files.onePager} onChange={(fl) => setFiles((p) => ({ ...p, onePager: fl?.[0] || null }))} />
                         <FileInput label="Financial Projection" file={files.financialProjection} onChange={(fl) => setFiles((p) => ({ ...p, financialProjection: fl?.[0] || null }))} />
                       </div>
-                      <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="grid sm:grid-cols-2 gap-2.5">
                         <Field id="demoVideoLink" label="Product Demo Video Link">
                           <input name="demoVideoLink" value={form.demoVideoLink} onChange={handleChange} disabled={isSubmitting} placeholder="Optional link" className={inputCls()} />
                         </Field>
@@ -614,16 +612,17 @@ export default function StartupEvaluation() {
                       <FileInput label="Founder Resume" file={files.founderResume} onChange={(fl) => setFiles((p) => ({ ...p, founderResume: fl?.[0] || null }))} />
                     </div>
                   )}
+                  </div>
 
-                  <div className="pt-4 flex items-center gap-3">
+                  <div className="pt-2 flex items-center gap-2.5">
                     {step > 0 && (
                       <button
                         type="button"
                         onClick={goBack}
                         disabled={isSubmitting}
-                        className="flex items-center justify-center gap-2 px-6 py-4 rounded-xl border border-slate-700 text-slate-300 font-bold text-sm hover:bg-slate-800/60 hover:text-white transition-all duration-300 cursor-pointer"
+                        className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-700 text-slate-300 font-bold text-xs hover:bg-slate-800/60 hover:text-white transition-all duration-300 cursor-pointer"
                       >
-                        <ArrowLeft size={16} /> Back
+                        <ArrowLeft size={14} /> Back
                       </button>
                     )}
 
@@ -632,17 +631,17 @@ export default function StartupEvaluation() {
                         type="button"
                         onClick={goNext}
                         disabled={isSubmitting}
-                        className="flex-1 py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-600 text-white font-extrabold text-sm shadow-xl hover:shadow-emerald-500/10 hover:opacity-95 transition-all duration-300 transform active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
+                        className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-600 text-white font-extrabold text-xs shadow-xl hover:shadow-emerald-500/10 hover:opacity-95 transition-all duration-300 transform active:scale-[0.98] flex items-center justify-center gap-1.5 cursor-pointer"
                       >
-                        <span>Next: {SECTIONS[step + 1].title}</span> <ArrowRight size={16} />
+                        <span>Next: {SECTIONS[step + 1].title}</span> <ArrowRight size={14} />
                       </button>
                     ) : (
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className={`flex-1 py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-600 text-white font-extrabold text-sm shadow-xl hover:shadow-emerald-500/10 hover:opacity-95 transition-all duration-300 transform active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer ${isSubmitting ? 'opacity-85 pointer-events-none' : ''}`}
+                        className={`flex-1 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-600 text-white font-extrabold text-xs shadow-xl hover:shadow-emerald-500/10 hover:opacity-95 transition-all duration-300 transform active:scale-[0.98] flex items-center justify-center gap-1.5 cursor-pointer ${isSubmitting ? 'opacity-85 pointer-events-none' : ''}`}
                       >
-                        {isSubmitting ? (<><Loader2 size={16} className="animate-spin text-white" /><span>Submitting Evaluation...</span></>) : (<span>Submit for Evaluation</span>)}
+                        {isSubmitting ? (<><Loader2 size={14} className="animate-spin text-white" /><span>Submitting Evaluation...</span></>) : (<span>Submit for Evaluation</span>)}
                       </button>
                     )}
                   </div>
