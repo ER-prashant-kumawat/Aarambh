@@ -102,12 +102,12 @@ export default function Navbar() {
             <span className="text-xl font-black text-white tracking-tight">Aarambhh</span>
           </Link>
 
-          <div className="hidden lg:flex items-center gap-8">
+          <div className="hidden xl:flex items-center gap-5 2xl:gap-7">
             {navLinks.map((l) => (
               <Link
                 key={l.id}
                 to={l.id}
-                className={`nav-link text-sm font-medium transition-colors ${currentPath === l.id ? 'text-emerald-400' : 'text-slate-300 hover:text-white'}`}
+                className={`nav-link text-sm font-medium whitespace-nowrap transition-colors ${currentPath === l.id ? 'text-emerald-400' : 'text-slate-300 hover:text-white'}`}
               >
                 {l.label}
               </Link>
@@ -116,7 +116,7 @@ export default function Navbar() {
             <div className="relative" ref={dropRef}>
               <button
                 onClick={() => setDropOpen(!dropOpen)}
-                className={`nav-link flex items-center gap-1 text-sm font-medium transition-colors ${isSvcActive ? 'text-emerald-400' : 'text-slate-300 hover:text-white'}`}
+                className={`nav-link flex items-center gap-1 text-sm font-medium whitespace-nowrap transition-colors ${isSvcActive ? 'text-emerald-400' : 'text-slate-300 hover:text-white'}`}
               >
                 Our Services
                 <ChevronDown size={13} className={`transition-transform ${dropOpen ? 'rotate-180' : ''}`} />
@@ -152,7 +152,7 @@ export default function Navbar() {
             </div>
           </div>
 
-          <div className="hidden lg:flex items-center gap-5">
+          <div className="hidden xl:flex items-center gap-3 2xl:gap-5">
             {user ? (
               <div className="flex items-center gap-4">
                 <Link
@@ -180,7 +180,7 @@ export default function Navbar() {
             ) : (
               <Link
                 to="/login"
-                className="flex items-center gap-3 px-5 py-2.5 rounded-xl border border-emerald-500/40 text-emerald-400 text-sm font-semibold hover:bg-emerald-500/10 transition-all"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-emerald-500/40 text-emerald-400 text-sm font-semibold whitespace-nowrap hover:bg-emerald-500/10 transition-all"
               >
                 <Monitor size={15} />
                 Client Dashboard
@@ -189,13 +189,13 @@ export default function Navbar() {
             <Link
               to={GOOGLE_FORM_URL}
               onClick={() => window.scrollTo(0, 0)}
-              className="px-6 py-2.5 rounded-xl grad-em text-white text-sm font-bold shadow-lg hover:opacity-90 hover:scale-105 transition-all"
+              className="px-5 py-2.5 rounded-xl grad-em text-white text-sm font-bold whitespace-nowrap shadow-lg hover:opacity-90 hover:scale-105 transition-all"
             >
               Get Free Quote
             </Link>
           </div>
 
-          <button className="lg:hidden text-white p-2 flex flex-col gap-1.5" onClick={() => setMobOpen(!mobOpen)}>
+          <button className="xl:hidden text-white p-2 flex flex-col gap-1.5" onClick={() => setMobOpen(!mobOpen)}>
             <span className={`block w-6 h-0.5 bg-white transition-all ${mobOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
             <span className={`block w-6 h-0.5 bg-white transition-all ${mobOpen ? 'opacity-0' : ''}`}></span>
             <span className={`block w-6 h-0.5 bg-white transition-all ${mobOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
@@ -204,7 +204,7 @@ export default function Navbar() {
       </div>
 
       {mobOpen && (
-        <div className="lg:hidden border-t border-slate-700/40" style={{ background: 'rgba(15,23,42,0.98)' }}>
+        <div className="xl:hidden border-t border-slate-700/40" style={{ background: 'rgba(15,23,42,0.98)' }}>
           <div className="px-4 py-4 space-y-1">
             {navLinks.map((l) => (
               <Link
