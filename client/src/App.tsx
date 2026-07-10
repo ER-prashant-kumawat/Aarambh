@@ -18,6 +18,7 @@ import GetQuote from './pages/GetQuote';
 import Audit from './pages/Audit';
 import StartupEvaluation from './pages/StartupEvaluation';
 import AdminEvaluations from './pages/admin/Evaluations';
+import DscApplication from './pages/DscApplication';
 
 function AppContent() {
   const location = useLocation();
@@ -42,6 +43,7 @@ function AppContent() {
           <Route path="/services/:id" element={<ServiceDetail />} />
           <Route path="/audit" element={<Audit />} />
           <Route path="/evaluation" element={<StartupEvaluation />} />
+          <Route path="/dsc" element={<DscApplication />} />
           <Route path="/admin/evaluations" element={<AdminEvaluations />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

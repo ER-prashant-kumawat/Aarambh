@@ -5,7 +5,7 @@ import { SERVICES, GOOGLE_FORM_URL } from '../constants/data';
 import MCAChecker from '../components/MCAChecker';
 import JoinSection from '../components/JoinSection';
 import TrustedPartners from '../components/TrustedPartners';
-import { Users, Star, Clock, Lock, DollarSign, Sparkles, Cpu, CheckCircle, ArrowRight, Zap, Check, Monitor, Layers, Search, Shield } from 'lucide-react';
+import { Users, Star, Clock, Lock, DollarSign, Sparkles, Cpu, CheckCircle, ArrowRight, Zap, Check, Monitor, Layers, Search, Shield, KeyRound } from 'lucide-react';
 
 const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
   users: Users,
@@ -203,6 +203,18 @@ export default function Home() {
                     </Link>
                   );
                 })}
+                <Link to="/dsc" onClick={() => window.scrollTo(0, 0)}
+                  className="bento text-left bg-slate-900/60 rounded-2xl p-6 border border-slate-800/80 shadow-md hover:border-emerald-500/30 block flex-shrink-0 min-w-[290px] sm:min-w-[340px] md:min-w-0 snap-center md:snap-align-none">
+                  <div className="w-11 h-11 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4">
+                    <KeyRound size={20} className="text-emerald-400" />
+                  </div>
+                  <h3 className="font-bold text-white text-base mb-1">DSC (Digital Signature Certificate)</h3>
+                  <p className="text-slate-400 text-sm mb-4 line-clamp-2">Secure your e-filings, tenders, and online signing with a government-recognized DSC.</p>
+                  <div className="flex items-center justify-between mt-auto">
+                    <span className="text-emerald-400 font-black text-sm">Starts at ₹826</span>
+                    <span className="flex items-center gap-1 text-emerald-400 text-xs font-semibold">View Details <ArrowRight size={12} /></span>
+                  </div>
+                </Link>
                 <Link to="/audit" onClick={() => window.scrollTo(0, 0)} className="grad-card rounded-2xl p-6 flex flex-col justify-between flex-shrink-0 min-w-[290px] sm:min-w-[340px] md:min-w-0 snap-center md:snap-align-none min-h-[220px] border border-cyan-500/15 hover:border-cyan-400/30 transition-all">
                   <div>
                     <div className="w-11 h-11 rounded-xl bg-cyan-500/10 flex items-center justify-center mb-4">
