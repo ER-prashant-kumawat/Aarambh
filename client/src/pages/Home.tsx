@@ -55,13 +55,54 @@ export default function Home() {
 
   return (
     <div>
-      {/* ANNOUNCEMENT BANNER */}
-      <div className="pt-[76px] bg-emerald-500/10 border-b border-emerald-500/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center justify-center gap-2 text-center">
-          <Zap size={14} className="text-emerald-400 flex-shrink-0" />
-          <p className="text-emerald-300 text-xs sm:text-sm font-semibold">
-            Limited Time Offer — Get your Private Limited Company registered starting at just Rs. 9,448. No hidden fees.
-          </p>
+      {/* BCI YUVA - INVESTOR CONNECT BANNER */}
+      <div className="pt-[76px] bg-[#0a0f1d] border-b border-emerald-500/20">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="relative rounded-3xl border border-emerald-500/25 bg-gradient-to-br from-emerald-950/60 via-slate-900/80 to-slate-900/80 p-5 sm:p-8 overflow-hidden">
+            <div className="absolute -top-10 -right-10 w-56 h-56 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div className="relative text-center">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 mb-4">
+                <div className="status-dot animate-pulse-slow"></div>
+                <span className="text-emerald-300 text-[11px] font-bold tracking-wide uppercase">Registrations Open from 20 July 2026</span>
+              </div>
+
+              <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight mb-2">BCI Yuva – Investor Connect</h2>
+              <p className="text-emerald-400 text-sm sm:text-base font-bold mb-4">Where India's Next High-Growth Startups Meet Investors</p>
+
+              <p className="text-slate-300 text-sm leading-relaxed max-w-3xl mx-auto mb-6">
+                Join one of India's premier startup-investor networking platforms, connecting 100+ promising startups with an investment opportunity pool of up to ₹10 Crore. Pitch your vision, gain guidance from experienced mentors, industry leaders, and investors, and unlock opportunities to scale your venture.
+              </p>
+
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 text-left mb-7">
+                {[
+                  { emoji: '🚀', text: '100+ Curated Startups' },
+                  { emoji: '💰', text: 'Up to ₹10 Crore Investment Pool' },
+                  { emoji: '👨‍💼', text: 'Investors & Venture Capital Network' },
+                  { emoji: '🧠', text: 'Mentors & Industry Leaders' },
+                  { emoji: '🎤', text: 'Live Startup Pitch Sessions' },
+                  { emoji: '🤝', text: 'Networking & Partnership Opportunities' },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-2.5 bg-slate-900/60 border border-slate-800 rounded-xl px-3.5 py-2.5">
+                    <span className="text-lg flex-shrink-0">{item.emoji}</span>
+                    <span className="text-slate-200 text-xs sm:text-sm font-semibold">{item.text}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <Link to="/contact" onClick={() => window.scrollTo(0, 0)} className="px-6 py-3 rounded-xl grad-em text-white text-sm font-bold shadow-lg hover:opacity-90 hover:scale-105 transition-all">
+                  Register Now
+                </Link>
+                <Link to="/contact" onClick={() => window.scrollTo(0, 0)} className="px-6 py-3 rounded-xl border border-emerald-500/40 text-emerald-300 text-sm font-bold hover:bg-emerald-500/10 transition-all">
+                  Become an Investor
+                </Link>
+                <Link to="/contact" onClick={() => window.scrollTo(0, 0)} className="px-6 py-3 rounded-xl border border-slate-700 text-slate-300 text-sm font-bold hover:bg-slate-800/60 hover:text-white transition-all">
+                  Partner With Us
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
