@@ -44,10 +44,10 @@ const initialApplicant: ApplicantState = {
   accountHolderName: '', bankName: '', accountNumber: '', confirmAccountNumber: '', ifscCode: '', branchName: ''
 };
 
-const CLASS_BASE: Record<string, number> = { 'Class 3': 400, 'DGFT': 700, 'Document Signer Class 2': 550 };
+const CLASS_BASE: Record<string, number> = { 'Class 3': 400 };
 const TYPE_ADD: Record<string, number> = { 'Signature': 0, 'Encryption': 150, 'Combo': 300 };
-const VALIDITY_ADD: Record<string, number> = { '1 year': 0, '2 year': 350, '3 year': 650 };
-const APPLICANT_ADD: Record<string, number> = { 'Individual': 0, 'Organisation': 200, 'Government': 250 };
+const VALIDITY_ADD: Record<string, number> = { '1 year': 0, '2 year': 350 };
+const APPLICANT_ADD: Record<string, number> = { 'Individual': 0, 'Organisation': 200 };
 const TOKEN_ADD: Record<string, number> = { 'With Shipping': 300, 'Without Shipping': 150, 'Not Required': 0 };
 const ASSISTANCE_ADD: Record<string, number> = { 'Bronze': 0, 'Silver': 400, 'Gold': 800, 'Platinum': 1200, 'Not Required': 0 };
 
@@ -67,7 +67,7 @@ function computePrice(config: ConfigState): number {
     (APPLICANT_ADD[config.applicantType] || 0) +
     (TOKEN_ADD[config.usbToken] || 0) +
     (ASSISTANCE_ADD[config.personalAssistance] || 0);
-  return Math.round(total * 1.18);
+  return Math.round(total * 1.18) + 1000;
 }
 
 const labelCls = 'text-xs font-bold text-slate-300 uppercase tracking-wider';
@@ -263,16 +263,16 @@ export default function DscApplication() {
                 {step === 0 ? (
                   <div className="space-y-1">
                     <ConfigRow label="Certificate Class">
-                      <PillRow options={['Class 3', 'DGFT', 'Document Signer Class 2']} value={config.certificateClass} onChange={setConfigField('certificateClass')} />
+                      <PillRow options={['Class 3']} value={config.certificateClass} onChange={setConfigField('certificateClass')} />
                     </ConfigRow>
                     <ConfigRow label="Certificate Type">
                       <PillRow options={['Signature', 'Encryption', 'Combo']} value={config.certificateType} onChange={setConfigField('certificateType')} />
                     </ConfigRow>
                     <ConfigRow label="Validity">
-                      <PillRow options={['1 year', '2 year', '3 year']} value={config.validity} onChange={setConfigField('validity')} />
+                      <PillRow options={['1 year', '2 year']} value={config.validity} onChange={setConfigField('validity')} />
                     </ConfigRow>
                     <ConfigRow label="Type">
-                      <PillRow options={['Individual', 'Organisation', 'Government']} value={config.applicantType} onChange={setConfigField('applicantType')} />
+                      <PillRow options={['Individual', 'Organisation']} value={config.applicantType} onChange={setConfigField('applicantType')} />
                     </ConfigRow>
                     <ConfigRow label="Are you an Indian Citizen">
                       <PillRow options={['Yes', 'No']} value={config.isIndianCitizen} onChange={setConfigField('isIndianCitizen')} />
