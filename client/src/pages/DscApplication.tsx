@@ -134,6 +134,7 @@ export default function DscApplication() {
   const price = useMemo(() => computePrice(config), [config]);
 
   const setConfigField = (field: keyof ConfigState) => (value: string) => setConfig((p) => ({ ...p, [field]: value }));
+  const toggleConfigField = (field: keyof ConfigState) => (value: string) => setConfig((p) => ({ ...p, [field]: p[field] === value ? '' : value }));
 
   const handleApplicantChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -263,19 +264,19 @@ export default function DscApplication() {
                 {step === 0 ? (
                   <div className="space-y-1">
                     <ConfigRow label="Certificate Class">
-                      <PillRow options={['Class 3']} value={config.certificateClass} onChange={setConfigField('certificateClass')} />
+                      <PillRow options={['Class 3']} value={config.certificateClass} onChange={toggleConfigField('certificateClass')} />
                     </ConfigRow>
                     <ConfigRow label="Certificate Type">
-                      <PillRow options={['Signature', 'Encryption', 'Combo']} value={config.certificateType} onChange={setConfigField('certificateType')} />
+                      <PillRow options={['Signature', 'Encryption', 'Combo']} value={config.certificateType} onChange={toggleConfigField('certificateType')} />
                     </ConfigRow>
                     <ConfigRow label="Validity">
-                      <PillRow options={['1 year', '2 year']} value={config.validity} onChange={setConfigField('validity')} />
+                      <PillRow options={['1 year', '2 year']} value={config.validity} onChange={toggleConfigField('validity')} />
                     </ConfigRow>
                     <ConfigRow label="Type">
-                      <PillRow options={['Individual', 'Organisation']} value={config.applicantType} onChange={setConfigField('applicantType')} />
+                      <PillRow options={['Individual', 'Organisation']} value={config.applicantType} onChange={toggleConfigField('applicantType')} />
                     </ConfigRow>
                     <ConfigRow label="Are you an Indian Citizen">
-                      <PillRow options={['Yes', 'No']} value={config.isIndianCitizen} onChange={setConfigField('isIndianCitizen')} />
+                      <PillRow options={['Yes', 'No']} value={config.isIndianCitizen} onChange={toggleConfigField('isIndianCitizen')} />
                     </ConfigRow>
                     <ConfigRow label="USB Token">
                       <div className="flex rounded-lg border border-slate-700 overflow-hidden w-fit">
