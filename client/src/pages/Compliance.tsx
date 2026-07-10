@@ -35,8 +35,8 @@ export default function Compliance() {
           <div className="mb-8 flex items-start gap-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl p-5">
             <AlertCircle size={20} className="text-amber-400 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="font-bold text-amber-300 text-sm">Non-Compliance Penalties in India Are Severe</p>
-              <p className="text-amber-400/80 text-sm mt-0.5">MCA default filings: ₹200/day penalty. GST non-compliance: 18% interest charge. Late TDS filing: prosecution risk under Section 276B.</p>
+              <p className="font-bold text-amber-300 text-sm">Your Idea is Only as Secure as Your Architecture</p>
+              <p className="text-amber-400/80 text-sm mt-0.5">90% of startup failures stem from co-founder disputes and stolen intellectual property. Protect your equity and secure your digital assets with watertight agreements from Day 1.</p>
             </div>
           </div>
 
