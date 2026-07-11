@@ -18,6 +18,11 @@ export interface User {
   tanStatus: string;
   gstStatus: string;
   milestoneStep: number;
+  complianceConfigured: number[];
+  emailPlan: string | null;
+  webPlan: string | null;
+  emailActivated: boolean;
+  webLaunched: boolean;
 }
 
 export interface DocumentType {
@@ -42,6 +47,8 @@ export interface AuthContextProps {
   fetchDocs: () => Promise<void>;
   uploadDoc: (formData: FormData) => Promise<{ success: boolean; error?: string }>;
   deleteDoc: (id: string) => Promise<{ success: boolean; error?: string }>;
+  updateCompliance: (index: number, configured: boolean) => Promise<{ success: boolean; error?: string }>;
+  updateTechSetup: (data: Partial<Pick<User, 'emailPlan' | 'webPlan' | 'emailActivated' | 'webLaunched'>>) => Promise<{ success: boolean; error?: string }>;
 }
 
 export const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -166,6 +173,36 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // Toggle a compliance item's configured state
+  const updateCompliance = async (index: number, configured: boolean) => {
+    try {
+      const res = await axios.put(`${API_URL}/dashboard/compliance`, { index, configured });
+      setUser(res.data);
+      return { success: true };
+    } catch (err: any) {
+      console.error('Update compliance error:', err);
+      return {
+        success: false,
+        error: err.response?.data?.msg || 'Failed to update compliance status'
+      };
+    }
+  };
+
+  // Update tech setup hub selections/activation flags
+  const updateTechSetup = async (data: Partial<Pick<User, 'emailPlan' | 'webPlan' | 'emailActivated' | 'webLaunched'>>) => {
+    try {
+      const res = await axios.put(`${API_URL}/dashboard/tech-setup`, data);
+      setUser(res.data);
+      return { success: true };
+    } catch (err: any) {
+      console.error('Update tech setup error:', err);
+      return {
+        success: false,
+        error: err.response?.data?.msg || 'Failed to update tech setup'
+      };
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -178,7 +215,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         logout,
         fetchDocs,
         uploadDoc,
-        deleteDoc
+        deleteDoc,
+        updateCompliance,
+        updateTechSetup
       }}
     >
       {children}

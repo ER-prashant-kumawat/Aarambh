@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { COMPLIANCE_ITEMS, colorMap, GOOGLE_FORM_URL } from '../../constants/data';
-import { FileText, DollarSign, Users, Shield, Lock, Globe, AlertCircle, CheckCircle, Check } from 'lucide-react';
+import { AuthContext, type User } from '../../context/AuthContext';
+import { FileText, DollarSign, Users, Shield, Lock, Globe, AlertCircle, CheckCircle, Check, Loader2 } from 'lucide-react';
 
 const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
   fileText: FileText,
@@ -11,8 +12,22 @@ const iconMap: Record<string, React.ComponentType<{ size?: number; className?: s
   globe: Globe
 };
 
-export default function ComplianceDash() {
-  const [configured, setConfigured] = useState<Record<number, boolean>>({});
+interface ComplianceDashProps {
+  user: User;
+}
+
+export default function ComplianceDash({ user }: ComplianceDashProps) {
+  const auth = useContext(AuthContext);
+  const [savingIndex, setSavingIndex] = useState<number | null>(null);
+  const configured: Record<number, boolean> = {};
+  (user.complianceConfigured || []).forEach((i) => { configured[i] = true; });
+
+  const handleConfigure = async (i: number) => {
+    if (!auth) return;
+    setSavingIndex(i);
+    await auth.updateCompliance(i, true);
+    setSavingIndex(null);
+  };
 
   return (
     <div className="animate-fade-in space-y-6">
@@ -46,8 +61,11 @@ export default function ComplianceDash() {
                     <CheckCircle size={13} className="text-emerald-400" />Configured
                   </span>
                 ) : (
-                  <button onClick={() => setConfigured(p => ({ ...p, [i]: true }))}
-                    className="px-3 py-1.5 rounded-lg grad-em text-white text-xs font-bold hover:opacity-90">Configure →</button>
+                  <button onClick={() => handleConfigure(i)} disabled={savingIndex === i}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg grad-em text-white text-xs font-bold hover:opacity-90 disabled:opacity-70">
+                    {savingIndex === i ? <Loader2 size={12} className="animate-spin" /> : null}
+                    {savingIndex === i ? 'Saving...' : 'Configure →'}
+                  </button>
                 )}
                 <a href={GOOGLE_FORM_URL} target="_blank" rel="noopener noreferrer" className="text-xs text-slate-500 hover:text-emerald-400 transition-colors font-medium">Get Quote</a>
               </div>

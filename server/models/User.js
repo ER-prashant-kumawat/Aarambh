@@ -18,7 +18,16 @@ const UserSchema = new mongoose.Schema({
   panStatus: { type: String, default: "Applied" },
   tanStatus: { type: String, default: "Applied" },
   gstStatus: { type: String, default: "Pending Application" },
-  milestoneStep: { type: Number, default: 1 } // 1 to 5
+  milestoneStep: { type: Number, default: 1 }, // 1 to 5
+
+  // Compliance Dashboard state
+  complianceConfigured: { type: [Number], default: [] }, // indices of configured compliance items
+
+  // Tech Setup Hub state
+  emailPlan: { type: String, default: null },
+  webPlan: { type: String, default: null },
+  emailActivated: { type: Boolean, default: false },
+  webLaunched: { type: Boolean, default: false }
 });
 
 module.exports = mongoose.model('User', UserSchema);

@@ -103,7 +103,7 @@ export default function DashboardShell() {
         {tab === "overview" && <Overview user={user} setTab={handleTabChange} />}
         {tab === "wallet" && <FounderWallet />}
         {tab === "techsetup" && <TechSetupHub user={user} />}
-        {tab === "compliance" && <ComplianceDash />}
+        {tab === "compliance" && <ComplianceDash user={user} />}
         {tab === "profile" && <Profile user={user} />}
       </div>
     </div>

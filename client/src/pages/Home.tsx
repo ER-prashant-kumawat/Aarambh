@@ -1,10 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { SERVICES, GOOGLE_FORM_URL } from '../constants/data';
 import MCAChecker from '../components/MCAChecker';
 import JoinSection from '../components/JoinSection';
 import TrustedPartners from '../components/TrustedPartners';
+import BciYuvaModal, { type BciYuvaMode } from '../components/BciYuvaModal';
 import { Users, Star, Clock, Lock, DollarSign, Sparkles, Cpu, CheckCircle, ArrowRight, Zap, Check, Monitor, Layers, Search, Shield, KeyRound } from 'lucide-react';
 
 const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
@@ -31,6 +32,7 @@ export default function Home() {
   const navigate = useNavigate();
 
   const user = auth ? auth.user : null;
+  const [bciModal, setBciModal] = useState<BciYuvaMode | null>(null);
 
   const handleDemoLogin = () => {
     if (user) {
@@ -91,15 +93,15 @@ export default function Home() {
               </div>
 
               <div className="flex flex-wrap items-center justify-center gap-3">
-                <Link to="/contact" onClick={() => window.scrollTo(0, 0)} className="px-6 py-3 rounded-xl grad-em text-white text-sm font-bold shadow-lg hover:opacity-90 hover:scale-105 transition-all">
+                <button onClick={() => setBciModal('register')} className="px-6 py-3 rounded-xl grad-em text-white text-sm font-bold shadow-lg hover:opacity-90 hover:scale-105 transition-all cursor-pointer">
                   Register Now
-                </Link>
-                <Link to="/contact" onClick={() => window.scrollTo(0, 0)} className="px-6 py-3 rounded-xl border border-emerald-500/40 text-emerald-300 text-sm font-bold hover:bg-emerald-500/10 transition-all">
+                </button>
+                <button onClick={() => setBciModal('investor')} className="px-6 py-3 rounded-xl border border-emerald-500/40 text-emerald-300 text-sm font-bold hover:bg-emerald-500/10 transition-all cursor-pointer">
                   Become an Investor
-                </Link>
-                <Link to="/contact" onClick={() => window.scrollTo(0, 0)} className="px-6 py-3 rounded-xl border border-slate-700 text-slate-300 text-sm font-bold hover:bg-slate-800/60 hover:text-white transition-all">
+                </button>
+                <button onClick={() => setBciModal('partner')} className="px-6 py-3 rounded-xl border border-slate-700 text-slate-300 text-sm font-bold hover:bg-slate-800/60 hover:text-white transition-all cursor-pointer">
                   Partner With Us
-                </Link>
+                </button>
               </div>
             </div>
           </div>
@@ -392,6 +394,8 @@ export default function Home() {
       </section>
 
       <JoinSection />
+
+      {bciModal && <BciYuvaModal mode={bciModal} onClose={() => setBciModal(null)} />}
     </div>
   );
 }

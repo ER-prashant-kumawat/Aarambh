@@ -45,6 +45,9 @@ app.use('/api/documents', require('./routes/documents'));
 app.use('/api/quote', require('./routes/quote'));
 app.use('/api/orders', require('./routes/orders'));
 app.use('/api/categories', require('./routes/categories'));
+app.use('/api/evaluations', require('./routes/evaluations'));
+app.use('/api/dsc', require('./routes/dsc'));
+app.use('/api/dashboard', require('./routes/dashboard'));
 // Root route for server verification/health checks
 app.get('/', (req, res) => {
   res.json({

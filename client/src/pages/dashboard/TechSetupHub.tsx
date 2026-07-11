@@ -1,16 +1,43 @@
-import { useState } from 'react';
-import type { User } from '../../context/AuthContext';
-import { Mail, Shield, Check, Globe, Monitor, Rocket, Layers, Activity, Eye, Server, Wifi, Code, Settings, CheckCircle2 } from 'lucide-react';
+import { useContext, useState } from 'react';
+import { AuthContext, type User } from '../../context/AuthContext';
+import { Mail, Shield, Check, Globe, Monitor, Rocket, Layers, Activity, Eye, Server, Wifi, Code, Settings, CheckCircle2, Loader2 } from 'lucide-react';
 
 interface TechSetupHubProps {
   user: User;
 }
 
 export default function TechSetupHub({ user }: TechSetupHubProps) {
-  const [emailPlan, setEmailPlan] = useState<string | null>(null);
-  const [webPlan, setWebPlan] = useState<string | null>(null);
-  const [emailActivated, setEmailActivated] = useState(false);
-  const [webLaunched, setWebLaunched] = useState(false);
+  const auth = useContext(AuthContext);
+  const [emailPlan, setEmailPlan] = useState<string | null>(user.emailPlan);
+  const [webPlan, setWebPlan] = useState<string | null>(user.webPlan);
+  const [emailActivated, setEmailActivated] = useState(user.emailActivated);
+  const [webLaunched, setWebLaunched] = useState(user.webLaunched);
+  const [savingEmail, setSavingEmail] = useState(false);
+  const [savingWeb, setSavingWeb] = useState(false);
+
+  const selectEmailPlan = async (id: string) => {
+    setEmailPlan(id);
+    if (auth) await auth.updateTechSetup({ emailPlan: id });
+  };
+
+  const selectWebPlan = async (id: string) => {
+    setWebPlan(id);
+    if (auth) await auth.updateTechSetup({ webPlan: id });
+  };
+
+  const activateEmail = async () => {
+    setSavingEmail(true);
+    if (auth) await auth.updateTechSetup({ emailActivated: true });
+    setEmailActivated(true);
+    setSavingEmail(false);
+  };
+
+  const launchWeb = async () => {
+    setSavingWeb(true);
+    if (auth) await auth.updateTechSetup({ webLaunched: true });
+    setWebLaunched(true);
+    setSavingWeb(false);
+  };
 
   const domain = user.companyName.split(" ")[0].toLowerCase() + ".in";
 
@@ -65,7 +92,7 @@ export default function TechSetupHub({ user }: TechSetupHubProps) {
         {/* Plans */}
         <div className="grid sm:grid-cols-3 gap-4 mb-6">
           {emailPlans.map(plan => (
-            <button key={plan.id} onClick={() => setEmailPlan(plan.id)}
+            <button key={plan.id} onClick={() => selectEmailPlan(plan.id)}
               className={`p-4 rounded-2xl border-2 text-left transition-all block w-full ${emailPlan === plan.id ? "border-emerald-400 bg-emerald-500/10" : "border-slate-700/50 hover:border-emerald-500/40 hover:bg-slate-800/40"}`}>
               <div className="flex items-center justify-between mb-3">
                 <span className="text-white font-bold text-sm">{plan.name}</span>
@@ -92,8 +119,9 @@ export default function TechSetupHub({ user }: TechSetupHubProps) {
             </div>
           </div>
         ) : (
-          <button disabled={!emailPlan} onClick={() => setEmailActivated(true)}
-            className={`px-6 py-3 rounded-xl text-white font-bold text-sm transition-all ${emailPlan ? "grad-em hover:opacity-90 shadow-lg" : "bg-slate-700 text-slate-500 cursor-not-allowed"}`}>
+          <button disabled={!emailPlan || savingEmail} onClick={activateEmail}
+            className={`flex items-center gap-2 px-6 py-3 rounded-xl text-white font-bold text-sm transition-all ${emailPlan ? "grad-em hover:opacity-90 shadow-lg" : "bg-slate-700 text-slate-500 cursor-not-allowed"}`}>
+            {savingEmail && <Loader2 size={15} className="animate-spin" />}
             {emailPlan ? `Activate ${emailPlans.find(p => p.id === emailPlan)?.name} →` : "Select a Plan to Continue"}
           </button>
         )}
@@ -112,7 +140,7 @@ export default function TechSetupHub({ user }: TechSetupHubProps) {
           {webOptions.map(opt => {
             const Icon = opt.icon;
             return (
-              <button key={opt.id} onClick={() => setWebPlan(opt.id)}
+              <button key={opt.id} onClick={() => selectWebPlan(opt.id)}
                 className={`p-5 rounded-2xl border-2 text-left transition-all block w-full ${webPlan === opt.id ? "border-blue-400 bg-blue-500/8" : "border-slate-700/50 hover:border-blue-500/40 hover:bg-slate-800/40"}`}>
                 <div className={`w-10 h-10 rounded-xl ${opt.color} flex items-center justify-center mb-4`}>
                   <Icon size={18} className="text-white" />
@@ -157,8 +185,9 @@ export default function TechSetupHub({ user }: TechSetupHubProps) {
             </div>
           </div>
         ) : (
-          <button disabled={!webPlan} onClick={() => setWebLaunched(true)}
-            className={`px-6 py-3 rounded-xl text-white font-bold text-sm transition-all ${webPlan ? "grad-blue hover:opacity-90 shadow-lg" : "bg-slate-700 text-slate-500 cursor-not-allowed"}`}>
+          <button disabled={!webPlan || savingWeb} onClick={launchWeb}
+            className={`flex items-center gap-2 px-6 py-3 rounded-xl text-white font-bold text-sm transition-all ${webPlan ? "grad-blue hover:opacity-90 shadow-lg" : "bg-slate-700 text-slate-500 cursor-not-allowed"}`}>
+            {savingWeb && <Loader2 size={15} className="animate-spin" />}
             {webPlan ? `Launch ${webOptions.find(o => o.id === webPlan)?.name} →` : "Select a Template to Continue"}
           </button>
         )}
