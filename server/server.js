@@ -7,15 +7,27 @@ require('dotenv').config();
 const app = express();
 
 // Init Middleware
+const STATIC_ORIGINS = [
+  'https://aarambh-git-main-vishal-sukhwal-s-projects.vercel.app',
+  'https://aarambhh.com',
+  'https://www.aarambhh.com',
+  'https://aarambh.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:3000',
+  // Extra comma-separated origins can be added via env without a code change
+  ...(process.env.FRONTEND_URLS || '').split(',').map((s) => s.trim()).filter(Boolean),
+];
+
 app.use(cors({
-  origin: [
-    'https://aarambh-git-main-vishal-sukhwal-s-projects.vercel.app',
-    'https://aarambhh.com',
-    'https://www.aarambhh.com',
-    'https://aarambh.vercel.app',
-    'http://localhost:5173',
-    'http://localhost:3000'
-  ],
+  origin: (origin, callback) => {
+    // Allow non-browser requests (no Origin header), the allowlist,
+    // and any Vercel deployment of the frontend (production + previews).
+    if (!origin || STATIC_ORIGINS.includes(origin) || /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin)) {
+      return callback(null, true);
+    }
+    console.warn('[CORS] Blocked origin:', origin);
+    return callback(null, false);
+  },
   credentials: true
 }));
 app.use(express.json({ extended: false }));
