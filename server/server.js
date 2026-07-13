@@ -48,6 +48,7 @@ app.use('/api/categories', require('./routes/categories'));
 app.use('/api/evaluations', require('./routes/evaluations'));
 app.use('/api/dsc', require('./routes/dsc'));
 app.use('/api/dashboard', require('./routes/dashboard'));
+app.use('/api/broadcast', require('./routes/broadcast'));
 // Root route for server verification/health checks
 app.get('/', (req, res) => {
   res.json({
@@ -61,6 +62,34 @@ app.get('/', (req, res) => {
 if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
   app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 }
+
+// ── Safety Nets ───────────────────────────────────────────────────────────────
+// Unknown API route → clean JSON 404 instead of an HTML error page
+app.use('/api', (req, res) => {
+  res.status(404).json({ success: false, msg: 'API route not found.' });
+});
+
+// Global error handler — any uncaught route error still returns clean JSON,
+// so the frontend never sees a raw HTML error page or a dropped connection.
+app.use((err, req, res, next) => {
+  console.error('[SERVER] Unhandled error:', err.message);
+  if (res.headersSent) return next(err);
+  if (err.type === 'entity.parse.failed' || err instanceof SyntaxError) {
+    return res.status(400).json({ success: false, msg: 'Invalid request data. Please refresh the page and try again.' });
+  }
+  if (err.name === 'MulterError') {
+    const msg = err.code === 'LIMIT_FILE_SIZE'
+      ? 'One of the attached files is larger than 5 MB. Please upload a smaller file.'
+      : `File upload error: ${err.message}`;
+    return res.status(400).json({ success: false, msg });
+  }
+  res.status(500).json({ success: false, msg: 'Something went wrong on the server. Please try again.' });
+});
+
+// Never let a stray async error crash the whole server
+process.on('unhandledRejection', (err) => {
+  console.error('[SERVER] Unhandled promise rejection:', err && err.message ? err.message : err);
+});
 
 // ── Local Development Server ──────────────────────────────────────────────────
 // app.listen() is guarded so it does NOT run inside Vercel's serverless runtime.

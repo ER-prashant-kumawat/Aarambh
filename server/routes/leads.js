@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const Lead = require('../models/Lead');
+const auth = require('../middleware/auth');
+const adminAuth = require('../middleware/adminAuth');
 
 const buildAuditRecommendation = (answers = {}) => {
   const q1 = answers.q1 || '';
@@ -199,6 +201,19 @@ router.post('/audit', async (req, res) => {
     });
 
     res.json({ success: true, data: savedLead, recommendation, whatsappMessage });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route   GET api/leads
+// @desc    List all captured leads (callback/quote/audit/professional/BCI Yuva etc.)
+// @access  Private (admin only)
+router.get('/', auth, adminAuth, async (req, res) => {
+  try {
+    const leads = await Lead.find().sort({ dateSubmitted: -1 });
+    res.json({ success: true, leads });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

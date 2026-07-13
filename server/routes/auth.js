@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const auth = require('../middleware/auth');
+const adminAuth = require('../middleware/adminAuth');
 const User = require('../models/User');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'aarambhh_jwt_secret_token_123';
@@ -106,6 +107,19 @@ router.get('/me', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
     res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route   GET api/auth/users
+// @desc    List all registered founder accounts
+// @access  Private (admin only)
+router.get('/users', auth, adminAuth, async (req, res) => {
+  try {
+    const users = await User.find().select('-password').sort({ dateCreated: -1 });
+    res.json({ success: true, users });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

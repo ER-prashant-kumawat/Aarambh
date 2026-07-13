@@ -170,7 +170,7 @@ export default function PackageDetail() {
     } catch (err: any) {
       console.error('Order Submission Error:', err);
       setSubmitStatus('error');
-      const msg = err.response?.data?.msg || err.message || 'Failed to place your order. Please check your connection.';
+      const msg = err.response?.data?.msg || 'Could not reach the server. Please check your internet connection and try again in a moment.';
       setErrorMessage(msg);
       showToast(msg, 'error');
     } finally {

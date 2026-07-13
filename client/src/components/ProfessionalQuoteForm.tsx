@@ -277,7 +277,7 @@ export default function ProfessionalQuoteForm() {
     } catch (err: any) {
       console.error('Professional quote submission error:', err);
       setSubmitStatus('error');
-      const msg = err.response?.data?.msg || err.message || 'Failed to submit your inquiry. Please try again.';
+      const msg = err.response?.data?.msg || 'Could not reach the server. Please check your internet connection and try again in a moment.';
       setErrorMessage(msg);
       showToast(msg, 'error');
     } finally {

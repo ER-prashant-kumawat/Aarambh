@@ -58,13 +58,6 @@ router.post('/', async (req, res) => {
     });
   }
 
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    return res.status(500).json({
-      success: false,
-      msg: 'Server misconfiguration: SMTP credentials are not set.',
-    });
-  }
-
   const formattedServices = Array.isArray(servicesRequired)
     ? servicesRequired.join(', ')
     : servicesRequired || 'Not Specified';
@@ -160,23 +153,31 @@ ${notes || 'None provided'}
 
     const mailOptions = {
       from: `"Aarambhh Onboarding" <${process.env.EMAIL_USER}>`,
-      to: 'vishal.kvanta@gmail.com',
+      to: process.env.ADMIN_NOTIFY_EMAIL || 'aarambhh100@gmail.com',
       replyTo: email,
       subject: `New Corporate Quote Request - ${startupName || name}`,
       text: textContent,
       html: htmlContent,
     };
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log('[API/QUOTE] Mail sent:', info.messageId);
-
-    return res.status(200).json({
+    // Respond as soon as the lead is saved — the admin email goes out in the
+    // background so a slow or failed SMTP connection can never fail the form.
+    res.status(200).json({
       success: true,
-      msg: 'Quote request submitted and confirmation email sent successfully!',
+      msg: 'Quote request submitted successfully!',
       leadId: savedLead._id,
     });
+
+    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+      transporter.sendMail(mailOptions)
+        .then((info) => console.log('[API/QUOTE] Mail sent:', info.messageId))
+        .catch((err) => console.error('[API/QUOTE] Mail failed:', err.message));
+    } else {
+      console.error('[API/QUOTE] ⚠️ SMTP credentials missing — admin email skipped.');
+    }
   } catch (error) {
     console.error('[API/QUOTE] Operation failed:', error.message);
+    if (res.headersSent) return;
     return res.status(500).json({
       success: false,
       msg: 'Failed to process your request. Please try again.',
@@ -212,13 +213,6 @@ router.post('/professional', async (req, res) => {
     return res.status(400).json({
       success: false,
       msg: 'Company name is required for company owners and founders.',
-    });
-  }
-
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    return res.status(500).json({
-      success: false,
-      msg: 'Server misconfiguration: SMTP credentials are not set.',
     });
   }
 
@@ -318,23 +312,31 @@ ${notes || 'None provided'}
 
     const mailOptions = {
       from: `"Aarambhh Onboarding" <${process.env.EMAIL_USER}>`,
-      to: 'vishal.kvanta@gmail.com',
+      to: process.env.ADMIN_NOTIFY_EMAIL || 'aarambhh100@gmail.com',
       replyTo: email,
       subject: `New Professional Inquiry - ${companyName || name}`,
       text: textContent,
       html: htmlContent,
     };
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log('[API/QUOTE/PROFESSIONAL] Mail sent:', info.messageId);
-
-    return res.status(200).json({
+    // Respond as soon as the lead is saved — the admin email goes out in the
+    // background so a slow or failed SMTP connection can never fail the form.
+    res.status(200).json({
       success: true,
       msg: 'Professional inquiry submitted successfully!',
       leadId: savedLead._id,
     });
+
+    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+      transporter.sendMail(mailOptions)
+        .then((info) => console.log('[API/QUOTE/PROFESSIONAL] Mail sent:', info.messageId))
+        .catch((err) => console.error('[API/QUOTE/PROFESSIONAL] Mail failed:', err.message));
+    } else {
+      console.error('[API/QUOTE/PROFESSIONAL] ⚠️ SMTP credentials missing — admin email skipped.');
+    }
   } catch (error) {
     console.error('[API/QUOTE/PROFESSIONAL] Operation failed:', error.message);
+    if (res.headersSent) return;
     return res.status(500).json({
       success: false,
       msg: 'Failed to process your request. Please try again.',

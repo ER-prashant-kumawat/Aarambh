@@ -9,10 +9,12 @@ interface FormState {
   email: string;
   mobileNumber: string;
   linkedinProfile: string;
-  cityCountry: string;
+  city: string;
+  state: string;
   startupName: string;
   website: string;
   industrySector: string;
+  industryOther: string;
   stage: string;
   fullTime: string;
   numberOfFounders: string;
@@ -40,7 +42,8 @@ interface FormState {
   partnerships: string;
 
   howYouMakeMoney: string;
-  pricingModel: string;
+  pricingModels: string[];
+  pricingModelOther: string;
   expectedRevenue12Months: string;
 
   raisedFundingBefore: string;
@@ -70,13 +73,13 @@ interface FileState {
 }
 
 const initialForm: FormState = {
-  founderName: '', email: '', mobileNumber: '', linkedinProfile: '', cityCountry: '',
-  startupName: '', website: '', industrySector: '', stage: '', fullTime: '', numberOfFounders: '', founderBackground: '',
+  founderName: '', email: '', mobileNumber: '', linkedinProfile: '', city: '', state: '',
+  startupName: '', website: '', industrySector: '', industryOther: '', stage: '', fullTime: '', numberOfFounders: '', founderBackground: '',
   oneLineDescription: '', problemSolved: '', targetCustomer: '', howItWorks: '', differentiation: '',
   targetMarket: '', estimatedMarketSize: '', mainCompetitors: '', whyCustomersChooseYou: '',
   productStage: '', productDemoLink: '',
   numberOfUsers: '', payingCustomers: '', monthlyRevenue: '', monthlyGrowthPercent: '', pilotCustomers: '', partnerships: '',
-  howYouMakeMoney: '', pricingModel: '', expectedRevenue12Months: '',
+  howYouMakeMoney: '', pricingModels: [], pricingModelOther: '', expectedRevenue12Months: '',
   raisedFundingBefore: '', amountRaised: '', expectedFundingCurrentStage: '', plannedUseOfFunds: [],
   legalCompliance: [],
   whyBuildingThis: '', fiveYearVision: '', whyInvestInYou: '',
@@ -87,6 +90,27 @@ const initialFiles: FileState = {
   pitchDeck: null, screenshots: [], incorporationCert: null, trademarkCert: null, gstCert: null,
   onePager: null, financialProjection: null, founderResume: null
 };
+
+const INDUSTRY_OPTIONS = [
+  'Technology / SaaS',
+  'AI / Machine Learning',
+  'Fintech',
+  'Agriculture / AgriTech',
+  'Textile / Apparel',
+  'E-commerce / D2C',
+  'Healthcare / MedTech',
+  'EdTech',
+  'Food & Beverage',
+  'Logistics / Supply Chain',
+  'Real Estate / PropTech',
+  'Travel & Hospitality',
+  'Media & Entertainment',
+  'Manufacturing',
+  'Energy / CleanTech',
+  'Retail',
+  'Legal / Compliance',
+  'HR / Recruitment',
+];
 
 const SECTIONS = [
   { title: 'Founder Details', points: 15 },
@@ -102,8 +126,8 @@ const SECTIONS = [
 ];
 
 const inputCls = (hasError?: boolean) =>
-  `w-full px-3.5 py-2.5 rounded-lg border bg-slate-955/40 text-white text-sm focus:outline-none focus:ring-2 transition-all duration-300 placeholder-slate-600 ${
-    hasError ? 'border-red-500/50 focus:ring-red-500/25' : 'border-slate-800 focus:border-emerald-500/50 focus:ring-emerald-500/15'
+  `w-full px-3.5 py-2 rounded-lg border bg-slate-950/70 text-white text-sm focus:outline-none focus:ring-2 transition-all duration-300 placeholder-slate-500 ${
+    hasError ? 'border-red-500/50 focus:ring-red-500/25' : 'border-slate-600 focus:border-emerald-500/50 focus:ring-emerald-500/15'
   }`;
 
 const labelCls = 'block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5';
@@ -128,8 +152,8 @@ function ChoiceGroup({ options, value, onChange, columns = 2 }: { options: strin
             key={opt}
             type="button"
             onClick={() => onChange(selected ? '' : opt)}
-            className={`flex items-center gap-2 px-3.5 py-2.5 rounded-lg border text-left transition-all duration-200 cursor-pointer ${
-              selected ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-300' : 'bg-slate-950/20 border-slate-800 text-slate-400 hover:border-slate-700'
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-lg border text-left transition-all duration-200 cursor-pointer ${
+              selected ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-300' : 'bg-slate-950/40 border-slate-600 text-slate-300 hover:border-slate-400'
             }`}
           >
             <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center flex-shrink-0 ${selected ? 'border-emerald-400 bg-emerald-500/20' : 'border-slate-600'}`}>
@@ -153,8 +177,8 @@ function MultiChoiceGroup({ options, values, onToggle, columns = 2 }: { options:
             key={opt}
             type="button"
             onClick={() => onToggle(opt)}
-            className={`flex items-center gap-2 px-3.5 py-2.5 rounded-lg border text-left transition-all duration-200 cursor-pointer ${
-              selected ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-300' : 'bg-slate-950/20 border-slate-800 text-slate-400 hover:border-slate-700'
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-lg border text-left transition-all duration-200 cursor-pointer ${
+              selected ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-300' : 'bg-slate-950/40 border-slate-600 text-slate-300 hover:border-slate-400'
             }`}
           >
             <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center flex-shrink-0 ${selected ? 'border-emerald-400 bg-emerald-500/20' : 'border-slate-600'}`}>
@@ -173,7 +197,7 @@ function FileInput({ label, file, onChange, accept, multiple }: { label: string;
   return (
     <div>
       <label className={labelCls}>{label} <span className="text-slate-500 font-medium normal-case italic">(optional)</span></label>
-      <label className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg border border-dashed border-slate-700 bg-slate-950/20 text-slate-400 text-xs font-semibold cursor-pointer hover:border-emerald-500/40 hover:text-emerald-300 transition-colors">
+      <label className="flex items-center gap-2 px-3.5 py-2 rounded-lg border border-dashed border-slate-500 bg-slate-950/40 text-slate-300 text-xs font-semibold cursor-pointer hover:border-emerald-500/40 hover:text-emerald-300 transition-colors">
         <Upload size={14} />
         <span>{files.length > 0 ? `${files.length} file(s) selected` : 'Click to upload'}</span>
         <input type="file" accept={accept} multiple={multiple} className="hidden" onChange={(e) => onChange(e.target.files)} />
@@ -201,6 +225,10 @@ export default function StartupEvaluation() {
   const [errorMessage, setErrorMessage] = useState('');
   const [step, setStep] = useState(0);
   const topRef = useRef<HTMLDivElement>(null);
+  const stepScrollRef = useRef<HTMLDivElement>(null);
+  // Set when the user lands on the final step; a submit fired too soon after
+  // (e.g. the second click of a double-click on "Next") is ignored.
+  const arrivedAtLastStepAt = useRef(0);
 
   const lastStep = SECTIONS.length - 1;
 
@@ -215,7 +243,7 @@ export default function StartupEvaluation() {
     if (errors[field]) setErrors((prev) => ({ ...prev, [field]: '' }));
   };
 
-  const toggleMulti = (field: 'plannedUseOfFunds' | 'legalCompliance') => (value: string) => {
+  const toggleMulti = (field: 'plannedUseOfFunds' | 'legalCompliance' | 'pricingModels') => (value: string) => {
     setForm((prev) => {
       const current = prev[field];
       const next = current.includes(value) ? current.filter((v) => v !== value) : [...current, value];
@@ -224,6 +252,9 @@ export default function StartupEvaluation() {
   };
 
   const scrollToTop = () => {
+    // Reset the step content's own scrollbar, then scroll the page so the
+    // form sits just below the fixed navbar instead of hiding behind it.
+    if (stepScrollRef.current) stepScrollRef.current.scrollTop = 0;
     topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
@@ -254,7 +285,11 @@ export default function StartupEvaluation() {
       return;
     }
     setErrors({});
-    setStep((s) => Math.min(s + 1, lastStep));
+    setStep((s) => {
+      const next = Math.min(s + 1, lastStep);
+      if (next === lastStep) arrivedAtLastStepAt.current = Date.now();
+      return next;
+    });
     scrollToTop();
   };
 
@@ -270,8 +305,25 @@ export default function StartupEvaluation() {
     setStep(0);
   };
 
-  const handleSubmit = async (ev: React.FormEvent) => {
+  // Pressing Enter inside a text input would implicitly submit the form,
+  // even on intermediate steps. Block it and advance to the next step instead.
+  const handleFormKeyDown = (ev: React.KeyboardEvent<HTMLFormElement>) => {
+    if (ev.key !== 'Enter') return;
+    const target = ev.target as HTMLElement;
+    if (target.tagName === 'TEXTAREA') return;
     ev.preventDefault();
+    if (step < lastStep && target.tagName === 'INPUT') goNext();
+  };
+
+  const handleSubmit = async () => {
+    if (step < lastStep) {
+      goNext();
+      return;
+    }
+    if (isSubmitting) return;
+    // Ignore a submit that fires almost immediately after landing on the last
+    // step — it is the stray second click of a double-click on "Next".
+    if (Date.now() - arrivedAtLastStepAt.current < 600) return;
     const allErrors = validateAll();
     if (Object.keys(allErrors).length > 0) {
       setErrors(allErrors);
@@ -289,9 +341,19 @@ export default function StartupEvaluation() {
     try {
       const fd = new FormData();
       Object.entries(form).forEach(([key, value]) => {
+        // city/state and the "Other" industry/pricing texts are combined below
+        if (key === 'city' || key === 'state' || key === 'industryOther' || key === 'pricingModels' || key === 'pricingModelOther') return;
+        if (key === 'industrySector') {
+          fd.append(key, value === 'Other' ? (form.industryOther.trim() || 'Other') : (value as string));
+          return;
+        }
         if (Array.isArray(value)) fd.append(key, JSON.stringify(value));
         else fd.append(key, value);
       });
+      fd.append('cityCountry', [form.city.trim(), form.state.trim()].filter(Boolean).join(', '));
+      fd.append('pricingModel', form.pricingModels
+        .map((m) => m === 'Other' ? (form.pricingModelOther.trim() || 'Other') : m)
+        .join(', '));
       if (files.pitchDeck) fd.append('pitchDeck', files.pitchDeck);
       files.screenshots.forEach((f) => fd.append('screenshots', f));
       if (files.incorporationCert) fd.append('incorporationCert', files.incorporationCert);
@@ -309,7 +371,7 @@ export default function StartupEvaluation() {
     } catch (err: any) {
       console.error('Startup evaluation submission error:', err);
       setSubmitStatus('error');
-      const msg = err.response?.data?.msg || err.message || 'Failed to submit your evaluation. Please try again.';
+      const msg = err.response?.data?.msg || 'Could not reach the server. Please check your internet connection and try again in a moment.';
       setErrorMessage(msg);
       showToast(msg, 'error');
     } finally {
@@ -318,12 +380,12 @@ export default function StartupEvaluation() {
   };
 
   return (
-    <div className="pt-24 pb-20 min-h-screen bg-[#0a0f1d]">
-      <div className="w-full max-w-3xl mx-auto px-4" ref={topRef}>
+    <div className="pt-20 pb-8 min-h-screen bg-[#0a0f1d]">
+      <div className="w-full max-w-3xl lg:max-w-[80%] mx-auto px-4 scroll-mt-20" ref={topRef}>
         <div className="relative group">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-3xl blur opacity-20 group-hover:opacity-30 transition duration-1000" />
 
-          <div className="relative glass rounded-2xl p-4 sm:p-6 shadow-2xl overflow-hidden bg-slate-900/80 border border-slate-800/80">
+          <div className="relative glass rounded-2xl px-4 sm:px-6 py-3 sm:py-4 shadow-2xl overflow-hidden bg-slate-900/80 border border-slate-800/80">
             {submitStatus === 'success' ? (
               <div className="text-center py-8 px-4 animate-fade-in">
                 <div className="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-4 border border-emerald-500/25">
@@ -344,30 +406,69 @@ export default function StartupEvaluation() {
               </div>
             ) : (
               <>
-                <div className="mb-3 border-b border-slate-800/60 pb-3">
-                  <div className="flex items-center gap-2 mb-1.5">
+                <div className="mb-2 border-b border-slate-800/60 pb-1.5 flex items-center justify-between gap-3 flex-wrap">
+                  <h2 className="text-base sm:text-lg font-black text-white tracking-tight">Basic Startup Evaluation Form</h2>
+                  <div className="flex items-center gap-2">
                     <ClipboardCheck size={14} className="text-emerald-400" />
                     <span className="text-[10px] font-black uppercase tracking-[0.25em] text-emerald-400">Investment Readiness</span>
                   </div>
-                  <h2 className="text-lg sm:text-xl font-black text-white tracking-tight">Basic Startup Evaluation Form</h2>
-
-                  <div className="mt-3">
-                    <div className="flex justify-between items-center mb-1">
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                        Step {step + 1} of {SECTIONS.length} — {SECTIONS[step].title}
-                      </span>
-                      <span className="text-[10px] font-black text-emerald-400">
-                        {Math.round(((step + 1) / SECTIONS.length) * 100)}%
-                      </span>
-                    </div>
-                    <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-500"
-                        style={{ width: `${((step + 1) / SECTIONS.length) * 100}%` }}
-                      />
-                    </div>
-                  </div>
                 </div>
+
+                <div className="flex flex-col lg:flex-row gap-5">
+                  {/* Step list sidebar */}
+                  <aside className="hidden lg:block lg:w-64 flex-shrink-0 lg:border-r lg:border-slate-800/60 lg:pr-4">
+                    <nav className="space-y-1">
+                      {SECTIONS.map((s, i) => {
+                        const isActive = i === step;
+                        const isDone = i < step;
+                        return (
+                          <button
+                            key={s.title}
+                            type="button"
+                            onClick={() => { if (isDone) { setErrors({}); setStep(i); scrollToTop(); } }}
+                            disabled={i > step}
+                            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-left text-xs font-bold transition-all duration-200 ${
+                              isActive
+                                ? 'bg-emerald-500/10 border border-emerald-500/40 text-emerald-300'
+                                : isDone
+                                  ? 'text-slate-300 hover:bg-slate-800/60 cursor-pointer'
+                                  : 'text-slate-500 cursor-not-allowed'
+                            }`}
+                          >
+                            <span className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-[10px] font-black border ${
+                              isActive
+                                ? 'border-emerald-400 bg-emerald-500/20 text-emerald-300'
+                                : isDone
+                                  ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400'
+                                  : 'border-slate-700 text-slate-500'
+                            }`}>
+                              {isDone ? '✓' : i + 1}
+                            </span>
+                            <span className="truncate">{s.title}</span>
+                          </button>
+                        );
+                      })}
+                    </nav>
+                  </aside>
+
+                  {/* Form area */}
+                  <div className="flex-1 min-w-0">
+                    <div className="mb-2">
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                          Step {step + 1} of {SECTIONS.length} — {SECTIONS[step].title}
+                        </span>
+                        <span className="text-[10px] font-black text-emerald-400">
+                          {Math.round(((step + 1) / SECTIONS.length) * 100)}%
+                        </span>
+                      </div>
+                      <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-500"
+                          style={{ width: `${((step + 1) / SECTIONS.length) * 100}%` }}
+                        />
+                      </div>
+                    </div>
 
                 {submitStatus === 'error' && (
                   <div className="mb-3 p-3 bg-red-500/10 border border-red-500/25 text-red-400 text-xs rounded-xl flex items-start gap-2.5">
@@ -379,8 +480,8 @@ export default function StartupEvaluation() {
                   </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-3">
-                  <div className="h-[64vh] min-h-[420px] max-h-[560px] overflow-y-auto pr-1 -mr-1">
+                <form onSubmit={(e) => e.preventDefault()} onKeyDown={handleFormKeyDown} className="space-y-3">
+                  <div ref={stepScrollRef}>
                   {/* Section 1: Founder Details */}
                   {step === 0 && (
                     <div className="space-y-2.5">
@@ -401,20 +502,36 @@ export default function StartupEvaluation() {
                         </Field>
                       </div>
                       <div className="grid sm:grid-cols-2 gap-2.5">
-                        <Field id="cityCountry" label="City & Country">
-                          <input name="cityCountry" value={form.cityCountry} onChange={handleChange} disabled={isSubmitting} placeholder="Bengaluru, India" className={inputCls()} />
+                        <Field id="city" label="City">
+                          <input name="city" value={form.city} onChange={handleChange} disabled={isSubmitting} placeholder="e.g. Bengaluru" className={inputCls()} />
                         </Field>
-                        <Field id="startupName" label="Startup Name">
-                          <input name="startupName" value={form.startupName} onChange={handleChange} disabled={isSubmitting} placeholder="Your startup's name" className={inputCls(!!errors.startupName)} />
+                        <Field id="state" label="State">
+                          <input name="state" value={form.state} onChange={handleChange} disabled={isSubmitting} placeholder="e.g. Karnataka" className={inputCls()} />
                         </Field>
                       </div>
                       <div className="grid sm:grid-cols-2 gap-2.5">
+                        <Field id="startupName" label="Startup Name">
+                          <input name="startupName" value={form.startupName} onChange={handleChange} disabled={isSubmitting} placeholder="Your startup's name" className={inputCls(!!errors.startupName)} />
+                        </Field>
                         <Field id="website" label="Website">
                           <input name="website" value={form.website} onChange={handleChange} disabled={isSubmitting} placeholder="yourstartup.com" className={inputCls()} />
                         </Field>
+                      </div>
+                      <div className="grid sm:grid-cols-2 gap-2.5">
                         <Field id="industrySector" label="Industry / Sector">
-                          <input name="industrySector" value={form.industrySector} onChange={handleChange} disabled={isSubmitting} placeholder="Fintech, SaaS, D2C..." className={inputCls()} />
+                          <select name="industrySector" value={form.industrySector} onChange={handleChange} disabled={isSubmitting} className={`${inputCls()} cursor-pointer [&>option]:bg-slate-900 [&>option]:text-white`}>
+                            <option value="">Select your industry</option>
+                            {INDUSTRY_OPTIONS.map((opt) => (
+                              <option key={opt} value={opt}>{opt}</option>
+                            ))}
+                            <option value="Other">Other</option>
+                          </select>
                         </Field>
+                        {form.industrySector === 'Other' && (
+                          <Field id="industryOther" label="Please Specify Your Industry">
+                            <input name="industryOther" value={form.industryOther} onChange={handleChange} disabled={isSubmitting} placeholder="Type your industry here" className={inputCls()} />
+                          </Field>
+                        )}
                       </div>
                       <Field id="stage" label="Stage">
                         <ChoiceGroup options={['Idea', 'Prototype', 'MVP', 'Early Revenue']} value={form.stage} onChange={setChoice('stage')} columns={4} />
@@ -526,9 +643,14 @@ export default function StartupEvaluation() {
                       <Field id="howYouMakeMoney" label="How will you make money?">
                         <textarea name="howYouMakeMoney" value={form.howYouMakeMoney} onChange={handleChange} disabled={isSubmitting} rows={2} className={`${inputCls()} resize-none`} />
                       </Field>
-                      <Field id="pricingModel" label="Pricing Model">
-                        <ChoiceGroup options={['Subscription', 'Commission', 'One-time Sale', 'Marketplace', 'Freemium', 'Other']} value={form.pricingModel} onChange={setChoice('pricingModel')} columns={3} />
+                      <Field id="pricingModels" label="Pricing Model (select all that apply)">
+                        <MultiChoiceGroup options={['Subscription', 'Commission', 'One-time Sale', 'Marketplace', 'Freemium', 'Other']} values={form.pricingModels} onToggle={toggleMulti('pricingModels')} columns={3} />
                       </Field>
+                      {form.pricingModels.includes('Other') && (
+                        <Field id="pricingModelOther" label="Please Specify Your Pricing Model">
+                          <input name="pricingModelOther" value={form.pricingModelOther} onChange={handleChange} disabled={isSubmitting} placeholder="Type your pricing model here" className={inputCls()} />
+                        </Field>
+                      )}
                       <Field id="expectedRevenue12Months" label="Expected revenue in the next 12 months">
                         <input name="expectedRevenue12Months" value={form.expectedRevenue12Months} onChange={handleChange} disabled={isSubmitting} placeholder="e.g. ₹25,00,000" className={inputCls()} />
                       </Field>
@@ -627,7 +749,8 @@ export default function StartupEvaluation() {
                       </button>
                     ) : (
                       <button
-                        type="submit"
+                        type="button"
+                        onClick={handleSubmit}
                         disabled={isSubmitting}
                         className={`flex-1 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-600 text-white font-extrabold text-xs shadow-xl hover:shadow-emerald-500/10 hover:opacity-95 transition-all duration-300 transform active:scale-[0.98] flex items-center justify-center gap-1.5 cursor-pointer ${isSubmitting ? 'opacity-85 pointer-events-none' : ''}`}
                       >
@@ -636,6 +759,8 @@ export default function StartupEvaluation() {
                     )}
                   </div>
                 </form>
+                  </div>
+                </div>
               </>
             )}
           </div>

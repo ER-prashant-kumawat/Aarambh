@@ -106,7 +106,7 @@ export default function Footer() {
               ))}
             </ul>
             <div className="space-y-1.5 text-slate-400 text-[11px]">
-              <p className="flex items-center gap-2"><MapPin size={11} className="text-emerald-400" /> HSR Layout, Bangalore 560 102</p>
+              <p className="flex items-center gap-2"><MapPin size={11} className="text-emerald-400" /> Udaipur, Rajasthan, 313001</p>
               <p className="flex items-center gap-2"><Phone size={11} className="text-emerald-400" /> +91 82786 99221</p>
               <p className="flex items-center gap-2"><Mail size={11} className="text-emerald-400" /> aarambhh100@gmail.com</p>
             </div>
@@ -126,7 +126,7 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-2 pt-3 border-t border-slate-800">
-          <p className="text-slate-500 text-[11px]">&copy; 2024 Aarambhh Legal-Tech Pvt. Ltd. All rights reserved. CIN: U74999KA2021PTC145XXX</p>
+          <p className="text-slate-500 text-[11px]">&copy; 2025 Aarambhh. All Rights Reserved with Kvanta Labs Pvt. Ltd. CIN - U62099RJ2025PTC104515</p>
           <div className="flex items-center gap-1.5 text-emerald-500 text-[11px]">
             <Shield size={10} />
             <span>ISO 27001 Certified</span>

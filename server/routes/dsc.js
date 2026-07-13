@@ -65,7 +65,7 @@ router.post('/', async (req, res) => {
     if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
       transporter.sendMail({
         from: process.env.EMAIL_USER,
-        to: 'vishal.kvanta@gmail.com',
+        to: process.env.ADMIN_NOTIFY_EMAIL || 'aarambhh100@gmail.com',
         replyTo: b.email,
         subject: `New DSC Application: ${b.fullName} (${b.certificateClass || 'DSC'})`,
         text: `${b.fullName} (${b.email}, ${b.mobileNumber}) applied for a ${b.certificateClass} / ${b.certificateType} DSC, validity ${b.validity}, price Rs. ${b.price}. Bank: ${b.bankName}, A/C: ${b.accountNumber}, IFSC: ${b.ifscCode}.`

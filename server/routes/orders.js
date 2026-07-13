@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const nodemailer = require('nodemailer');
 const Order = require('../models/Order');
+const auth = require('../middleware/auth');
+const adminAuth = require('../middleware/adminAuth');
 
 // ─── SMTP Transporter (same config as quote route) ───────────────────────────
 const transporter = nodemailer.createTransport({
@@ -55,14 +57,6 @@ router.post('/', async (req, res) => {
     return res.status(400).json({
       success: false,
       msg: 'Name, Mobile Number, Email, Address, and City & State are required fields.'
-    });
-  }
-
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    console.error('[API/ORDERS] ❌ SMTP credentials missing in environment variables.');
-    return res.status(500).json({
-      success: false,
-      msg: 'Server misconfiguration: SMTP credentials are not set.'
     });
   }
 
@@ -149,30 +143,51 @@ Order ID           : ${savedOrder._id}
 
     const mailOptions = {
       from: `"Aarambhh Orders" <${process.env.EMAIL_USER}>`,
-      to: 'vishal.kvanta@gmail.com',
+      to: process.env.ADMIN_NOTIFY_EMAIL || 'aarambhh100@gmail.com',
       replyTo: email,
       subject: `🛒 New Package Order: ${packageName} — ${name}`,
       text: textContent,
       html: htmlContent
     };
 
-    console.log('[API/ORDERS] 📧 Sending order email via SMTP...');
-    const info = await transporter.sendMail(mailOptions);
-    console.log('[API/ORDERS] ✅ Order email sent. Message ID:', info.messageId);
-
-    return res.status(200).json({
+    // Respond as soon as the order is saved — the admin email goes out in the
+    // background so a slow or failed SMTP connection can never fail the order.
+    res.status(200).json({
       success: true,
       msg: 'Order placed successfully! Our team will contact you shortly.',
       orderId: savedOrder._id
     });
 
+    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+      console.log('[API/ORDERS] 📧 Sending order email via SMTP...');
+      transporter.sendMail(mailOptions)
+        .then((info) => console.log('[API/ORDERS] ✅ Order email sent. Message ID:', info.messageId))
+        .catch((err) => console.error('[API/ORDERS] ❌ Order email failed:', err.message));
+    } else {
+      console.error('[API/ORDERS] ⚠️ SMTP credentials missing — admin email skipped.');
+    }
+
   } catch (error) {
     console.error('[API/ORDERS] ❌ OPERATION FAILED:', error.message);
+    if (res.headersSent) return;
     return res.status(500).json({
       success: false,
       msg: 'Failed to place your order. Please try again.',
       error: error.message
     });
+  }
+});
+
+// @route   GET api/orders
+// @desc    List all premium package orders
+// @access  Private (admin only)
+router.get('/', auth, adminAuth, async (req, res) => {
+  try {
+    const orders = await Order.find().sort({ dateSubmitted: -1 });
+    res.json({ success: true, orders });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
   }
 });
 

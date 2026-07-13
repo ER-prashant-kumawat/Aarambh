@@ -30,19 +30,19 @@ export default function About() {
             <div>
               <h2 className="text-3xl font-black text-white mb-6">The Origin Story</h2>
               <div className="space-y-5 text-slate-400 leading-relaxed font-medium">
-                <p>Aarambhh — meaning <em>"the beginning"</em> in Hindi — was founded in Bangalore by a team of legal professionals, chartered accountants, and technology builders who were exhausted by watching brilliant Indian founders struggle with bureaucracy at the very moment they needed momentum.</p>
-                <p>Our founders spent years inside India's legal and financial system. They saw first-hand how a talented founder with a world-changing idea could lose weeks — sometimes months — to back-and-forth paperwork, poorly drafted applications, and opaque government portals. Dreams deferred not because the ideas weren't good enough, but because the legal process was too slow, too complex, and too expensive.</p>
-                <p>In 2021, they decided to build the platform they wished had existed when they were starting out. A single, trustworthy destination where an Indian entrepreneur could walk in with an idea on Monday and walk out with a legally registered company by Thursday.</p>
-                <p>That platform is Aarambhh.com. And today, we're proud to serve over 5,000 startups across 23 states — from solo SaaS founders in Pune to scaling D2C brands in Delhi, from first-time consultants in Chennai to Series-A ready companies in Mumbai.</p>
+                <p>Aarambhh — meaning <em>"the beginning"</em> in Hindi — was founded in Rajasthan by a team of legal professionals, businesswomen, and technology builders who were exhausted by watching brilliant Indian founders struggle with bureaucracy at the very moment they needed momentum.</p>
+                <p>Our founders spent years inside India's legal, financial, and commercial frameworks. They saw first-hand how a talented founder with a world-changing idea could lose weeks — sometimes months — to back-and-forth paperwork, poorly drafted applications, and opaque government portals. Dreams deferred not because the ideas weren't good enough, but because the legal process was too slow, too complex, and too expensive.</p>
+                <p>In 2025, they decided to build the platform they wished had existed when they were starting out. A single, trustworthy destination where an Indian entrepreneur could walk in with an idea on Monday and walk out with a legally registered company by Thursday.</p>
+                <p>That platform is Aarambhh.com. And today, we're proud to serve over 25 startups across 5 cities — from solo SaaS founders in Pune to scaling D2C brands in Delhi, from day 0 incorporation to fully functional legally and commercially compliance proof private limited companies. Join Aarambhh. Live your dream!</p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               {[
-                { l: "Founded", v: "2021" },
-                { l: "Cities Served", v: "23+" },
-                { l: "Startups Assisted", v: "5,000+" },
+                { l: "Founded", v: "2025" },
+                { l: "Cities Served", v: "28+" },
+                { l: "Startups Assisted", v: "25,000+" },
                 { l: "Expert Professionals", v: "40+" },
-                { l: "Avg. Processing Days", v: "3 Days" },
+                { l: "Avg. Processing Days", v: "7 Days" },
                 { l: "Customer Rating", v: "4.9 / 5" }
               ].map((s, i) => (
                 <div key={i} className="bento bg-slate-900/60 rounded-2xl p-5 border border-slate-800/80 text-center">

@@ -232,7 +232,7 @@ export default function QuoteForm() {
     } catch (err: any) {
       console.error('Backend Quote API Submission Error:', err);
       setSubmitStatus('error');
-      const msg = err.response?.data?.msg || err.message || 'Failed to submit quote request. Please check your connection.';
+      const msg = err.response?.data?.msg || 'Could not reach the server. Please check your internet connection and try again in a moment.';
       setErrorMessage(msg);
       showToast(msg, 'error');
     } finally {
@@ -275,7 +275,7 @@ export default function QuoteForm() {
                 Quote request sent successfully!
               </p>
               <p className="text-slate-400 text-sm leading-relaxed mb-8 max-w-md mx-auto">
-                All details have been compiled and sent directly to <strong>vishal.kvanta@gmail.com</strong> via our secure backend email server. Our consultants will evaluate your business profile and contact you soon.
+                All details have been compiled and sent directly to the <strong>Aarambhh team</strong> via our secure backend email server. Our consultants will evaluate your business profile and contact you soon.
               </p>
               {submittedPercent < 100 && (
                 <div className="mb-8 max-w-md mx-auto p-4 rounded-2xl bg-amber-500/10 border border-amber-500/25 text-left">

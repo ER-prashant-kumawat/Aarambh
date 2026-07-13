@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { ShieldAlert, Loader2, ArrowLeft, TrendingUp, AlertTriangle, ListChecks, Rocket } from 'lucide-react';
+import { AuthContext } from '../../context/AuthContext';
 import { API_URL } from '../../utils/api';
 
 interface EvaluationSummary {
@@ -46,13 +48,23 @@ const SCORE_MAX: Record<string, number> = {
 };
 
 export default function AdminEvaluations() {
+  const auth = useContext(AuthContext);
   const [list, setList] = useState<EvaluationSummary[]>([]);
   const [selected, setSelected] = useState<EvaluationDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [detailLoading, setDetailLoading] = useState(false);
   const [error, setError] = useState('');
+  const [notLoggedIn, setNotLoggedIn] = useState(false);
 
   useEffect(() => {
+    if (auth?.loading) return;
+
+    if (!auth?.user) {
+      setNotLoggedIn(true);
+      setLoading(false);
+      return;
+    }
+
     const fetchList = async () => {
       try {
         const res = await axios.get(`${API_URL}/evaluations`);
@@ -64,7 +76,7 @@ export default function AdminEvaluations() {
       }
     };
     fetchList();
-  }, []);
+  }, [auth?.loading, auth?.user]);
 
   const openDetail = async (id: string) => {
     setDetailLoading(true);
@@ -86,6 +98,21 @@ export default function AdminEvaluations() {
     );
   }
 
+  if (notLoggedIn) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0a0f1d] px-4">
+        <div className="text-center max-w-md">
+          <ShieldAlert size={40} className="text-emerald-400 mx-auto mb-4" />
+          <h2 className="text-white font-bold text-lg mb-2">Admin Login Required</h2>
+          <p className="text-slate-400 text-sm mb-5">Please sign in with an authorized admin account to view startup evaluations.</p>
+          <Link to="/adminlogin" className="inline-block px-6 py-3 rounded-xl grad-em text-white text-sm font-bold shadow-lg hover:opacity-90 transition-all">
+            Go to Admin Login
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   if (error && list.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0a0f1d] px-4">
@@ -94,6 +121,9 @@ export default function AdminEvaluations() {
           <h2 className="text-white font-bold text-lg mb-2">Access Restricted</h2>
           <p className="text-slate-400 text-sm">{error}</p>
           <p className="text-slate-500 text-xs mt-3">Log in with an authorized admin account to view startup evaluations.</p>
+          <Link to="/adminlogin" className="inline-block mt-4 px-6 py-3 rounded-xl border border-emerald-500/40 text-emerald-300 text-sm font-bold hover:bg-emerald-500/10 transition-all">
+            Switch Account
+          </Link>
         </div>
       </div>
     );

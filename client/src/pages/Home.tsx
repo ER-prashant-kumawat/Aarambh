@@ -44,9 +44,9 @@ export default function Home() {
   };
 
   const stats = [
-    { icon: "users", val: "5,000+", lbl: "Startups Assisted" },
+    { icon: "users", val: "25,000+", lbl: "Startups Assisted" },
     { icon: "star", val: "4.9 / 5", lbl: "Customer Rating" },
-    { icon: "clock", val: "3 Days", lbl: "Avg. Processing" }
+    { icon: "clock", val: "7 Days", lbl: "Avg. Processing" }
   ];
 
   const features = [
@@ -93,9 +93,9 @@ export default function Home() {
               </div>
 
               <div className="flex flex-wrap items-center justify-center gap-3">
-                <button onClick={() => setBciModal('register')} className="px-6 py-3 rounded-xl grad-em text-white text-sm font-bold shadow-lg hover:opacity-90 hover:scale-105 transition-all cursor-pointer">
+                <Link to="/evaluation" onClick={() => window.scrollTo(0, 0)} className="px-6 py-3 rounded-xl grad-em text-white text-sm font-bold shadow-lg hover:opacity-90 hover:scale-105 transition-all">
                   Register Now
-                </button>
+                </Link>
                 <button onClick={() => setBciModal('investor')} className="px-6 py-3 rounded-xl border border-emerald-500/40 text-emerald-300 text-sm font-bold hover:bg-emerald-500/10 transition-all cursor-pointer">
                   Become an Investor
                 </button>

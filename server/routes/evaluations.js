@@ -142,11 +142,35 @@ router.post('/', fileFields, async (req, res) => {
       const startupLabel = b.startupName || 'Unnamed Startup';
       transporter.sendMail({
         from: process.env.EMAIL_USER,
-        to: 'vishal.kvanta@gmail.com',
+        to: process.env.ADMIN_NOTIFY_EMAIL || 'aarambhh100@gmail.com',
         replyTo: b.email,
         subject: `New Startup Evaluation: ${startupLabel} (Score: ${doc.aiEvaluation.overallScore}/100)`,
         text: `${b.founderName} (${b.email}, ${b.mobileNumber}) submitted an evaluation for "${startupLabel}". Overall AI score: ${doc.aiEvaluation.overallScore}/100. Review it in the admin dashboard.`
       }).catch((err) => console.error('[EVALUATIONS] Email notification failed:', err.message));
+
+      transporter.sendMail({
+        from: `"Aarambhh" <${process.env.EMAIL_USER}>`,
+        to: b.email,
+        subject: `Aarambhh — Your Startup Evaluation Form Has Been Submitted Successfully`,
+        text: `Dear ${b.founderName},\n\nThank you for submitting the Basic Startup Evaluation Form for "${startupLabel}" on Aarambhh.\n\nYour form has been submitted successfully and is now under review by our team. We will get back to you shortly with the next steps.\n\nIf you have any questions in the meantime, simply reply to this email.\n\nWarm regards,\nTeam Aarambhh\naarambhh100@gmail.com`,
+        html: `
+          <div style="font-family: Arial, Helvetica, sans-serif; max-width: 560px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+            <div style="background: #0f172a; padding: 20px 24px;">
+              <span style="color: #ffffff; font-size: 20px; font-weight: 800;">Aarambhh<span style="color: #34d399;">.</span></span>
+            </div>
+            <div style="padding: 24px; color: #334155; font-size: 14px; line-height: 1.7;">
+              <h2 style="color: #0f172a; font-size: 18px; margin: 0 0 12px;">Your form has been submitted successfully ✅</h2>
+              <p>Dear <strong>${b.founderName}</strong>,</p>
+              <p>Thank you for submitting the <strong>Basic Startup Evaluation Form</strong> for <strong>"${startupLabel}"</strong> on Aarambhh.</p>
+              <p>Your form has been received successfully and is now under review by our team. We will get back to you shortly with the next steps.</p>
+              <p>If you have any questions in the meantime, simply reply to this email.</p>
+              <p style="margin-top: 20px;">Warm regards,<br/><strong>Team Aarambhh</strong><br/>aarambhh100@gmail.com</p>
+            </div>
+            <div style="background: #f8fafc; padding: 12px 24px; font-size: 11px; color: #94a3b8;">
+              This is an automated confirmation from Aarambhh.com. Please do not share sensitive information over email.
+            </div>
+          </div>`
+      }).catch((err) => console.error('[EVALUATIONS] Confirmation email to user failed:', err.message));
     }
 
     res.status(200).json({ success: true, msg: 'Evaluation submitted successfully', evaluationId: doc._id });
