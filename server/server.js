@@ -9,6 +9,7 @@ const app = express();
 // Init Middleware
 const STATIC_ORIGINS = [
   'https://aarambh-git-main-vishal-sukhwal-s-projects.vercel.app',
+  'https://client-seven-chi-64.vercel.app',
   'https://aarambhh.com',
   'https://www.aarambhh.com',
   'https://aarambh.vercel.app',
@@ -18,7 +19,7 @@ const STATIC_ORIGINS = [
   ...(process.env.FRONTEND_URLS || '').split(',').map((s) => s.trim()).filter(Boolean),
 ];
 
-app.use(cors({
+const corsOptions = {
   origin: (origin, callback) => {
     // Allow non-browser requests (no Origin header), the allowlist,
     // and any Vercel deployment of the frontend (production + previews).
@@ -28,8 +29,14 @@ app.use(cors({
     console.warn('[CORS] Blocked origin:', origin);
     return callback(null, false);
   },
-  credentials: true
-}));
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json({ extended: false }));
 
 // ── Serverless DB Middleware ──────────────────────────────────────────────────
@@ -112,3 +119,4 @@ if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
 
 // Required for Vercel — exports the Express app as the serverless handler
 module.exports = app;
+
