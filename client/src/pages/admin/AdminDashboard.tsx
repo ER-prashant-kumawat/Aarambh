@@ -385,8 +385,8 @@ export default function AdminDashboard() {
   const [orders, setOrders] = useState<Order[] | null>(null);
   const [evaluations, setEvaluations] = useState<EvaluationSummary[] | null>(null);
   const [selectedEvaluation, setSelectedEvaluation] = useState<EvaluationDetail | null>(null);
-  const [detailLoading, setDetailLoading] = useState(false);
-  const [detailError, setDetailError] = useState('');
+  const detailLoading = false;
+  const detailError = '';
   const [evalSearchQuery, setEvalSearchQuery] = useState('');
   const [evalScoreFilter, setEvalScoreFilter] = useState<'all' | 'low' | 'medium' | 'high'>('all');
   const [evalCityFilter, setEvalCityFilter] = useState('all');
@@ -461,18 +461,6 @@ export default function AdminDashboard() {
     load();
   }, [tab, authChecked, notLoggedIn, accessDenied]);
 
-  const openEvaluationDetail = async (id: string) => {
-    setDetailError('');
-    setDetailLoading(true);
-    try {
-      const res = await axios.get(`${API_URL}/evaluations/${id}`);
-      setSelectedEvaluation(res.data.evaluation);
-    } catch (err: any) {
-      setDetailError(err.response?.data?.msg || 'Failed to load evaluation details.');
-    } finally {
-      setDetailLoading(false);
-    }
-  };
 
   const filteredEvaluations = (evaluations || []).filter((e) => {
     const query = evalSearchQuery.trim().toLowerCase();
@@ -925,3 +913,4 @@ export default function AdminDashboard() {
     </div>
   );
 }
+
