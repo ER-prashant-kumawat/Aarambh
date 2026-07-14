@@ -11,6 +11,7 @@ interface FormState {
   linkedinProfile: string;
   city: string;
   state: string;
+  status: string;
   startupName: string;
   website: string;
   industrySector: string;
@@ -73,7 +74,7 @@ interface FileState {
 }
 
 const initialForm: FormState = {
-  founderName: '', email: '', mobileNumber: '', linkedinProfile: '', city: '', state: '',
+  founderName: '', email: '', mobileNumber: '', linkedinProfile: '', city: '', state: '', status: 'submitted',
   startupName: '', website: '', industrySector: '', industryOther: '', stage: '', fullTime: '', numberOfFounders: '', founderBackground: '',
   oneLineDescription: '', problemSolved: '', targetCustomer: '', howItWorks: '', differentiation: '',
   targetMarket: '', estimatedMarketSize: '', mainCompetitors: '', whyCustomersChooseYou: '',
@@ -110,6 +111,13 @@ const INDUSTRY_OPTIONS = [
   'Retail',
   'Legal / Compliance',
   'HR / Recruitment',
+];
+
+const INDIAN_STATES = [
+  'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Goa', 'Gujarat', 'Haryana',
+  'Himachal Pradesh', 'Jharkhand', 'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur',
+  'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu',
+  'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal'
 ];
 
 const SECTIONS = [
@@ -205,7 +213,7 @@ function FileInput({ label, file, onChange, accept, multiple }: { label: string;
       {files.length > 0 && (
         <div className="mt-1 space-y-1">
           {files.map((f, i) => (
-            <div key={i} className="flex items-center justify-between text-[10px] text-slate-500 bg-slate-900/50 rounded-md px-2 py-1">
+            <div key={`${label}-${f.name}-${f.size}-${i}`} className="flex items-center justify-between text-[10px] text-slate-500 bg-slate-900/50 rounded-md px-2 py-1">
               <span className="truncate">{f.name} ({(f.size / 1024).toFixed(0)} KB)</span>
             </div>
           ))}
@@ -506,7 +514,15 @@ export default function StartupEvaluation() {
                           <input name="city" value={form.city} onChange={handleChange} disabled={isSubmitting} placeholder="e.g. Bengaluru" className={inputCls()} />
                         </Field>
                         <Field id="state" label="State">
-                          <input name="state" value={form.state} onChange={handleChange} disabled={isSubmitting} placeholder="e.g. Karnataka" className={inputCls()} />
+                          <select name="state" value={form.state} onChange={handleChange} disabled={isSubmitting} className={`${inputCls()} cursor-pointer [&>option]:bg-slate-900 [&>option]:text-white`}>
+                            <option value="">Select state</option>
+                            {INDIAN_STATES.map((state) => (
+                              <option key={state} value={state}>{state}</option>
+                            ))}
+                          </select>
+                        </Field>
+                        <Field id="status" label="Status">
+                          <input name="status" value={form.status} onChange={handleChange} disabled={isSubmitting} placeholder="e.g. in review / approved / rejected" className={inputCls()} />
                         </Field>
                       </div>
                       <div className="grid sm:grid-cols-2 gap-2.5">

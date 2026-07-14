@@ -91,7 +91,7 @@ app.use((err, req, res, next) => {
   }
   if (err.name === 'MulterError') {
     const msg = err.code === 'LIMIT_FILE_SIZE'
-      ? 'One of the attached files is larger than 5 MB. Please upload a smaller file.'
+      ? 'One of the attached files is too large. Please upload a smaller file.'
       : `File upload error: ${err.message}`;
     return res.status(400).json({ success: false, msg });
   }

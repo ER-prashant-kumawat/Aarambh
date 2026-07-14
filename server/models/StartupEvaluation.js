@@ -4,7 +4,8 @@ const FileAssetSchema = new mongoose.Schema({
   filename: String,
   mimetype: String,
   size: Number,
-  data: String // base64
+  path: String,
+  data: String // legacy base64 support
 }, { _id: false });
 
 const StartupEvaluationSchema = new mongoose.Schema({

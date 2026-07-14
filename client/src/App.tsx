@@ -17,10 +17,10 @@ import DashboardShell from './pages/dashboard/DashboardShell';
 import GetQuote from './pages/GetQuote';
 import Audit from './pages/Audit';
 import StartupEvaluation from './pages/StartupEvaluation';
-import AdminEvaluations from './pages/admin/Evaluations';
 import DscApplication from './pages/DscApplication';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminEvaluations from './pages/admin/Evaluations';
 
 function AppContent() {
   const location = useLocation();

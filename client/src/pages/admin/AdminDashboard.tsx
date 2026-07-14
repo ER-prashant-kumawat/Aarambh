@@ -4,7 +4,7 @@ import axios from 'axios';
 import {
   ShieldAlert, Loader2, Users, Phone, KeyRound, ShoppingBag,
   ClipboardCheck, LayoutDashboard, LogOut, ExternalLink, ListChecks, Search,
-  Mail, Send, CheckCircle2, AlertCircle
+  Mail, Send, CheckCircle2, AlertCircle, Eye
 } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
 import { API_URL } from '../../utils/api';
@@ -66,8 +66,17 @@ interface EvaluationSummary {
   startupName: string;
   email: string;
   mobileNumber: string;
+  cityCountry?: string;
   aiEvaluation: { overallScore: number };
   dateSubmitted: string;
+  status?: string;
+}
+
+interface EvaluationDetail extends EvaluationSummary {
+  stage?: string;
+  industrySector?: string;
+  status?: string;
+  [key: string]: any;
 }
 
 type TabId = 'overview' | 'leads' | 'audit' | 'tools' | 'users' | 'dsc' | 'orders' | 'evaluations' | 'broadcast';
@@ -85,12 +94,28 @@ const TABS: { id: TabId; label: string; icon: React.ComponentType<{ size?: numbe
 ];
 
 const fmtDate = (d: string) => new Date(d).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+const STATE_NAMES = new Set([
+  'andhra pradesh', 'arunachal pradesh', 'assam', 'bihar', 'chhattisgarh', 'goa', 'gujarat', 'haryana', 'himachal pradesh',
+  'jharkhand', 'karnataka', 'kerala', 'madhya pradesh', 'maharashtra', 'manipur', 'meghalaya', 'mizoram', 'nagaland', 'odisha',
+  'punjab', 'rajasthan', 'sikkim', 'tamil nadu', 'telangana', 'tripura', 'uttar pradesh', 'uttarakhand', 'west bengal',
+  'andaman and nicobar islands', 'chandigarh', 'dadra and nagar haveli and daman and diu', 'delhi', 'jammu and kashmir',
+  'ladakh', 'lakshadweep', 'puducherry'
+]);
+const normalizeText = (value: string) => value.trim().replace(/\s+/g, ' ').toLowerCase();
+const titleCase = (value: string) => value.replace(/\s+/g, ' ').split(' ').filter(Boolean).map((part) => part ? part[0].toUpperCase() + part.slice(1).toLowerCase() : part).join(' ');
+const extractState = (value: string) => {
+  const raw = value.split(',').pop()?.trim() || '';
+  if (!raw) return '';
+  const normalized = raw.toLowerCase();
+  const matched = Array.from(STATE_NAMES).find((state) => normalized.includes(state));
+  return titleCase(matched || raw);
+};
 
 const Th = ({ children }: { children: React.ReactNode }) => (
   <th className="text-left text-[10px] font-bold text-slate-500 uppercase tracking-wider px-4 py-3 border-b border-slate-800">{children}</th>
 );
-const Td = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
-  <td className={`text-xs text-slate-300 px-4 py-3 border-b border-slate-800/60 ${className}`}>{children}</td>
+const Td = ({ children, className = '', colSpan }: { children: React.ReactNode; className?: string; colSpan?: number }) => (
+  <td colSpan={colSpan} className={`text-xs text-slate-300 px-4 py-3 border-b border-slate-800/60 ${className}`}>{children}</td>
 );
 
 const SOURCE_OPTIONS: { key: string; label: string }[] = [
@@ -359,6 +384,13 @@ export default function AdminDashboard() {
   const [dscApps, setDscApps] = useState<DscApp[] | null>(null);
   const [orders, setOrders] = useState<Order[] | null>(null);
   const [evaluations, setEvaluations] = useState<EvaluationSummary[] | null>(null);
+  const [selectedEvaluation, setSelectedEvaluation] = useState<EvaluationDetail | null>(null);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [detailError, setDetailError] = useState('');
+  const [evalSearchQuery, setEvalSearchQuery] = useState('');
+  const [evalScoreFilter, setEvalScoreFilter] = useState<'all' | 'low' | 'medium' | 'high'>('all');
+  const [evalCityFilter, setEvalCityFilter] = useState('all');
+  const [evalStateFilter, setEvalStateFilter] = useState('all');
   const [loadingTab, setLoadingTab] = useState(false);
   const [tabError, setTabError] = useState('');
 
@@ -428,6 +460,48 @@ export default function AdminDashboard() {
     };
     load();
   }, [tab, authChecked, notLoggedIn, accessDenied]);
+
+  const openEvaluationDetail = async (id: string) => {
+    setDetailError('');
+    setDetailLoading(true);
+    try {
+      const res = await axios.get(`${API_URL}/evaluations/${id}`);
+      setSelectedEvaluation(res.data.evaluation);
+    } catch (err: any) {
+      setDetailError(err.response?.data?.msg || 'Failed to load evaluation details.');
+    } finally {
+      setDetailLoading(false);
+    }
+  };
+
+  const filteredEvaluations = (evaluations || []).filter((e) => {
+    const query = evalSearchQuery.trim().toLowerCase();
+    const matchQuery = query === '' || [e.startupName, e.founderName, e.email, e.mobileNumber, e.cityCountry, e.status]
+      .some((value) => value?.toLowerCase().includes(query));
+    const score = e.aiEvaluation?.overallScore ?? 0;
+    const matchScore = evalScoreFilter === 'all'
+      || (evalScoreFilter === 'low' && score < 35)
+      || (evalScoreFilter === 'medium' && score >= 35 && score <= 70)
+      || (evalScoreFilter === 'high' && score > 70);
+    const cityValue = (e.cityCountry || '').split(',')[0]?.trim().toLowerCase() || '';
+    const matchCity = evalCityFilter === 'all' || cityValue === evalCityFilter;
+    const matchState = evalStateFilter === 'all' || normalizeText(extractState(e.cityCountry || '')) === evalStateFilter;
+    return matchQuery && matchScore && matchCity && matchState;
+  });
+
+  const evalCityOptions = Array.from(new Map((evaluations || [])
+    .map((e) => (e.cityCountry || '').split(',')[0]?.trim())
+    .filter(Boolean)
+    .map((city) => [normalizeText(city), city] as const))
+    .values())
+    .sort((a, b) => a.localeCompare(b));
+
+  const evalStateOptions = Array.from(new Map((evaluations || [])
+    .map((e) => extractState(e.cityCountry || ''))
+    .filter(Boolean)
+    .map((state) => [normalizeText(state), state] as const))
+    .values())
+    .sort((a, b) => a.localeCompare(b));
 
   if (!authChecked) {
     return (
@@ -653,7 +727,7 @@ export default function AdminDashboard() {
         {!loadingTab && tab === 'users' && (
           <div className="bg-slate-900/70 border border-slate-800 rounded-2xl overflow-x-auto">
             <table className="w-full min-w-[700px]">
-              <thead><tr><Th>Name</Th><Th>Email</Th><Th>Phone</Th><Th>Company</Th><Th>Status</Th><Th>Joined</Th></tr></thead>
+              <thead><tr><Th>Name</Th><Th>Email</Th><Th>Phone</Th><Th>Company</Th><Th>State</Th><Th>Joined</Th></tr></thead>
               <tbody>
                 {(users || []).map((u) => (
                   <tr key={u._id} className="hover:bg-slate-800/30">
@@ -682,7 +756,7 @@ export default function AdminDashboard() {
                     <Td>{d.email}</Td>
                     <Td>{d.mobileNumber}</Td>
                     <Td>{d.certificateClass || '-'}</Td>
-                    <Td>{d.price ? `₹${d.price}` : '-'}</Td>
+                    <Td>{d.price ? `?${d.price}` : '-'}</Td>
                     <Td>{fmtDate(d.dateSubmitted)}</Td>
                   </tr>
                 ))}
@@ -695,7 +769,7 @@ export default function AdminDashboard() {
         {!loadingTab && tab === 'orders' && (
           <div className="bg-slate-900/70 border border-slate-800 rounded-2xl overflow-x-auto">
             <table className="w-full min-w-[700px]">
-              <thead><tr><Th>Name</Th><Th>Email</Th><Th>Phone</Th><Th>Package</Th><Th>Price</Th><Th>Status</Th><Th>Date</Th></tr></thead>
+              <thead><tr><Th>Name</Th><Th>Email</Th><Th>Phone</Th><Th>Package</Th><Th>Price</Th><Th>State</Th><Th>Date</Th></tr></thead>
               <tbody>
                 {(orders || []).map((o) => (
                   <tr key={o._id} className="hover:bg-slate-800/30">
@@ -718,26 +792,130 @@ export default function AdminDashboard() {
 
         {!loadingTab && tab === 'evaluations' && (
           <div className="space-y-4">
-            <Link to="/admin/evaluations" className="inline-flex items-center gap-1.5 text-emerald-400 text-xs font-bold hover:underline">
-              Open Full Evaluations Dashboard (scores, strengths, risks) <ExternalLink size={12} />
-            </Link>
-            <div className="bg-slate-900/70 border border-slate-800 rounded-2xl overflow-x-auto">
-              <table className="w-full min-w-[700px]">
-                <thead><tr><Th>Startup</Th><Th>Founder</Th><Th>Email</Th><Th>Mobile</Th><Th>Score</Th><Th>Date</Th></tr></thead>
-                <tbody>
-                  {(evaluations || []).map((e) => (
-                    <tr key={e._id} className="hover:bg-slate-800/30">
-                      <Td className="font-semibold text-white">{e.startupName || '-'}</Td>
-                      <Td>{e.founderName}</Td>
-                      <Td>{e.email}</Td>
-                      <Td>{e.mobileNumber}</Td>
-                      <Td>{e.aiEvaluation?.overallScore ?? '-'}/100</Td>
-                      <Td>{fmtDate(e.dateSubmitted)}</Td>
+            <div className="grid gap-3 mb-4 md:grid-cols-[1fr_repeat(3,minmax(0,260px))]">
+              <input
+                value={evalSearchQuery}
+                onChange={(e) => setEvalSearchQuery(e.target.value)}
+                placeholder="Search by startup, founder, email, mobile, city, or state"
+                className="w-full rounded-2xl border border-slate-800 bg-slate-950/80 px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-cyan-500/40 focus:outline-none focus:ring-2 focus:ring-cyan-500/15"
+              />
+              <select
+                value={evalScoreFilter}
+                onChange={(e) => setEvalScoreFilter(e.target.value as any)}
+                className="rounded-2xl border border-slate-800 bg-slate-950/80 px-4 py-3 text-sm text-white focus:border-cyan-500/40 focus:outline-none focus:ring-2 focus:ring-cyan-500/15"
+              >
+                <option value="all">Score: All</option>
+                <option value="low">Score: Low (&lt; 35)</option>
+                <option value="medium">Score: Medium (35-70)</option>
+                <option value="high">Score: High (&gt; 70)</option>
+              </select>
+              <select
+                value={evalCityFilter}
+                onChange={(e) => setEvalCityFilter(e.target.value)}
+                className="rounded-2xl border border-slate-800 bg-slate-950/80 px-4 py-3 text-sm text-white focus:border-cyan-500/40 focus:outline-none focus:ring-2 focus:ring-cyan-500/15"
+              >
+                <option value="all">City: All</option>
+                {evalCityOptions.map((city) => (
+                  <option key={city} value={city.toLowerCase()}>{city}</option>
+                ))}
+              </select>
+              <select
+                value={evalStateFilter}
+                onChange={(e) => setEvalStateFilter(e.target.value)}
+                className="rounded-2xl border border-slate-800 bg-slate-950/80 px-4 py-3 text-sm text-white focus:border-cyan-500/40 focus:outline-none focus:ring-2 focus:ring-cyan-500/15"
+              >
+                <option value="all">State: All</option>
+                {evalStateOptions.map((state) => (
+                  <option key={state} value={normalizeText(state)}>{state}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="space-y-4">
+              <Link to="/admin/evaluations" className="inline-flex items-center gap-1.5 text-emerald-400 text-xs font-bold hover:underline">
+                Open Full Evaluations Dashboard (scores, strengths, risks) <ExternalLink size={12} />
+              </Link>
+
+              {selectedEvaluation ? (
+                <div className="bg-slate-900/80 border border-cyan-500/20 rounded-3xl p-5 mb-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+                    <div>
+                      <p className="text-slate-400 text-xs uppercase tracking-[0.3em] mb-2">Evaluation Detail</p>
+                      <h2 className="text-xl font-black text-white">{selectedEvaluation.startupName || 'No startup name'}</h2>
+                      <p className="text-slate-400 text-sm">
+                        {selectedEvaluation.founderName} / {selectedEvaluation.email} / {selectedEvaluation.mobileNumber}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedEvaluation(null)}
+                      className="rounded-2xl border border-slate-700 bg-slate-950/70 px-4 py-2 text-xs font-bold text-slate-200 hover:border-cyan-500/40 hover:text-white transition-all"
+                    >
+                      Back to table
+                    </button>
+                  </div>
+
+                  {detailError ? (
+                    <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-3 text-red-300 text-sm">{detailError}</div>
+                  ) : detailLoading ? (
+                    <div className="rounded-2xl border border-slate-700 bg-slate-950/70 p-3 text-slate-400 text-sm">Loading detail...</div>
+                  ) : (
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
+                        <p className="text-slate-400 text-xs uppercase tracking-[0.3em] mb-2">Overall Score</p>
+                        <p className="text-3xl font-black text-emerald-400">
+                          {selectedEvaluation.aiEvaluation?.overallScore ?? '-'}<span className="text-slate-500 text-sm">/100</span>
+                        </p>
+                      </div>
+                      <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
+                        <p className="text-slate-400 text-xs uppercase tracking-[0.3em] mb-2">Submitted</p>
+                        <p className="text-sm text-slate-200">{fmtDate(selectedEvaluation.dateSubmitted)}</p>
+                        <p className="text-sm text-slate-400 mt-2">State: {selectedEvaluation.status || 'N/A'}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : null}
+
+              <div className="bg-slate-900/70 border border-slate-800 rounded-2xl overflow-x-auto">
+                <table className="w-full min-w-[700px]">
+                  <thead>
+                    <tr>
+                      <Th>Startup</Th>
+                      <Th>Founder</Th>
+                      <Th>Email</Th>
+                      <Th>Mobile</Th>
+                      <Th>City</Th>
+                      <Th>State</Th>
+                      <Th>Score</Th>
+                      <Th>Date</Th>
+                      <Th>Action</Th>
                     </tr>
-                  ))}
-                  {(evaluations || []).length === 0 && <tr><Td className="text-slate-500">No evaluations yet.</Td></tr>}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {filteredEvaluations.map((e) => (
+                      <tr key={e._id} className="hover:bg-slate-800/30">
+                        <Td className="font-semibold text-white">{e.startupName || '-'}</Td>
+                        <Td>{e.founderName}</Td>
+                        <Td>{e.email}</Td>
+                        <Td>{e.mobileNumber}</Td>
+                        <Td>{e.cityCountry || 'City not provided'}</Td>
+                        <Td>{e.status || 'submitted'}</Td>
+                        <Td>{e.aiEvaluation?.overallScore ?? '-'}/100</Td>
+                        <Td>{fmtDate(e.dateSubmitted)}</Td>
+                        <Td>
+                          <Link to={`/admin/evaluations?id=${e._id}`} className="inline-flex items-center gap-2 rounded-2xl border border-slate-800 bg-slate-950/80 px-3 py-2 text-[11px] font-semibold text-cyan-300 hover:border-cyan-500/40 hover:bg-slate-900/80 transition-all">
+                            <Eye size={14} /> View
+                          </Link>
+                        </Td>
+                      </tr>
+                    ))}
+                    {filteredEvaluations.length === 0 && (
+                      <tr><Td colSpan={9} className="text-slate-500">No evaluations match your search or filter.</Td></tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         )}

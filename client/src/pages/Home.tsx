@@ -200,10 +200,10 @@ export default function Home() {
                 </div>
                 <h3 className="text-white font-black text-base mb-2">Not Sure Where to Start?</h3>
                 <p className="text-slate-400 text-[11px] sm:text-xs leading-relaxed mb-3 max-w-md">
-                  Run the 3-step Aarambhh Audit to compare your current setup and reveal the right tech-legal tier instantly.
+                  Run the 3-step Addk Audit to compare your current setup and reveal the right tech-legal tier instantly.
                 </p>
                 <span className="inline-flex w-full items-center justify-center rounded-2xl border border-cyan-500/20 bg-cyan-500/10 py-2 text-cyan-300 font-bold text-xs hover:bg-cyan-500/15 transition-colors">
-                  Open Audit Tool
+                  Compare Your Current Setup
                 </span>
               </Link>
             </div>
@@ -274,10 +274,10 @@ export default function Home() {
                       <Sparkles size={20} className="text-cyan-300" />
                     </div>
                     <h3 className="font-bold text-white text-base mb-2">Not Sure Where to Start?</h3>
-                    <p className="text-slate-400 text-sm mb-5">Run the 3-step Aarambhh Audit to compare your current setup and reveal the right tech-legal tier instantly.</p>
+                    <p className="text-slate-400 text-sm mb-5">Run the 3-step Addk Audit to compare your current setup and reveal the right tech-legal tier instantly.</p>
                   </div>
                   <span className="w-full py-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 font-bold text-sm hover:bg-cyan-500/15 transition-opacity text-center block">
-                    Open Audit Tool
+                    Compare Your Current Setup
                   </span>
                 </Link>
               </div>

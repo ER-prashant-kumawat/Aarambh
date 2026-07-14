@@ -2,16 +2,25 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const nodemailer = require('nodemailer');
+const path = require('path');
+const fs = require('fs');
 const auth = require('../middleware/auth');
 const adminAuth = require('../middleware/adminAuth');
 const StartupEvaluation = require('../models/StartupEvaluation');
 const { evaluateStartup } = require('../utils/evaluationScorer');
 
-const storage = multer.memoryStorage();
-const upload = multer({
-  storage,
-  limits: { fileSize: 5 * 1024 * 1024 } // 5 MB per file
+const uploadDir = path.join(__dirname, '../uploads/evaluations');
+fs.mkdirSync(uploadDir, { recursive: true });
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, uploadDir),
+  filename: (req, file, cb) => {
+    const safeName = file.originalname.replace(/[^a-zA-Z0-9._-]/g, '_');
+    cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}-${safeName}`);
+  }
 });
+
+const upload = multer({ storage });
 
 const fileFields = upload.fields([
   { name: 'pitchDeck', maxCount: 1 },
@@ -47,7 +56,7 @@ const toFileAsset = (file) => file ? {
   filename: file.originalname,
   mimetype: file.mimetype,
   size: file.size,
-  data: file.buffer.toString('base64')
+  path: `evaluations/${file.filename}`
 } : undefined;
 
 const parseList = (value) => {
@@ -78,6 +87,7 @@ router.post('/', fileFields, async (req, res) => {
       mobileNumber: b.mobileNumber,
       linkedinProfile: b.linkedinProfile,
       cityCountry: b.cityCountry,
+      status: b.status?.trim() || 'submitted',
       startupName: b.startupName,
       website: b.website,
       industrySector: b.industrySector,
@@ -184,7 +194,7 @@ router.post('/', fileFields, async (req, res) => {
 router.get('/', auth, adminAuth, async (req, res) => {
   try {
     const list = await StartupEvaluation.find()
-      .select('founderName startupName email mobileNumber stage industrySector aiEvaluation.overallScore dateSubmitted status')
+      .select('founderName startupName email mobileNumber cityCountry stage industrySector aiEvaluation.overallScore dateSubmitted status')
       .sort({ dateSubmitted: -1 });
     res.json({ success: true, evaluations: list });
   } catch (error) {
