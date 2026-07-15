@@ -7,7 +7,17 @@ require('dotenv').config();
 const app = express();
 
 // Init Middleware
-const STATIC_ORIGINS = [
+const normalizeOrigin = (value) => {
+  if (!value) return '';
+  const trimmed = value.trim();
+  try {
+    return new URL(trimmed).origin;
+  } catch (error) {
+    return trimmed;
+  }
+};
+
+const STATIC_ORIGINS = Array.from(new Set([
   'https://aarambh-git-main-vishal-sukhwal-s-projects.vercel.app',
   'https://client-seven-chi-64.vercel.app',
   'https://aarambhh.com',
@@ -15,15 +25,39 @@ const STATIC_ORIGINS = [
   'https://aarambh.vercel.app',
   'http://localhost:5173',
   'http://localhost:3000',
-  // Extra comma-separated origins can be added via env without a code change
-  ...(process.env.FRONTEND_URLS || '').split(',').map((s) => s.trim()).filter(Boolean),
-];
+  // Extra comma-separated origins can be added via env without a code change.
+  ...(process.env.FRONTEND_URLS || '')
+    .split(',')
+    .map((s) => normalizeOrigin(s))
+    .filter(Boolean),
+].map((origin) => normalizeOrigin(origin))));
+
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true;
+
+  const normalizedOrigin = normalizeOrigin(origin);
+  if (STATIC_ORIGINS.includes(normalizedOrigin)) return true;
+
+  try {
+    const { protocol, hostname } = new URL(normalizedOrigin);
+    if (protocol === 'https:' && (hostname === 'aarambhh.com' || hostname.endsWith('.aarambhh.com'))) {
+      return true;
+    }
+    if (/^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(normalizedOrigin)) {
+      return true;
+    }
+  } catch (error) {
+    // Fall through to the blocked-origin path below.
+  }
+
+  return false;
+};
 
 const corsOptions = {
   origin: (origin, callback) => {
     // Allow non-browser requests (no Origin header), the allowlist,
     // and any Vercel deployment of the frontend (production + previews).
-    if (!origin || STATIC_ORIGINS.includes(origin) || /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin)) {
+    if (isAllowedOrigin(origin)) {
       return callback(null, true);
     }
     console.warn('[CORS] Blocked origin:', origin);
@@ -31,7 +65,7 @@ const corsOptions = {
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token'],
   optionsSuccessStatus: 204,
 };
 
@@ -39,7 +73,7 @@ app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 app.use(express.json({ extended: false }));
 
-// ── Serverless DB Middleware ──────────────────────────────────────────────────
+// Serverless DB Middleware
 // In serverless environments, we cannot guarantee the DB is connected at
 // module load time. This middleware ensures the connection is established
 // (or reused from cache) before every request hits a route handler.
@@ -82,13 +116,13 @@ if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
   app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 }
 
-// ── Safety Nets ───────────────────────────────────────────────────────────────
-// Unknown API route → clean JSON 404 instead of an HTML error page
+// Safety Nets
+// Unknown API route -> clean JSON 404 instead of an HTML error page
 app.use('/api', (req, res) => {
   res.status(404).json({ success: false, msg: 'API route not found.' });
 });
 
-// Global error handler — any uncaught route error still returns clean JSON,
+// Global error handler - any uncaught route error still returns clean JSON,
 // so the frontend never sees a raw HTML error page or a dropped connection.
 app.use((err, req, res, next) => {
   console.error('[SERVER] Unhandled error:', err.message);
@@ -110,13 +144,13 @@ process.on('unhandledRejection', (err) => {
   console.error('[SERVER] Unhandled promise rejection:', err && err.message ? err.message : err);
 });
 
-// ── Local Development Server ──────────────────────────────────────────────────
+// Local Development Server
 // app.listen() is guarded so it does NOT run inside Vercel's serverless runtime.
 if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => console.log(`[SERVER] Running locally on port ${PORT}`));
 }
 
-// Required for Vercel — exports the Express app as the serverless handler
+// Required for Vercel - exports the Express app as the serverless handler
 module.exports = app;
 
