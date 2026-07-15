@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const connectDB = require('./config/db');
@@ -72,6 +72,15 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 app.use(express.json({ extended: false }));
+
+// Keep CORS preflight requests away from MongoDB and route logic.
+// This helps avoid serverless timeouts/crashes on browser OPTIONS checks.
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+  next();
+});
 
 // Serverless DB Middleware
 // In serverless environments, we cannot guarantee the DB is connected at
